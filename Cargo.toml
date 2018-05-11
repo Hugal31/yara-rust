@@ -1,0 +1,9 @@
+[package]
+name = "yara"
+version = "0.1.0"
+authors = ["Hugo Laloge <hugo.laloge@gmail.com>"]
+description = "Rust bindings for VirusTotal/yara"
+
+[dependencies]
+failure = "~0.1.0"
+yara-sys = { path = "yara-sys" }

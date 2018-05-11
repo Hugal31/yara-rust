@@ -1,0 +1,9 @@
+[package]
+name = "yara-sys"
+version = "0.1.0"
+authors = ["Hugo Laloge <hugo.laloge@gmail.com>"]
+description = "Native bindings for the libyara library"
+categories = ["external-ffi-bindings"]
+
+[build-dependencies]
+bindgen = "0.36"
