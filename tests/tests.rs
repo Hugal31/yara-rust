@@ -69,6 +69,7 @@ fn test_scan_mem() {
     assert_eq!(1, result.len());
     assert_eq!("is_awesome", result[0].identifier);
     assert_eq!(1, result[0].strings.len());
+    assert_eq!("$rust", result[0].strings[0].identifier);
     assert_eq!(1, result[0].strings[0].matches.len());
     assert_eq!(7, result[0].strings[0].matches[0].offset);
     assert_eq!(

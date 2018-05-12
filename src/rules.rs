@@ -44,6 +44,7 @@ pub struct Rule {
 
 #[derive(Debug)]
 pub struct YrString {
+    pub identifier: String,
     pub matches: Vec<Match>,
 }
 

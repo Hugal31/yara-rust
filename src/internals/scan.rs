@@ -61,23 +61,6 @@ impl CallbackReturn {
     }
 }
 
-impl<'a> From<&'a yara_sys::_YR_MATCH> for Match {
-    fn from(m: &'a yara_sys::_YR_MATCH) -> Self {
-        Match {
-            offset: m.offset as usize,
-            match_length: m.match_length as usize,
-            data: Vec::from(unsafe { slice::from_raw_parts(m.data, m.data_length as usize) }),
-        }
-    }
-}
-
-/// Should't be necessary. Or ?
-impl<'a> From<&'a mut yara_sys::_YR_MATCH> for Match {
-    fn from(m: &'a mut yara_sys::_YR_MATCH) -> Self {
-        From::<&'a yara_sys::_YR_MATCH>::from(m)
-    }
-}
-
 pub fn rules_scan_mem<'a>(
     rules: *mut yara_sys::YR_RULES,
     mem: &[u8],
@@ -110,89 +93,9 @@ extern "C" fn scan_callback(
     let rules: &mut Vec<Rule> = unsafe { mem::transmute(user_data) };
 
     if message == CallbackMsg::RuleMatching {
-        let rule: &mut yara_sys::YR_RULE = unsafe { mem::transmute(message_data) };
-        rules.push(Rule {
-            identifier: unsafe { CStr::from_ptr(rule.__bindgen_anon_1.identifier) }
-                .to_str()
-                .unwrap()
-                .to_string(),
-            strings: get_rule_strings(rule),
-        });
+        let rule: &yara_sys::YR_RULE = unsafe { mem::transmute(message_data) };
+        rules.push(Rule::from(rule));
     }
 
     CallbackReturn::Continue.to_yara()
-}
-
-// TODO: Try to remove mut
-fn get_rule_strings(rule: &mut yara_sys::YR_RULE) -> Vec<YrString> {
-    let tidx = get_tidx();
-    YrStringIterator::from(rule)
-        .map(|s| {
-            let matches = MatchIterator::from(&mut s.matches[tidx as usize])
-                .map(Match::from)
-                .collect();
-            YrString { matches }
-        })
-        .collect()
-}
-
-pub struct YrStringIterator<'a> {
-    head: *mut yara_sys::YR_STRING,
-    _marker: marker::PhantomData<&'a yara_sys::YR_STRING>,
-}
-
-impl<'a> From<&'a mut yara_sys::YR_RULE> for YrStringIterator<'a> {
-    fn from(rule: &'a mut yara_sys::YR_RULE) -> YrStringIterator<'a> {
-        YrStringIterator {
-            head: unsafe { rule.__bindgen_anon_4.strings },
-            _marker: marker::PhantomData::default(),
-        }
-    }
-}
-
-impl<'a> Iterator for YrStringIterator<'a> {
-    type Item = &'a mut yara_sys::YR_STRING;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.head.is_null() {
-            return None;
-        }
-
-        let string = unsafe { &mut *self.head };
-
-        if string.g_flags as u32 & yara_sys::STRING_GFLAGS_NULL != 0 {
-            None
-        } else {
-            self.head = unsafe { self.head.offset(1) };
-            Some(string)
-        }
-    }
-}
-
-pub struct MatchIterator<'a> {
-    head: *mut yara_sys::_YR_MATCH,
-    _marker: marker::PhantomData<&'a yara_sys::_YR_MATCH>,
-}
-
-impl<'a> From<&'a mut yara_sys::YR_MATCHES> for MatchIterator<'a> {
-    fn from(matches: &'a mut yara_sys::YR_MATCHES) -> MatchIterator<'a> {
-        MatchIterator {
-            head: unsafe { matches.__bindgen_anon_1.head },
-            _marker: marker::PhantomData::default(),
-        }
-    }
-}
-
-impl<'a> Iterator for MatchIterator<'a> {
-    type Item = &'a mut yara_sys::_YR_MATCH;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let res = ptr::NonNull::new(self.head)
-            .map(ptr::NonNull::as_ptr)
-            .map(|p| unsafe { &mut *p });
-        if let Some(ref m) = res {
-            self.head = m.next;
-        }
-        res
-    }
 }
