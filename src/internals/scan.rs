@@ -59,8 +59,8 @@ pub fn rules_scan_mem<'a>(
     rules: *mut yara_sys::YR_RULES,
     mem: &[u8],
     timeout: i32,
-) -> Result<Vec<Rule>, YaraError> {
-    let mut results = Vec::<Rule>::new();
+) -> Result<Vec<Rule<'a>>, YaraError> {
+    let mut results = Vec::<Rule<'a>>::new();
     let result = unsafe {
         yara_sys::yr_rules_scan_mem(
             rules,

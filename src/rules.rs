@@ -15,7 +15,7 @@ impl<'a> Rules<'a> {
     /// Scan memory
     ///
     /// The timeout is in seconds
-    pub fn scan_mem(&mut self, mem: &[u8], timeout: u16) -> Result<Vec<Rule>, YaraError> {
+    pub fn scan_mem(&mut self, mem: &[u8], timeout: u16) -> Result<Vec<Rule<'a>>, YaraError> {
         internals::rules_scan_mem(self.inner, mem, timeout as i32)
     }
 
@@ -33,14 +33,14 @@ impl<'a> Drop for Rules<'a> {
 }
 
 #[derive(Debug)]
-pub struct Rule {
-    pub identifier: String,
-    pub strings: Vec<YrString>,
+pub struct Rule<'a> {
+    pub identifier: &'a str,
+    pub strings: Vec<YrString<'a>>,
 }
 
 #[derive(Debug)]
-pub struct YrString {
-    pub identifier: String,
+pub struct YrString<'a> {
+    pub identifier: &'a str,
     pub matches: Vec<Match>,
 }
 

@@ -23,12 +23,11 @@ pub fn rules_save(rules: &mut yara_sys::YR_RULES, filename: &str) -> Result<(), 
     YaraErrorKind::from_yara(result)
 }
 
-impl<'a> From<&'a yara_sys::YR_RULE> for Rule {
+impl<'a, 'b: 'a> From<&'a yara_sys::YR_RULE> for Rule<'b> {
     fn from(rule: &yara_sys::YR_RULE) -> Self {
         let identifier = unsafe { CStr::from_ptr(rule.__bindgen_anon_1.identifier) }
             .to_str()
-            .unwrap()
-            .to_owned();
+            .unwrap();
         let strings = YrStringIterator::from(rule).map(YrString::from).collect();
 
         Rule {
@@ -37,6 +36,7 @@ impl<'a> From<&'a yara_sys::YR_RULE> for Rule {
         }
     }
 }
+
 struct YrStringIterator<'a> {
     head: *const yara_sys::YR_STRING,
     _marker: marker::PhantomData<&'a yara_sys::YR_STRING>,
@@ -108,12 +108,11 @@ impl<'a> From<&'a yara_sys::_YR_MATCH> for Match {
     }
 }
 
-impl<'a> From<&'a yara_sys::YR_STRING> for YrString {
+impl<'a, 'b: 'a> From<&'a yara_sys::YR_STRING> for YrString<'b> {
     fn from(string: &yara_sys::YR_STRING) -> Self {
         let identifier = unsafe { CStr::from_ptr(string.__bindgen_anon_1.identifier) }
             .to_str()
-            .unwrap()
-            .to_owned();
+            .unwrap();
         let tidx = get_tidx();
         let matches = MatchIterator::from(&string.matches[tidx as usize])
             .map(Match::from)
