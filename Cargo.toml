@@ -6,4 +6,5 @@ description = "Rust bindings for VirusTotal/yara"
 
 [dependencies]
 failure = "~0.1.0"
+lazy_static = "1.0"
 yara-sys = { path = "yara-sys" }

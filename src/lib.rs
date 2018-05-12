@@ -1,5 +1,7 @@
 #[macro_use]
 extern crate failure;
+#[macro_use]
+extern crate lazy_static;
 extern crate yara_sys;
 
 mod rules;
@@ -11,6 +13,12 @@ mod internals;
 pub use errors::*;
 pub use rules::*;
 
+use std::sync::Mutex;
+
+lazy_static! {
+    static ref INIT_MUTEX: Mutex<()> = Mutex::new(());
+}
+
 /// Yara library
 ///
 /// # FFI
@@ -21,6 +29,7 @@ pub struct Yara();
 
 impl Yara {
     pub fn create() -> Result<Yara, YaraError> {
+        let _guard = INIT_MUTEX.lock();
         internals::initialize().map(|()| Yara())
     }
 
@@ -34,6 +43,7 @@ impl Yara {
 // TODO: What to do if yr_finalize return something else than ERROR_SUCCESS ?
 impl Drop for Yara {
     fn drop(&mut self) {
+        let _guard = INIT_MUTEX.lock();
         internals::finalize().expect("Expect correct Yara finalization");
     }
 }
