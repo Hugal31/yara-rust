@@ -1,14 +1,19 @@
+// TODO: Remove
+#![allow(unused_imports)]
+#![allow(dead_code)]
+
 #[macro_use]
 extern crate failure;
 extern crate yara_sys;
+
+mod rules;
 
 pub mod errors;
 
 mod internals;
 
 pub use errors::*;
-
-use std::marker;
+pub use rules::*;
 
 /// Yara library
 ///
@@ -38,18 +43,13 @@ impl Drop for Yara {
 }
 
 /// Yara compiler
-// TODO Check what is done if multiple create
 pub struct Compiler<'a> {
-    inner: *mut internals::Compiler,
-    _marker: marker::PhantomData<&'a ()>,
+    inner: &'a mut internals::Compiler,
 }
 
 impl<'a> Compiler<'a> {
     pub(crate) fn create() -> Result<Compiler<'a>, YaraError> {
-        internals::compiler_create().map(|ptr| Compiler {
-            inner: ptr,
-            _marker: marker::PhantomData::default(),
-        })
+        internals::compiler_create().map(|compiler| Compiler { inner: compiler })
     }
 
     pub fn add_rule_str(&mut self, rule: &str) -> Result<(), CompilationError> {
@@ -65,45 +65,12 @@ impl<'a> Compiler<'a> {
     }
 
     pub fn get_rules(self) -> Result<Rules<'a>, YaraError> {
-        internals::compiler_get_rules(self.inner).map(|r| Rules::<'a>::from(r))
+        internals::compiler_get_rules(self.inner).map(|r| Rules::from(r))
     }
 }
 
 impl<'a> Drop for Compiler<'a> {
     fn drop(&mut self) {
         internals::compiler_destroy(self.inner);
-    }
-}
-
-pub struct Rules<'a> {
-    inner: *mut internals::Rules,
-    _marker: marker::PhantomData<&'a ()>,
-}
-
-impl<'a> Rules<'a> {
-    pub(crate) fn from(rules: *mut internals::Rules) -> Rules<'a> {
-        Rules {
-            inner: rules,
-            _marker: marker::PhantomData::default(),
-        }
-    }
-
-    /// Scan memory
-    ///
-    /// The timeout is in seconds
-    pub fn scan_mem(&mut self, mem: &[u8], timeout: u16) -> Result<(), YaraError> {
-        internals::rules_scan_mem(self.inner, mem, timeout as i32)
-    }
-
-    /// Save the rule to a file
-    // TODO Take AsRef<Path> ?
-    pub fn save(&mut self, filename: &str) -> Result<(), YaraError> {
-        internals::rules_save(self.inner, filename)
-    }
-}
-
-impl<'a> Drop for Rules<'a> {
-    fn drop(&mut self) {
-        internals::rules_destroy(self.inner);
     }
 }

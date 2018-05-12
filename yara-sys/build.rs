@@ -14,6 +14,7 @@ fn main() {
         .whitelist_var("ERROR_INSUFFICIENT_MEMORY")
         .whitelist_var("ERROR_SCAN_TIMEOUT")
         .whitelist_var("CALLBACK_.*")
+        .whitelist_var("STRING_GFLAGS_NULL")
         .whitelist_function("yr_initialize")
         .whitelist_function("yr_finalize")
         .whitelist_function("yr_compiler_create")
@@ -25,9 +26,11 @@ fn main() {
         .whitelist_function("yr_rules_scan_fd")
         .whitelist_function("yr_rules_scan_mem")
         .whitelist_function("yr_get_tidx")
-        .whitelist_type("YR_RULE")
-        .opaque_type("YR_RULES")
         .opaque_type("YR_COMPILER")
+        .opaque_type("YR_ARENA")
+        .opaque_type("YR_AC_MATCH_TABLE")
+        .opaque_type("YR_AC_TRANSITION_TABLE")
+        .opaque_type("YR_EXTERNAL_VARIABLE")
         .generate()
         .expect("Unable to generate bindings");
 

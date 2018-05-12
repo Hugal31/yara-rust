@@ -1,54 +1,21 @@
 use std::fmt;
 use std::str::Utf8Error;
 
-use failure::{Context, Backtrace, Fail};
+use failure::{Backtrace, Context, Fail};
 
 use yara_sys::{ERROR_INSUFFICIENT_MEMORY, ERROR_SCAN_TIMEOUT, ERROR_SUCCESS};
 
-#[derive(Debug)]
-pub struct Error {
-    inner: Context<ErrorKind>,
-}
-
-impl Error {
-    pub fn kind(&self) -> ErrorKind {
-        *self.inner.get_context()
-    }
-}
-
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.inner.fmt(f)
-    }
-}
-
-impl Fail for Error {
-    fn cause(&self) -> Option<&Fail> {
-        self.inner.cause()
-    }
-
-    fn backtrace(&self) -> Option<&Backtrace> {
-        self.inner.backtrace()
-    }
-}
-
-#[derive(Clone, Copy, Debug, Fail, Eq, PartialEq)]
-pub enum ErrorKind {
+#[derive(Debug, Fail)]
+pub enum Error {
     #[fail(display = "Utf8 error: {:?}", _0)]
     Utf8(#[cause] Utf8Error),
     #[fail(display = "{}", _0)]
     Yara(#[cause] YaraError),
 }
 
-impl From<Context<ErrorKind>> for Error {
-    fn from(ctx: Context<ErrorKind>) -> Error {
-        Error { inner: ctx }
-    }
-}
-
-impl From<ErrorKind> for Error {
-    fn from(kind: ErrorKind) -> Error {
-        Error { inner: Context::new(kind) }
+impl From<Utf8Error> for Error {
+    fn from(error: Utf8Error) -> Error {
+        Error::Utf8(error).into()
     }
 }
 
@@ -56,7 +23,7 @@ pub type YaraError = YaraErrorKind;
 
 impl From<YaraError> for Error {
     fn from(error: YaraError) -> Error {
-        ErrorKind::Yara(error).into()
+        Error::Yara(error).into()
     }
 }
 

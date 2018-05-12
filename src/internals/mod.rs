@@ -31,3 +31,7 @@ pub fn finalize() -> Result<(), YaraError> {
 
     YaraErrorKind::from_yara(result)
 }
+
+pub fn get_tidx() -> i32 {
+    unsafe { yara_sys::yr_get_tidx() }
+}
