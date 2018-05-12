@@ -1,7 +1,3 @@
-// TODO: Remove
-#![allow(unused_imports)]
-#![allow(dead_code)]
-
 #[macro_use]
 extern crate failure;
 extern crate yara_sys;
@@ -44,7 +40,7 @@ impl Drop for Yara {
 
 /// Yara compiler
 pub struct Compiler<'a> {
-    inner: &'a mut internals::Compiler,
+    inner: &'a mut yara_sys::YR_COMPILER,
 }
 
 impl<'a> Compiler<'a> {

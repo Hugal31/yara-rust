@@ -1,17 +1,9 @@
-use std::ffi::CStr;
-use std::fs::File;
-use std::marker;
 use std::mem;
 use std::os::raw::c_void;
-use std::ptr;
-use std::slice;
 
 use yara_sys;
 
-use super::get_tidx;
-use Match;
 use Rule;
-use YrString;
 
 use errors::*;
 
@@ -44,7 +36,9 @@ impl CallbackMsg {
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum CallbackReturn {
     Continue,
+    #[allow(dead_code)]
     Abort,
+    #[allow(dead_code)]
     Error,
 }
 

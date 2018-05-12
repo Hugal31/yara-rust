@@ -1,7 +1,3 @@
-use std::ffi::CStr;
-use std::mem;
-
-use failure::ResultExt;
 use yara_sys;
 
 use errors::*;
@@ -19,8 +15,8 @@ impl<'a> Rules<'a> {
     /// Scan memory
     ///
     /// The timeout is in seconds
-    pub fn scan_mem(&mut self, mem: &[u8], timeout: u16) -> Result<Vec<Rule>, Error> {
-        internals::rules_scan_mem(self.inner, mem, timeout as i32).map_err(|e| e.into())
+    pub fn scan_mem(&mut self, mem: &[u8], timeout: u16) -> Result<Vec<Rule>, YaraError> {
+        internals::rules_scan_mem(self.inner, mem, timeout as i32)
     }
 
     /// Save the rule to a file

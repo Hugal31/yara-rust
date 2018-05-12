@@ -1,7 +1,5 @@
 use std::ffi::{CStr, CString};
 use std::marker;
-use std::mem;
-use std::ptr;
 use std::slice;
 
 use yara_sys;

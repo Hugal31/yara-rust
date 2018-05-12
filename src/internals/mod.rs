@@ -10,10 +10,6 @@ use yara_sys;
 
 use errors::*;
 
-pub type Compiler = yara_sys::YR_COMPILER;
-pub type Rule = yara_sys::YR_RULE;
-pub type Rules = yara_sys::YR_RULES;
-
 /// Initialize the Yara library
 ///
 /// Can be called multiple times without problems

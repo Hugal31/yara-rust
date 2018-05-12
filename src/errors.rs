@@ -1,31 +1,6 @@
-use std::fmt;
-use std::str::Utf8Error;
-
-use failure::{Backtrace, Context, Fail};
-
 use yara_sys::{ERROR_INSUFFICIENT_MEMORY, ERROR_SCAN_TIMEOUT, ERROR_SUCCESS};
 
-#[derive(Debug, Fail)]
-pub enum Error {
-    #[fail(display = "Utf8 error: {:?}", _0)]
-    Utf8(#[cause] Utf8Error),
-    #[fail(display = "{}", _0)]
-    Yara(#[cause] YaraError),
-}
-
-impl From<Utf8Error> for Error {
-    fn from(error: Utf8Error) -> Error {
-        Error::Utf8(error).into()
-    }
-}
-
 pub type YaraError = YaraErrorKind;
-
-impl From<YaraError> for Error {
-    fn from(error: YaraError) -> Error {
-        Error::Yara(error).into()
-    }
-}
 
 #[derive(Clone, Copy, Debug, Fail, Eq, PartialEq)]
 #[fail(display = "Error(s) during rule compilation.")]
