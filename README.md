@@ -2,7 +2,7 @@
 
 Bindings for the [Yara library from VirusTotal](https://github.com/VirusTotal/yara).
 
-More documentation can be found on
+More documentation can be found on [the Yara's documentation](https://yara.readthedocs.io/en/v3.7.0/index.html).
 
 ## License
 
