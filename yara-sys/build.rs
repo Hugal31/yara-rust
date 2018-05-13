@@ -28,12 +28,9 @@ mod build {
     use std::path::PathBuf;
 
     pub fn add_bindings() {
-
         let bindings = bindgen::Builder::default()
             .header("wrapper.h")
-            .whitelist_var("ERROR_SUCCESS")
-            .whitelist_var("ERROR_INSUFFICIENT_MEMORY")
-            .whitelist_var("ERROR_SCAN_TIMEOUT")
+            .whitelist_var("ERROR_.*")
             .whitelist_var("CALLBACK_.*")
             .whitelist_var("STRING_GFLAGS_NULL")
             .whitelist_function("yr_initialize")
