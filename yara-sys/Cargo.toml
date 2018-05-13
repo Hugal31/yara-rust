@@ -6,4 +6,4 @@ description = "Native bindings for the libyara library"
 categories = ["external-ffi-bindings"]
 
 [build-dependencies]
-bindgen = "0.36"
+bindgen = { version = "0.36", optional = true }
