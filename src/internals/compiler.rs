@@ -11,7 +11,9 @@ pub fn compiler_create<'a>() -> Result<&'a mut YR_COMPILER, YaraError> {
     let mut pointer: *mut YR_COMPILER = ptr::null_mut();
     let result = unsafe { yara_sys::yr_compiler_create(&mut pointer) };
 
-    YaraErrorKind::from_yara(result).map(|()| unsafe { mem::transmute(pointer) })
+    yara_sys::Error::from_code(result)
+        .map(|()| unsafe { mem::transmute(pointer) })
+        .map_err(|e| e.into())
 }
 
 pub fn compiler_destroy(compiler_ptr: *mut YR_COMPILER) {
@@ -24,7 +26,7 @@ pub fn compiler_add_string(
     compiler: &mut YR_COMPILER,
     string: &str,
     namespace: Option<&str>,
-) -> Result<(), CompilationError> {
+) -> Result<(), YaraError> {
     let string = ffi::CString::new(string).unwrap();
     let namespace = namespace.map(|n| ffi::CString::new(n).unwrap());
     let result = unsafe {
@@ -39,7 +41,7 @@ pub fn compiler_add_string(
     if result == 0 {
         Ok(())
     } else {
-        Err(CompilationError())
+        Err(yara_sys::Error::SyntaxError.into())
     }
 }
 
@@ -47,5 +49,7 @@ pub fn compiler_get_rules(compiler: &mut YR_COMPILER) -> Result<&mut YR_RULES, Y
     let mut pointer = ptr::null_mut();
     let result = unsafe { yara_sys::yr_compiler_get_rules(compiler, &mut pointer) };
 
-    YaraErrorKind::from_yara(result).map(|()| unsafe { mem::transmute(pointer) })
+    yara_sys::Error::from_code(result)
+        .map(|()| unsafe { mem::transmute(pointer) })
+        .map_err(|e| e.into())
 }

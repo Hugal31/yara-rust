@@ -16,7 +16,8 @@ use errors::*;
 pub fn initialize() -> Result<(), YaraError> {
     let result = unsafe { yara_sys::yr_initialize() };
 
-    YaraErrorKind::from_yara(result)
+    yara_sys::Error::from_code(result)
+        .map_err(|e| e.into())
 }
 
 /// De-initialize the Yara library
@@ -25,7 +26,8 @@ pub fn initialize() -> Result<(), YaraError> {
 pub fn finalize() -> Result<(), YaraError> {
     let result = unsafe { yara_sys::yr_finalize() };
 
-    YaraErrorKind::from_yara(result)
+    yara_sys::Error::from_code(result)
+        .map_err(|e| e.into())
 }
 
 pub fn get_tidx() -> i32 {

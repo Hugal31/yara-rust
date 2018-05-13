@@ -20,7 +20,8 @@ pub fn rules_destroy(rules: &mut yara_sys::YR_RULES) {
 pub fn rules_save(rules: &mut yara_sys::YR_RULES, filename: &str) -> Result<(), YaraError> {
     let filename = CString::new(filename).unwrap();
     let result = unsafe { yara_sys::yr_rules_save(rules, filename.as_ptr()) };
-    YaraErrorKind::from_yara(result)
+    yara_sys::Error::from_code(result)
+        .map_err(|e| e.into())
 }
 
 impl<'a, 'b: 'a> From<&'a yara_sys::YR_RULE> for Rule<'b> {

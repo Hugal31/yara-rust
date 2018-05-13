@@ -73,7 +73,7 @@ pub fn rules_scan_mem<'a>(
         )
     };
 
-    YaraErrorKind::from_yara(result)
+    yara_sys::Error::from_code(result)
         .map_err(|e| e.into())
         .map(|_| results)
 }

@@ -58,7 +58,7 @@ impl<'a> Compiler<'a> {
         internals::compiler_create().map(|compiler| Compiler { inner: compiler })
     }
 
-    pub fn add_rule_str(&mut self, rule: &str) -> Result<(), CompilationError> {
+    pub fn add_rule_str(&mut self, rule: &str) -> Result<(), YaraError> {
         internals::compiler_add_string(self.inner, rule, None)
     }
 
@@ -66,7 +66,7 @@ impl<'a> Compiler<'a> {
         &mut self,
         rule: &str,
         namespace: &str,
-    ) -> Result<(), CompilationError> {
+    ) -> Result<(), YaraError> {
         internals::compiler_add_string(self.inner, rule, Some(namespace))
     }
 
