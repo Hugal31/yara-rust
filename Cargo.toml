@@ -2,12 +2,16 @@
 name = "yara"
 version = "0.1.0"
 authors = ["Hugo Laloge <hugo.laloge@gmail.com>"]
+license = "MIT OR Apache-2.0"
 description = "Rust bindings for VirusTotal/yara"
 
 [dependencies]
 failure = "~0.1.0"
 lazy_static = "1.0"
-yara-sys = { path = "yara-sys" }
+
+[dependencies.yara-sys]
+path = "yara-sys"
+version = "0.1"
 
 [features]
 bindgen = ["yara-sys/bindgen"]

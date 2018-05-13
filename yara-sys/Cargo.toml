@@ -2,7 +2,9 @@
 name = "yara-sys"
 version = "0.1.0"
 authors = ["Hugo Laloge <hugo.laloge@gmail.com>"]
-description = "Native bindings for the libyara library"
+license = "MIT OR Apache-2.0"
+description = "Native bindings to the libyara library"
+keywords = ["yara", "ffi"]
 categories = ["external-ffi-bindings"]
 
 [build-dependencies]
