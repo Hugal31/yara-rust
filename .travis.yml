@@ -1,0 +1,18 @@
+language: rust
+rust:
+  - stable
+  - beta
+  - nightly
+before_install:
+  # TODO: Find a cheeper way to get yara. Maybe using a container ?
+  - wget https://github.com/VirusTotal/yara/archive/v3.7.1.tar.gz && tar xzf v3.7.1.tar.gz
+  - cd yara-3.7.1
+  - ./bootstrap.sh && ./configure
+  - make
+  - sudo make install
+  - sudo ldconfig -v
+  - cd ..
+matrix:
+  allow_failures:
+    - rust: nightly
+  fast_finish: true
