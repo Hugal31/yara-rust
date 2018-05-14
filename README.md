@@ -1,6 +1,7 @@
 # yara-rust
 
 Bindings for the [Yara library from VirusTotal](https://github.com/VirusTotal/yara).
+Only works with Yara 3.7 for now.
 
 More documentation can be found on [the Yara's documentation](https://yara.readthedocs.io/en/v3.7.0/index.html).
 
