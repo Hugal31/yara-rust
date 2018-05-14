@@ -1,3 +1,5 @@
+// Inspired from https://github.com/jgallagher/rusqlite/blob/master/libsqlite3-sys/build.rs
+
 fn main() {
     // Tell cargo to tell rustc to link the system yara
     // shared library.
@@ -15,7 +17,7 @@ mod build {
     pub fn add_bindings() {
         let out_dir = env::var("OUT_DIR").unwrap();
         let out_path = PathBuf::from(out_dir).join("bindings.rs");
-        fs::copy("bindings/bindings.rs", out_path)
+        fs::copy("bindings/yara-3.7.rs", out_path)
             .expect("Could not copy bindings to output directory");
     }
 }
