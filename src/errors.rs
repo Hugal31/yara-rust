@@ -8,8 +8,6 @@ pub struct YaraError {
 
 impl From<yara_sys::Error> for YaraError {
     fn from(error: yara_sys::Error) -> Self {
-        YaraError {
-            kind: error,
-        }
+        YaraError { kind: error }
     }
 }
