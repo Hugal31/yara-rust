@@ -7,7 +7,7 @@ use yara::Yara;
 const RULES: &str = "
 rule is_awesome {
   strings:
-    $rust = \"rust\"
+    $rust = \"rust\" nocase
 
   condition:
     $rust
@@ -71,7 +71,7 @@ fn test_scan_mem() {
     let mut compiler = yara.new_compiler().unwrap();
     compiler.add_rule_str(RULES).expect("Should be Ok");
     let mut rules = compiler.get_rules().unwrap();
-    let result = rules.scan_mem("I love rust!".as_bytes(), 10);
+    let result = rules.scan_mem("I love Rust!".as_bytes(), 10);
 
     let result = result.expect("Should be Ok");
     assert_eq!(1, result.len());
@@ -81,7 +81,7 @@ fn test_scan_mem() {
     assert_eq!(1, result[0].strings[0].matches.len());
     assert_eq!(7, result[0].strings[0].matches[0].offset);
     assert_eq!(
-        "rust".as_bytes(),
+        "Rust".as_bytes(),
         result[0].strings[0].matches[0].data.as_slice()
     );
 }
