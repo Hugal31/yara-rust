@@ -66,6 +66,8 @@ pub type __uint8_t = ::std::os::raw::c_uchar;
 pub type __int32_t = ::std::os::raw::c_int;
 pub type __int64_t = ::std::os::raw::c_long;
 pub type __uint64_t = ::std::os::raw::c_ulong;
+pub type __off_t = ::std::os::raw::c_long;
+pub type __off64_t = ::std::os::raw::c_long;
 pub type __clock_t = ::std::os::raw::c_long;
 pub type clock_t = __clock_t;
 #[repr(C)]
@@ -264,6 +266,461 @@ fn bindgen_test_layout_pthread_mutex_t() {
         )
     );
 }
+pub type FILE = _IO_FILE;
+pub type _IO_lock_t = ::std::os::raw::c_void;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _IO_marker {
+    pub _next: *mut _IO_marker,
+    pub _sbuf: *mut _IO_FILE,
+    pub _pos: ::std::os::raw::c_int,
+}
+#[test]
+fn bindgen_test_layout__IO_marker() {
+    assert_eq!(
+        ::std::mem::size_of::<_IO_marker>(),
+        24usize,
+        concat!("Size of: ", stringify!(_IO_marker))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<_IO_marker>(),
+        8usize,
+        concat!("Alignment of ", stringify!(_IO_marker))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_marker>()))._next as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_marker),
+            "::",
+            stringify!(_next)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_marker>()))._sbuf as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_marker),
+            "::",
+            stringify!(_sbuf)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_marker>()))._pos as *const _ as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_marker),
+            "::",
+            stringify!(_pos)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _IO_FILE {
+    pub _flags: ::std::os::raw::c_int,
+    pub _IO_read_ptr: *mut ::std::os::raw::c_char,
+    pub _IO_read_end: *mut ::std::os::raw::c_char,
+    pub _IO_read_base: *mut ::std::os::raw::c_char,
+    pub _IO_write_base: *mut ::std::os::raw::c_char,
+    pub _IO_write_ptr: *mut ::std::os::raw::c_char,
+    pub _IO_write_end: *mut ::std::os::raw::c_char,
+    pub _IO_buf_base: *mut ::std::os::raw::c_char,
+    pub _IO_buf_end: *mut ::std::os::raw::c_char,
+    pub _IO_save_base: *mut ::std::os::raw::c_char,
+    pub _IO_backup_base: *mut ::std::os::raw::c_char,
+    pub _IO_save_end: *mut ::std::os::raw::c_char,
+    pub _markers: *mut _IO_marker,
+    pub _chain: *mut _IO_FILE,
+    pub _fileno: ::std::os::raw::c_int,
+    pub _flags2: ::std::os::raw::c_int,
+    pub _old_offset: __off_t,
+    pub _cur_column: ::std::os::raw::c_ushort,
+    pub _vtable_offset: ::std::os::raw::c_schar,
+    pub _shortbuf: [::std::os::raw::c_char; 1usize],
+    pub _lock: *mut _IO_lock_t,
+    pub _offset: __off64_t,
+    pub __pad1: *mut ::std::os::raw::c_void,
+    pub __pad2: *mut ::std::os::raw::c_void,
+    pub __pad3: *mut ::std::os::raw::c_void,
+    pub __pad4: *mut ::std::os::raw::c_void,
+    pub __pad5: usize,
+    pub _mode: ::std::os::raw::c_int,
+    pub _unused2: [::std::os::raw::c_char; 20usize],
+}
+#[test]
+fn bindgen_test_layout__IO_FILE() {
+    assert_eq!(
+        ::std::mem::size_of::<_IO_FILE>(),
+        216usize,
+        concat!("Size of: ", stringify!(_IO_FILE))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<_IO_FILE>(),
+        8usize,
+        concat!("Alignment of ", stringify!(_IO_FILE))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._flags as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_flags)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._IO_read_ptr as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_read_ptr)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._IO_read_end as *const _ as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_read_end)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._IO_read_base as *const _ as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_read_base)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._IO_write_base as *const _ as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_write_base)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._IO_write_ptr as *const _ as usize },
+        40usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_write_ptr)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._IO_write_end as *const _ as usize },
+        48usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_write_end)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._IO_buf_base as *const _ as usize },
+        56usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_buf_base)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._IO_buf_end as *const _ as usize },
+        64usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_buf_end)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._IO_save_base as *const _ as usize },
+        72usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_save_base)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._IO_backup_base as *const _ as usize },
+        80usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_backup_base)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._IO_save_end as *const _ as usize },
+        88usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_save_end)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._markers as *const _ as usize },
+        96usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_markers)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._chain as *const _ as usize },
+        104usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_chain)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._fileno as *const _ as usize },
+        112usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_fileno)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._flags2 as *const _ as usize },
+        116usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_flags2)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._old_offset as *const _ as usize },
+        120usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_old_offset)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._cur_column as *const _ as usize },
+        128usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_cur_column)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._vtable_offset as *const _ as usize },
+        130usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_vtable_offset)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._shortbuf as *const _ as usize },
+        131usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_shortbuf)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._lock as *const _ as usize },
+        136usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_lock)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._offset as *const _ as usize },
+        144usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_offset)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>())).__pad1 as *const _ as usize },
+        152usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(__pad1)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>())).__pad2 as *const _ as usize },
+        160usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(__pad2)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>())).__pad3 as *const _ as usize },
+        168usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(__pad3)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>())).__pad4 as *const _ as usize },
+        176usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(__pad4)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>())).__pad5 as *const _ as usize },
+        184usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(__pad5)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._mode as *const _ as usize },
+        192usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_mode)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_IO_FILE>()))._unused2 as *const _ as usize },
+        196usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_unused2)
+        )
+    );
+}
+pub type YR_STREAM_READ_FUNC = ::std::option::Option<
+    unsafe extern "C" fn(
+        ptr: *mut ::std::os::raw::c_void,
+        size: usize,
+        count: usize,
+        user_data: *mut ::std::os::raw::c_void,
+    ) -> usize,
+>;
+pub type YR_STREAM_WRITE_FUNC = ::std::option::Option<
+    unsafe extern "C" fn(
+        ptr: *const ::std::os::raw::c_void,
+        size: usize,
+        count: usize,
+        user_data: *mut ::std::os::raw::c_void,
+    ) -> usize,
+>;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _YR_STREAM {
+    pub user_data: *mut ::std::os::raw::c_void,
+    pub read: YR_STREAM_READ_FUNC,
+    pub write: YR_STREAM_WRITE_FUNC,
+}
+#[test]
+fn bindgen_test_layout__YR_STREAM() {
+    assert_eq!(
+        ::std::mem::size_of::<_YR_STREAM>(),
+        24usize,
+        concat!("Size of: ", stringify!(_YR_STREAM))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<_YR_STREAM>(),
+        8usize,
+        concat!("Alignment of ", stringify!(_YR_STREAM))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_YR_STREAM>())).user_data as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_YR_STREAM),
+            "::",
+            stringify!(user_data)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_YR_STREAM>())).read as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_YR_STREAM),
+            "::",
+            stringify!(read)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_YR_STREAM>())).write as *const _ as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_YR_STREAM),
+            "::",
+            stringify!(write)
+        )
+    );
+}
+pub type YR_STREAM = _YR_STREAM;
 pub type YR_ARENA = [u64; 3usize];
 pub type YR_MUTEX = pthread_mutex_t;
 #[repr(C)]
@@ -1297,6 +1754,29 @@ pub type YR_CALLBACK_FUNC = ::std::option::Option<
         user_data: *mut ::std::os::raw::c_void,
     ) -> ::std::os::raw::c_int,
 >;
+pub type YR_COMPILER_CALLBACK_FUNC = ::std::option::Option<
+    unsafe extern "C" fn(
+        error_level: ::std::os::raw::c_int,
+        file_name: *const ::std::os::raw::c_char,
+        line_number: ::std::os::raw::c_int,
+        message: *const ::std::os::raw::c_char,
+        user_data: *mut ::std::os::raw::c_void,
+    ),
+>;
+pub type YR_COMPILER_INCLUDE_CALLBACK_FUNC = ::std::option::Option<
+    unsafe extern "C" fn(
+        include_name: *const ::std::os::raw::c_char,
+        calling_rule_filename: *const ::std::os::raw::c_char,
+        calling_rule_namespace: *const ::std::os::raw::c_char,
+        user_data: *mut ::std::os::raw::c_void,
+    ) -> *const ::std::os::raw::c_char,
+>;
+pub type YR_COMPILER_INCLUDE_FREE_FUNC = ::std::option::Option<
+    unsafe extern "C" fn(
+        callback_result_ptr: *const ::std::os::raw::c_char,
+        user_data: *mut ::std::os::raw::c_void,
+    ),
+>;
 pub type YR_COMPILER = [u64; 1264usize];
 extern "C" {
     pub fn yr_compiler_create(compiler: *mut *mut YR_COMPILER) -> ::std::os::raw::c_int;
@@ -1305,10 +1785,81 @@ extern "C" {
     pub fn yr_compiler_destroy(compiler: *mut YR_COMPILER);
 }
 extern "C" {
+    pub fn yr_compiler_set_callback(
+        compiler: *mut YR_COMPILER,
+        callback: YR_COMPILER_CALLBACK_FUNC,
+        user_data: *mut ::std::os::raw::c_void,
+    );
+}
+extern "C" {
+    pub fn yr_compiler_set_include_callback(
+        compiler: *mut YR_COMPILER,
+        include_callback: YR_COMPILER_INCLUDE_CALLBACK_FUNC,
+        include_free: YR_COMPILER_INCLUDE_FREE_FUNC,
+        user_data: *mut ::std::os::raw::c_void,
+    );
+}
+extern "C" {
+    pub fn yr_compiler_add_file(
+        compiler: *mut YR_COMPILER,
+        rules_file: *mut FILE,
+        namespace_: *const ::std::os::raw::c_char,
+        file_name: *const ::std::os::raw::c_char,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_compiler_add_fd(
+        compiler: *mut YR_COMPILER,
+        rules_fd: ::std::os::raw::c_int,
+        namespace_: *const ::std::os::raw::c_char,
+        file_name: *const ::std::os::raw::c_char,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
     pub fn yr_compiler_add_string(
         compiler: *mut YR_COMPILER,
         rules_string: *const ::std::os::raw::c_char,
         namespace_: *const ::std::os::raw::c_char,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_compiler_get_error_message(
+        compiler: *mut YR_COMPILER,
+        buffer: *mut ::std::os::raw::c_char,
+        buffer_size: ::std::os::raw::c_int,
+    ) -> *mut ::std::os::raw::c_char;
+}
+extern "C" {
+    pub fn yr_compiler_get_current_file_name(
+        context: *mut YR_COMPILER,
+    ) -> *mut ::std::os::raw::c_char;
+}
+extern "C" {
+    pub fn yr_compiler_define_integer_variable(
+        compiler: *mut YR_COMPILER,
+        identifier: *const ::std::os::raw::c_char,
+        value: i64,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_compiler_define_boolean_variable(
+        compiler: *mut YR_COMPILER,
+        identifier: *const ::std::os::raw::c_char,
+        value: ::std::os::raw::c_int,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_compiler_define_float_variable(
+        compiler: *mut YR_COMPILER,
+        identifier: *const ::std::os::raw::c_char,
+        value: f64,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_compiler_define_string_variable(
+        compiler: *mut YR_COMPILER,
+        identifier: *const ::std::os::raw::c_char,
+        value: *const ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
@@ -1329,9 +1880,29 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    pub fn yr_rules_scan_file(
+        rules: *mut YR_RULES,
+        filename: *const ::std::os::raw::c_char,
+        flags: ::std::os::raw::c_int,
+        callback: YR_CALLBACK_FUNC,
+        user_data: *mut ::std::os::raw::c_void,
+        timeout: ::std::os::raw::c_int,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
     pub fn yr_rules_scan_fd(
         rules: *mut YR_RULES,
         fd: ::std::os::raw::c_int,
+        flags: ::std::os::raw::c_int,
+        callback: YR_CALLBACK_FUNC,
+        user_data: *mut ::std::os::raw::c_void,
+        timeout: ::std::os::raw::c_int,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_rules_scan_proc(
+        rules: *mut YR_RULES,
+        pid: ::std::os::raw::c_int,
         flags: ::std::os::raw::c_int,
         callback: YR_CALLBACK_FUNC,
         user_data: *mut ::std::os::raw::c_void,
@@ -1345,7 +1916,62 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    pub fn yr_rules_save_stream(
+        rules: *mut YR_RULES,
+        stream: *mut YR_STREAM,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_rules_load(
+        filename: *const ::std::os::raw::c_char,
+        rules: *mut *mut YR_RULES,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_rules_load_stream(
+        stream: *mut YR_STREAM,
+        rules: *mut *mut YR_RULES,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
     pub fn yr_rules_destroy(rules: *mut YR_RULES) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_rules_define_integer_variable(
+        rules: *mut YR_RULES,
+        identifier: *const ::std::os::raw::c_char,
+        value: i64,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_rules_define_boolean_variable(
+        rules: *mut YR_RULES,
+        identifier: *const ::std::os::raw::c_char,
+        value: ::std::os::raw::c_int,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_rules_define_float_variable(
+        rules: *mut YR_RULES,
+        identifier: *const ::std::os::raw::c_char,
+        value: f64,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_rules_define_string_variable(
+        rules: *mut YR_RULES,
+        identifier: *const ::std::os::raw::c_char,
+        value: *const ::std::os::raw::c_char,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_rules_print_profiling_info(rules: *mut YR_RULES);
+}
+extern "C" {
+    pub fn yr_rule_disable(rule: *mut YR_RULE);
+}
+extern "C" {
+    pub fn yr_rule_enable(rule: *mut YR_RULE);
 }
 extern "C" {
     pub fn yr_initialize() -> ::std::os::raw::c_int;
