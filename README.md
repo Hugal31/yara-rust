@@ -1,5 +1,7 @@
 # yara-rust
 
+[![Build Status](https://travis-ci.org/Hugal31/yara-rust.svg?branch=master)](https://travis-ci.org/Hugal31/yara-rust)
+
 Bindings for the [Yara library from VirusTotal](https://github.com/VirusTotal/yara).
 Only works with Yara 3.7 for now.
 

@@ -9,6 +9,9 @@ repository = "https://github.com/Hugal31/yara-rust"
 keywords = ["yara"]
 categories = ["api-bindings"]
 
+[badges]
+travis-ci = { repository = "Hugal31/yara-rust" }
+
 [dependencies]
 failure = "~0.1.0"
 lazy_static = "1.0"
