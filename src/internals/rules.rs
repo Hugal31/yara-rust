@@ -1,5 +1,7 @@
 use std::ffi::{CStr, CString};
 use std::marker;
+use std::mem;
+use std::ptr;
 use std::slice;
 
 use yara_sys;
@@ -20,7 +22,15 @@ pub fn rules_destroy(rules: &mut yara_sys::YR_RULES) {
 pub fn rules_save(rules: &mut yara_sys::YR_RULES, filename: &str) -> Result<(), YaraError> {
     let filename = CString::new(filename).unwrap();
     let result = unsafe { yara_sys::yr_rules_save(rules, filename.as_ptr()) };
+    yara_sys::Error::from_code(result).map_err(|e| e.into())
+}
+
+pub fn rules_load<'a>(filename: &str) -> Result<&'a mut yara_sys::YR_RULES, YaraError> {
+    let filename = CString::new(filename).unwrap();
+    let mut pointer: *mut yara_sys::YR_RULES = ptr::null_mut();
+    let result = unsafe { yara_sys::yr_rules_load(filename.as_ptr(), &mut pointer) };
     yara_sys::Error::from_code(result)
+        .map(|()| unsafe { mem::transmute(pointer) })
         .map_err(|e| e.into())
 }
 

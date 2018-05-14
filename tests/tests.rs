@@ -41,18 +41,26 @@ fn test_compile_string_rules() {
 }
 
 #[test]
-fn test_save() {
-    const RULES_FILE: &str = "test_save.yar";
+fn test_save_and_load() {
+    const RULES_FILE: &str = "test_save_1.yar";
 
     let _ = remove_file(RULES_FILE);
 
     let mut yara = Yara::create().unwrap();
-    let mut compiler = yara.new_compiler().unwrap();
-    compiler
-        .add_rule_str(RULES)
-        .expect("add_rule_str should not fail");
-    let mut rules = compiler.get_rules().unwrap();
-    rules.save(RULES_FILE).expect("Should be Ok");
+
+    {
+        let mut compiler = yara.new_compiler().unwrap();
+        compiler
+            .add_rule_str(RULES)
+            .expect("add_rule_str should not fail");
+        let mut rules = compiler.get_rules().unwrap();
+        rules.save(RULES_FILE).expect("Should be Ok");
+    }
+
+    {
+        let rules = yara.load_rule(RULES_FILE);
+        assert!(rules.is_ok());
+    }
 
     remove_file(RULES_FILE).expect("Should have remove rule file");
 }

@@ -7,11 +7,13 @@ pub struct Rules<'a> {
     inner: &'a mut yara_sys::YR_RULES,
 }
 
-impl<'a> Rules<'a> {
-    pub(crate) fn from(rules: &'a mut yara_sys::YR_RULES) -> Rules<'a> {
+impl<'a> From<&'a mut yara_sys::YR_RULES> for Rules<'a> {
+    fn from(rules: &'a mut yara_sys::YR_RULES) -> Rules<'a> {
         Rules { inner: rules }
     }
+}
 
+impl<'a> Rules<'a> {
     /// Scan memory
     ///
     /// The timeout is in seconds

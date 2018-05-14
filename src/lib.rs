@@ -37,6 +37,12 @@ impl Yara {
     pub fn new_compiler<'a>(&'a mut self) -> Result<Compiler<'a>, YaraError> {
         Compiler::<'a>::create()
     }
+
+    // TODO Check if method is thread safe, and if "mut" is needed.
+    // TODO Take AsRef<Path> ?
+    pub fn load_rule<'a>(&'a mut self, filename: &str) -> Result<Rules<'a>, YaraError> {
+        internals::rules_load(filename).map(Rules::from)
+    }
 }
 
 /// Finalize the Yara library
