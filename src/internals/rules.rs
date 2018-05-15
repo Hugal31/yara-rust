@@ -47,6 +47,11 @@ impl<'a, 'b: 'a> From<&'a yara_sys::YR_RULE> for Rule<'b> {
     }
 }
 
+/// Iterate over YR_STRING in a YR_RULE.
+///
+/// # Implementation notes
+///
+/// See `yr_rule_strings_foreach` in Yara.
 struct YrStringIterator<'a> {
     head: *const yara_sys::YR_STRING,
     _marker: marker::PhantomData<&'a yara_sys::YR_STRING>,
@@ -55,6 +60,7 @@ struct YrStringIterator<'a> {
 impl<'a> From<&'a yara_sys::YR_RULE> for YrStringIterator<'a> {
     fn from(rule: &'a yara_sys::YR_RULE) -> YrStringIterator<'a> {
         YrStringIterator {
+            // TODO find another way than __bindgen_anon_4
             head: unsafe { rule.__bindgen_anon_4.strings },
             _marker: marker::PhantomData::default(),
         }
@@ -80,6 +86,11 @@ impl<'a> Iterator for YrStringIterator<'a> {
     }
 }
 
+/// Iterate over YR_MATCH in a YR_MATCHES
+///
+/// # Implementation notes
+///
+/// See `yr_string_matches_foreach` in Yara.
 pub struct MatchIterator<'a> {
     head: *const yara_sys::_YR_MATCH,
     _marker: marker::PhantomData<&'a yara_sys::_YR_MATCH>,

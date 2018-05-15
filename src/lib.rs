@@ -15,7 +15,7 @@ pub use rules::*;
 
 /// Yara library
 ///
-/// # FFI
+/// # Implementation notes
 ///
 /// libyara asks to call `yr_initialize` before use the library.
 /// Because yara keeps a count of how many times `yr_initialize` is used, it doesn't matter if this struct is constructed multiple times.
@@ -28,11 +28,13 @@ impl Yara {
         internals::initialize().map(|()| Yara { _secret: () })
     }
 
+    /// Create a new compiler.
     // TODO Check if method is thread safe, and if "mut" is needed.
     pub fn new_compiler<'a>(&'a mut self) -> Result<Compiler<'a>, YaraError> {
         Compiler::<'a>::create()
     }
 
+    /// Load rules from a pre-compiled rules file.
     // TODO Check if method is thread safe, and if "mut" is needed.
     // TODO Take AsRef<Path> ?
     pub fn load_rules<'a>(&'a mut self, filename: &str) -> Result<Rules<'a>, YaraError> {
@@ -48,7 +50,7 @@ impl Drop for Yara {
     }
 }
 
-/// Yara compiler
+/// Yara rules compiler
 pub struct Compiler<'a> {
     inner: &'a mut yara_sys::YR_COMPILER,
 }
@@ -58,10 +60,12 @@ impl<'a> Compiler<'a> {
         internals::compiler_create().map(|compiler| Compiler { inner: compiler })
     }
 
+    /// Add a rule definition from a string.
     pub fn add_rule_str(&mut self, rule: &str) -> Result<(), YaraError> {
         internals::compiler_add_string(self.inner, rule, None)
     }
 
+    /// Add a rule definition from a string within a namespace.
     pub fn add_rule_str_with_namespace(
         &mut self,
         rule: &str,

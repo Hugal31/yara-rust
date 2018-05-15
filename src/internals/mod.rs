@@ -18,7 +18,8 @@ lazy_static! {
 
 /// Initialize the Yara library
 ///
-/// Can be called multiple times without problems
+/// Can be called multiple times without problems.
+/// Is thread safe.
 pub fn initialize() -> Result<(), YaraError> {
     let _guard = INIT_MUTEX.lock();
     let result = unsafe { yara_sys::yr_initialize() };
@@ -29,6 +30,7 @@ pub fn initialize() -> Result<(), YaraError> {
 /// De-initialize the Yara library
 ///
 /// Must not be called more time than [`initialize`].
+/// Is thread safe.
 pub fn finalize() -> Result<(), YaraError> {
     let _guard = INIT_MUTEX.lock();
     let result = unsafe { yara_sys::yr_finalize() };
@@ -36,6 +38,7 @@ pub fn finalize() -> Result<(), YaraError> {
     yara_sys::Error::from_code(result).map_err(|e| e.into())
 }
 
+/// Get the Yara thread id.
 pub fn get_tidx() -> i32 {
     unsafe { yara_sys::yr_get_tidx() }
 }
