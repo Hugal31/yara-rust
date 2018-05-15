@@ -13,24 +13,19 @@ mod internals;
 pub use errors::*;
 pub use rules::*;
 
-use std::sync::Mutex;
-
-lazy_static! {
-    static ref INIT_MUTEX: Mutex<()> = Mutex::new(());
-}
-
 /// Yara library
 ///
 /// # FFI
 ///
 /// libyara asks to call `yr_initialize` before use the library.
 /// Because yara keeps a count of how many times `yr_initialize` is used, it doesn't matter if this struct is constructed multiple times.
-pub struct Yara();
+pub struct Yara {
+    _secret: (),
+}
 
 impl Yara {
     pub fn create() -> Result<Yara, YaraError> {
-        let _guard = INIT_MUTEX.lock();
-        internals::initialize().map(|()| Yara())
+        internals::initialize().map(|()| Yara { _secret: () })
     }
 
     // TODO Check if method is thread safe, and if "mut" is needed.
@@ -49,7 +44,6 @@ impl Yara {
 // TODO: What to do if yr_finalize return something else than ERROR_SUCCESS ?
 impl Drop for Yara {
     fn drop(&mut self) {
-        let _guard = INIT_MUTEX.lock();
         internals::finalize().expect("Expect correct Yara finalization");
     }
 }
