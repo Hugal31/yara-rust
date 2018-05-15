@@ -1,5 +1,4 @@
 use std::ffi;
-use std::mem;
 use std::ptr;
 
 use yara_sys;
@@ -12,11 +11,11 @@ pub fn compiler_create<'a>() -> Result<&'a mut YR_COMPILER, YaraError> {
     let result = unsafe { yara_sys::yr_compiler_create(&mut pointer) };
 
     yara_sys::Error::from_code(result)
-        .map(|()| unsafe { mem::transmute(pointer) })
+        .map(|()| unsafe { &mut *pointer })
         .map_err(|e| e.into())
 }
 
-pub fn compiler_destroy(compiler_ptr: *mut YR_COMPILER) {
+pub fn compiler_destroy(compiler_ptr: &mut YR_COMPILER) {
     unsafe {
         yara_sys::yr_compiler_destroy(compiler_ptr);
     }
@@ -50,6 +49,6 @@ pub fn compiler_get_rules(compiler: &mut YR_COMPILER) -> Result<&mut YR_RULES, Y
     let result = unsafe { yara_sys::yr_compiler_get_rules(compiler, &mut pointer) };
 
     yara_sys::Error::from_code(result)
-        .map(|()| unsafe { mem::transmute(pointer) })
+        .map(|()| unsafe { &mut *pointer })
         .map_err(|e| e.into())
 }
