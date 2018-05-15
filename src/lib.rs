@@ -40,7 +40,7 @@ impl Yara {
 
     // TODO Check if method is thread safe, and if "mut" is needed.
     // TODO Take AsRef<Path> ?
-    pub fn load_rule<'a>(&'a mut self, filename: &str) -> Result<Rules<'a>, YaraError> {
+    pub fn load_rules<'a>(&'a mut self, filename: &str) -> Result<Rules<'a>, YaraError> {
         internals::rules_load(filename).map(Rules::from)
     }
 }
@@ -76,7 +76,8 @@ impl<'a> Compiler<'a> {
         internals::compiler_add_string(self.inner, rule, Some(namespace))
     }
 
-    pub fn get_rules(self) -> Result<Rules<'a>, YaraError> {
+    /// Compile the rules.
+    pub fn compile_rules(self) -> Result<Rules<'a>, YaraError> {
         internals::compiler_get_rules(self.inner).map(|r| Rules::from(r))
     }
 }
