@@ -1,4 +1,3 @@
-use std::mem;
 use std::os::raw::c_void;
 
 use yara_sys;
@@ -68,7 +67,7 @@ pub fn rules_scan_mem<'a>(
             mem.len(),
             0,
             Some(scan_callback),
-            mem::transmute(&mut results),
+            &mut results as *mut Vec<_> as *mut c_void,
             timeout,
         )
     };
@@ -84,10 +83,10 @@ extern "C" fn scan_callback(
     user_data: *mut c_void,
 ) -> i32 {
     let message = CallbackMsg::from_yara(message);
-    let rules: &mut Vec<Rule> = unsafe { mem::transmute(user_data) };
+    let rules = unsafe { &mut *(user_data as *mut Vec<Rule>) };
 
     if message == CallbackMsg::RuleMatching {
-        let rule: &yara_sys::YR_RULE = unsafe { mem::transmute(message_data) };
+        let rule = unsafe { &*(message_data as *mut yara_sys::YR_RULE) };
         rules.push(Rule::from(rule));
     }
 

@@ -20,7 +20,7 @@ impl<'a> Rules<'a> {
     /// * `mem` - Slice to scan.
     /// * `timeout` - the timeout is in seconds.
     pub fn scan_mem(&mut self, mem: &[u8], timeout: u16) -> Result<Vec<Rule<'a>>, YaraError> {
-        internals::rules_scan_mem(self.inner, mem, timeout as i32)
+        internals::rules_scan_mem(self.inner, mem, i32::from(timeout))
     }
 
     /// Save the rules to a file.

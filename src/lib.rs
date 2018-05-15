@@ -18,7 +18,8 @@ pub use rules::*;
 /// # Implementation notes
 ///
 /// libyara asks to call `yr_initialize` before use the library.
-/// Because yara keeps a count of how many times `yr_initialize` is used, it doesn't matter if this struct is constructed multiple times.
+/// Because yara keeps a count of how many times `yr_initialize` is used,
+/// it doesn't matter if this struct is constructed multiple times.
 pub struct Yara {
     _secret: (),
 }
@@ -76,7 +77,7 @@ impl<'a> Compiler<'a> {
 
     /// Compile the rules.
     pub fn compile_rules(self) -> Result<Rules<'a>, YaraError> {
-        internals::compiler_get_rules(self.inner).map(|r| Rules::from(r))
+        internals::compiler_get_rules(self.inner).map(Rules::from)
     }
 }
 
