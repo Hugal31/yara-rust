@@ -61,8 +61,8 @@ impl<'a> Compiler<'a> {
         internals::compiler_create().map(|compiler| Compiler { inner: compiler })
     }
 
-    /// Add a rule definition from a string.
-    pub fn add_rule_str(&mut self, rule: &str) -> Result<(), YaraError> {
+    /// Add rule definitions from a string.
+    pub fn add_rules_str(&mut self, rule: &str) -> Result<(), YaraError> {
         internals::compiler_add_string(self.inner, rule, None)
     }
 

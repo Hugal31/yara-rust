@@ -36,8 +36,8 @@ fn test_create_compiler() {
 fn test_compile_string_rules() {
     let mut yara = Yara::create().unwrap();
     let mut compiler = yara.new_compiler().unwrap();
-    assert!(compiler.add_rule_str(RULES).is_ok());
-    assert!(compiler.add_rule_str("nop.").is_err());
+    assert!(compiler.add_rules_str(RULES).is_ok());
+    assert!(compiler.add_rules_str("nop.").is_err());
 }
 
 #[test]
@@ -51,8 +51,8 @@ fn test_save_and_load() {
     {
         let mut compiler = yara.new_compiler().unwrap();
         compiler
-            .add_rule_str(RULES)
-            .expect("add_rule_str should not fail");
+            .add_rules_str(RULES)
+            .expect("add_rules_str should not fail");
         let mut rules = compiler.compile_rules().unwrap();
         rules.save(RULES_FILE).expect("Should be Ok");
     }
@@ -69,7 +69,7 @@ fn test_save_and_load() {
 fn test_scan_mem() {
     let mut yara = Yara::create().unwrap();
     let mut compiler = yara.new_compiler().unwrap();
-    compiler.add_rule_str(RULES).expect("Should be Ok");
+    compiler.add_rules_str(RULES).expect("Should be Ok");
     let mut rules = compiler.compile_rules().unwrap();
     let result = rules.scan_mem("I love Rust!".as_bytes(), 10);
 
