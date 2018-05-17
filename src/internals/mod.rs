@@ -24,7 +24,7 @@ pub fn initialize() -> Result<(), YaraError> {
     let _guard = INIT_MUTEX.lock();
     let result = unsafe { yara_sys::yr_initialize() };
 
-    yara_sys::Error::from_code(result).map_err(|e| e.into())
+    yara_sys::Error::from_code(result).map_err(Into::into)
 }
 
 /// De-initialize the Yara library
@@ -35,7 +35,7 @@ pub fn finalize() -> Result<(), YaraError> {
     let _guard = INIT_MUTEX.lock();
     let result = unsafe { yara_sys::yr_finalize() };
 
-    yara_sys::Error::from_code(result).map_err(|e| e.into())
+    yara_sys::Error::from_code(result).map_err(Into::into)
 }
 
 /// Get the Yara thread id.

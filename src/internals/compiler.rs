@@ -1,5 +1,6 @@
-use std::ffi;
+use std::ffi::{CStr, CString};
 use std::fs::File;
+use std::ops::Deref;
 #[cfg(unix)]
 use std::os::unix::io::AsRawFd;
 #[cfg(windows)]
@@ -32,8 +33,8 @@ pub fn compiler_add_string(
     string: &str,
     namespace: Option<&str>,
 ) -> Result<(), YaraError> {
-    let string = ffi::CString::new(string).unwrap();
-    let namespace = namespace.map(|n| ffi::CString::new(n).unwrap());
+    let string = CString::new(string).unwrap();
+    let namespace = namespace.map(|n| CString::new(n).unwrap());
     let result = unsafe {
         yara_sys::yr_compiler_add_string(
             compiler,
@@ -52,14 +53,15 @@ pub fn compiler_add_string(
 
 pub fn compiler_add_file<P: AsRef<Path>>(
     compiler: &mut YR_COMPILER,
-    file: File,
+    file: &File,
     path: P,
     namespace: Option<&str>,
 ) -> Result<(), YaraError> {
     // TODO: Improve. WTF.
-    let path = ffi::CString::new(path.as_ref().as_os_str().to_str().unwrap()).unwrap();
-    let namespace = namespace.map(|n| ffi::CString::new(n).unwrap());
-    let result = compiler_add_file_raw(compiler, file, path, namespace);
+    let path = CString::new(path.as_ref().as_os_str().to_str().unwrap()).unwrap();
+    let namespace = namespace.map(|n| CString::new(n).unwrap());
+    let result =
+        compiler_add_file_raw(compiler, file, &path, namespace.as_ref().map(|e| e.deref()));
 
     // TODO Add callbacks to get better errors
     if result == 0 {
@@ -72,16 +74,16 @@ pub fn compiler_add_file<P: AsRef<Path>>(
 #[cfg(unix)]
 fn compiler_add_file_raw(
     compiler: &mut YR_COMPILER,
-    file: File,
-    path: ffi::CString,
-    namespace: Option<ffi::CString>,
+    file: &File,
+    path: &CStr,
+    namespace: Option<&CStr>,
 ) -> i32 {
     let fd = file.as_raw_fd();
     unsafe {
         yara_sys::yr_compiler_add_fd(
             compiler,
             fd,
-            namespace.map_or(ptr::null(), |s| s.as_ptr()),
+            namespace.map_or(ptr::null(), CStr::as_ptr),
             path.as_ptr(),
         )
     }
@@ -90,9 +92,9 @@ fn compiler_add_file_raw(
 #[cfg(windows)]
 fn compiler_add_file_raw(
     compiler: &mut YR_COMPILER,
-    file: File,
-    path: ffi::CString,
-    namespace: Option<ffi::CString>,
+    file: &File,
+    path: &CStr,
+    namespace: Option<&CStr>,
 ) -> i32 {
     let handle = file.as_raw_handle();
     unsafe {
@@ -111,5 +113,5 @@ pub fn compiler_get_rules(compiler: &mut YR_COMPILER) -> Result<&mut YR_RULES, Y
 
     yara_sys::Error::from_code(result)
         .map(|()| unsafe { &mut *pointer })
-        .map_err(|e| e.into())
+        .map_err(Into::into)
 }

@@ -71,7 +71,7 @@ impl<'a> Compiler<'a> {
             .context(IoErrorKind::OpenRulesFile)
             .map_err(|e| Into::<IoError>::into(e).into())
             .and_then(|file| {
-                internals::compiler_add_file(self.inner, file, path, None).map_err(|e| e.into())
+                internals::compiler_add_file(self.inner, &file, path, None).map_err(Into::into)
             })
     }
 
@@ -85,8 +85,8 @@ impl<'a> Compiler<'a> {
             .context(IoErrorKind::OpenRulesFile)
             .map_err(|e| Into::<IoError>::into(e).into())
             .and_then(|file| {
-                internals::compiler_add_file(self.inner, file, path, Some(namespace))
-                    .map_err(|e| e.into())
+                internals::compiler_add_file(self.inner, &file, path, Some(namespace))
+                    .map_err(Into::into)
             })
     }
 
@@ -95,7 +95,7 @@ impl<'a> Compiler<'a> {
         internals::compiler_add_string(self.inner, rule, None)
     }
 
-    /// Add a rule definition from a string within a namespace.
+    /// Add rule definition from a string within a namespace.
     pub fn add_rule_str_with_namespace(
         &mut self,
         rule: &str,
