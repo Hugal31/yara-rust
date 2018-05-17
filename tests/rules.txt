@@ -1,0 +1,15 @@
+rule is_awesome {
+  strings:
+    $rust = "rust" nocase
+
+  condition:
+    $rust
+}
+
+rule is_ok {
+  strings:
+    $go = "go"
+
+  condition:
+    $go
+}

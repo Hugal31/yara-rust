@@ -1,4 +1,10 @@
 use std::ffi;
+use std::fs::File;
+#[cfg(unix)]
+use std::os::unix::io::AsRawFd;
+#[cfg(windows)]
+use std::os::windows::io::AsRawHandle;
+use std::path::Path;
 use std::ptr;
 
 use yara_sys;
@@ -41,6 +47,61 @@ pub fn compiler_add_string(
         Ok(())
     } else {
         Err(yara_sys::Error::SyntaxError.into())
+    }
+}
+
+pub fn compiler_add_file<P: AsRef<Path>>(
+    compiler: &mut YR_COMPILER,
+    file: File,
+    path: P,
+    namespace: Option<&str>,
+) -> Result<(), YaraError> {
+    // TODO: Improve. WTF.
+    let path = ffi::CString::new(path.as_ref().as_os_str().to_str().unwrap()).unwrap();
+    let namespace = namespace.map(|n| ffi::CString::new(n).unwrap());
+    let result = compiler_add_file_raw(compiler, file, path, namespace);
+
+    // TODO Add callbacks to get better errors
+    if result == 0 {
+        Ok(())
+    } else {
+        Err(yara_sys::Error::SyntaxError.into())
+    }
+}
+
+#[cfg(unix)]
+fn compiler_add_file_raw(
+    compiler: &mut YR_COMPILER,
+    file: File,
+    path: ffi::CString,
+    namespace: Option<ffi::CString>,
+) -> i32 {
+    let fd = file.as_raw_fd();
+    unsafe {
+        yara_sys::yr_compiler_add_fd(
+            compiler,
+            fd,
+            namespace.map_or(ptr::null(), |s| s.as_ptr()),
+            path.as_ptr(),
+        )
+    }
+}
+
+#[cfg(windows)]
+fn compiler_add_file_raw(
+    compiler: &mut YR_COMPILER,
+    file: File,
+    path: ffi::CString,
+    namespace: Option<ffi::CString>,
+) -> i32 {
+    let handle = file.as_raw_handle();
+    unsafe {
+        yara_sys::yr_compiler_add_fd(
+            compiler,
+            handle,
+            namespace.map_or(ptr::null(), |s| s.as_ptr()),
+            path.as_ptr(),
+        )
     }
 }
 

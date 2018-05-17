@@ -1,7 +1,5 @@
 extern crate yara;
 
-use std::fs::remove_file;
-
 use yara::Yara;
 
 const RULES: &str = "
@@ -41,28 +39,10 @@ fn test_compile_string_rules() {
 }
 
 #[test]
-fn test_save_and_load() {
-    const RULES_FILE: &str = "test_save_1.yar";
-
-    let _ = remove_file(RULES_FILE);
-
+fn test_compile_file_rules() {
     let mut yara = Yara::create().unwrap();
-
-    {
-        let mut compiler = yara.new_compiler().unwrap();
-        compiler
-            .add_rules_str(RULES)
-            .expect("add_rules_str should not fail");
-        let mut rules = compiler.compile_rules().unwrap();
-        rules.save(RULES_FILE).expect("Should be Ok");
-    }
-
-    {
-        let rules = yara.load_rules(RULES_FILE);
-        assert!(rules.is_ok());
-    }
-
-    remove_file(RULES_FILE).expect("Should have remove rule file");
+    let mut compiler = yara.new_compiler().unwrap();
+    assert!(compiler.add_rules_file("tests/rules.txt").is_ok());
 }
 
 #[test]
@@ -80,8 +60,5 @@ fn test_scan_mem() {
     assert_eq!("$rust", result[0].strings[0].identifier);
     assert_eq!(1, result[0].strings[0].matches.len());
     assert_eq!(7, result[0].strings[0].matches[0].offset);
-    assert_eq!(
-        "Rust".as_bytes(),
-        result[0].strings[0].matches[0].data.as_slice()
-    );
+    assert_eq!(b"Rust", result[0].strings[0].matches[0].data.as_slice());
 }

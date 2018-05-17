@@ -4,14 +4,18 @@ extern crate failure;
 extern crate lazy_static;
 extern crate yara_sys;
 
+mod internals;
 mod rules;
 
 pub mod errors;
 
-mod internals;
-
 pub use errors::*;
 pub use rules::*;
+
+use std::fs::File;
+use std::path::Path;
+
+use failure::ResultExt;
 
 /// Yara library
 ///
@@ -59,6 +63,31 @@ pub struct Compiler<'a> {
 impl<'a> Compiler<'a> {
     pub(crate) fn create() -> Result<Compiler<'a>, YaraError> {
         internals::compiler_create().map(|compiler| Compiler { inner: compiler })
+    }
+
+    /// Add rule definitions from a file.
+    pub fn add_rules_file<P: AsRef<Path>>(&mut self, path: P) -> Result<(), Error> {
+        File::open(path.as_ref())
+            .context(IoErrorKind::OpenRulesFile)
+            .map_err(|e| Into::<IoError>::into(e).into())
+            .and_then(|file| {
+                internals::compiler_add_file(self.inner, file, path, None).map_err(|e| e.into())
+            })
+    }
+
+    /// Add rule definitions from a file within a namespace.
+    pub fn add_rules_file_with_namespace<P: AsRef<Path>>(
+        &mut self,
+        path: P,
+        namespace: &str,
+    ) -> Result<(), Error> {
+        File::open(path.as_ref())
+            .context(IoErrorKind::OpenRulesFile)
+            .map_err(|e| Into::<IoError>::into(e).into())
+            .and_then(|file| {
+                internals::compiler_add_file(self.inner, file, path, Some(namespace))
+                    .map_err(|e| e.into())
+            })
     }
 
     /// Add rule definitions from a string.
