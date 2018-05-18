@@ -19,6 +19,35 @@ impl<'a> Rules<'a> {
     ///
     /// * `mem` - Slice to scan.
     /// * `timeout` - the timeout is in seconds.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use yara::Yara;
+    /// let mut yara = Yara::create().unwrap();
+    /// let mut compiler = yara.new_compiler().unwrap();
+    /// compiler.add_rules_str("rule contains_rust {
+    ///   strings:
+    ///     $rust = \"rust\" nocase
+    ///   condition:
+    ///     $rust
+    /// }").unwrap();
+    /// let mut rules = compiler.compile_rules().unwrap();
+    /// let results = rules.scan_mem("I love Rust!".as_bytes(), 5).unwrap();
+    /// assert_eq!(1, results.len());
+    ///
+    /// let rule = &results[0];
+    /// assert_eq!("contains_rust", rule.identifier);
+    /// assert_eq!(1, rule.strings.len());
+    ///
+    /// let string = &rule.strings[0];
+    /// assert_eq!("$rust", string.identifier);
+    ///
+    /// let m = &string.matches[0];
+    /// assert_eq!(7, m.offset);
+    /// assert_eq!(4, m.length);
+    /// assert_eq!(b"Rust", m.data.as_slice());
+    /// ```
     pub fn scan_mem(&mut self, mem: &[u8], timeout: u16) -> Result<Vec<Rule<'a>>, YaraError> {
         internals::rules_scan_mem(self.inner, mem, i32::from(timeout))
     }
@@ -37,6 +66,7 @@ impl<'a> Drop for Rules<'a> {
 }
 
 /// A rule that matched during a scan.
+// TODO Add other fields as metadata.
 #[derive(Debug)]
 pub struct Rule<'a> {
     /// Name of the rule.

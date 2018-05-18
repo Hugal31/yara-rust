@@ -17,7 +17,8 @@ use std::path::Path;
 
 use failure::ResultExt;
 
-/// Yara library
+/// Yara library.
+/// Necessary to use the features of this crate.
 ///
 /// # Implementation notes
 ///
@@ -29,6 +30,7 @@ pub struct Yara {
 }
 
 impl Yara {
+    /// Create and initialize the library.
     pub fn create() -> Result<Yara, YaraError> {
         internals::initialize().map(|()| Yara { _secret: () })
     }
@@ -66,6 +68,15 @@ impl<'a> Compiler<'a> {
     }
 
     /// Add rule definitions from a file.
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// # use yara::Yara;
+    /// let mut yara = Yara::create().unwrap();
+    /// let mut compiler = yara.new_compiler().unwrap();
+    /// compiler.add_rules_file("rules.txt").expect("Should load rules");
+    /// ```
     pub fn add_rules_file<P: AsRef<Path>>(&mut self, path: P) -> Result<(), Error> {
         File::open(path.as_ref())
             .context(IoErrorKind::OpenRulesFile)
@@ -76,6 +87,15 @@ impl<'a> Compiler<'a> {
     }
 
     /// Add rule definitions from a file within a namespace.
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// # use yara::Yara;
+    /// let mut yara = Yara::create().unwrap();
+    /// let mut compiler = yara.new_compiler().unwrap();
+    /// compiler.add_rules_file_with_namespace("CVE-2010-1297.yar", "flash").expect("Should load rules");
+    /// ```
     pub fn add_rules_file_with_namespace<P: AsRef<Path>>(
         &mut self,
         path: P,
@@ -91,12 +111,36 @@ impl<'a> Compiler<'a> {
     }
 
     /// Add rule definitions from a string.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use yara::Yara;
+    /// let mut yara = Yara::create().unwrap();
+    /// let mut compiler = yara.new_compiler().unwrap();
+    /// compiler.add_rules_str("rule is_empty {
+    ///   condition:
+    ///     filesize == 0
+    /// }").expect("Should compile rule");
+    /// ```
     pub fn add_rules_str(&mut self, rule: &str) -> Result<(), YaraError> {
         internals::compiler_add_string(self.inner, rule, None)
     }
 
     /// Add rule definition from a string within a namespace.
-    pub fn add_rule_str_with_namespace(
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use yara::Yara;
+    /// let mut yara = Yara::create().unwrap();
+    /// let mut compiler = yara.new_compiler().unwrap();
+    /// compiler.add_rules_str_with_namespace("rule is_empty {
+    ///   condition:
+    ///     filesize == 0
+    /// }", "misc").expect("Should compile rule");
+    /// ```
+    pub fn add_rules_str_with_namespace(
         &mut self,
         rule: &str,
         namespace: &str,
