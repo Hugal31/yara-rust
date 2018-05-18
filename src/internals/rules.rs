@@ -123,7 +123,7 @@ impl<'a> From<&'a yara_sys::_YR_MATCH> for Match {
     fn from(m: &yara_sys::_YR_MATCH) -> Self {
         Match {
             offset: m.offset as usize,
-            match_length: m.match_length as usize,
+            length: m.match_length as usize,
             data: Vec::from(unsafe { slice::from_raw_parts(m.data, m.data_length as usize) }),
         }
     }
