@@ -1,3 +1,7 @@
+mod compile;
+
+pub use self::compile::*;
+
 use std::error;
 use std::fmt;
 use std::os::raw::c_int;
