@@ -81,9 +81,7 @@ impl<'a> Compiler<'a> {
         File::open(path.as_ref())
             .context(IoErrorKind::OpenRulesFile)
             .map_err(|e| Into::<IoError>::into(e).into())
-            .and_then(|file| {
-                internals::compiler_add_file(self.inner, &file, path, None).map_err(Into::into)
-            })
+            .and_then(|file| internals::compiler_add_file(self.inner, &file, path, None))
     }
 
     /// Add rule definitions from a file within a namespace.
@@ -104,10 +102,7 @@ impl<'a> Compiler<'a> {
         File::open(path.as_ref())
             .context(IoErrorKind::OpenRulesFile)
             .map_err(|e| Into::<IoError>::into(e).into())
-            .and_then(|file| {
-                internals::compiler_add_file(self.inner, &file, path, Some(namespace))
-                    .map_err(Into::into)
-            })
+            .and_then(|file| internals::compiler_add_file(self.inner, &file, path, Some(namespace)))
     }
 
     /// Add rule definitions from a string.
@@ -123,7 +118,7 @@ impl<'a> Compiler<'a> {
     ///     filesize == 0
     /// }").expect("Should compile rule");
     /// ```
-    pub fn add_rules_str(&mut self, rule: &str) -> Result<(), YaraError> {
+    pub fn add_rules_str(&mut self, rule: &str) -> Result<(), Error> {
         internals::compiler_add_string(self.inner, rule, None)
     }
 
@@ -144,7 +139,7 @@ impl<'a> Compiler<'a> {
         &mut self,
         rule: &str,
         namespace: &str,
-    ) -> Result<(), YaraError> {
+    ) -> Result<(), Error> {
         internals::compiler_add_string(self.inner, rule, Some(namespace))
     }
 

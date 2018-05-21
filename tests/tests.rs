@@ -1,6 +1,6 @@
 extern crate yara;
 
-use yara::Yara;
+use yara::{CompileErrorLevel, Error, Yara};
 
 const RULES: &str = "
 rule is_awesome {
@@ -36,6 +36,19 @@ fn test_compile_string_rules() {
     let mut compiler = yara.new_compiler().unwrap();
     assert!(compiler.add_rules_str(RULES).is_ok());
     assert!(compiler.add_rules_str("nop.").is_err());
+}
+
+#[test]
+fn test_compile_error() {
+    let mut yara = Yara::create().unwrap();
+    let mut compiler = yara.new_compiler().unwrap();
+    let err = compiler.add_rules_str("rule nop {\n").unwrap_err();
+    if let Error::Compile(compile_error) = err {
+        let first_error = compile_error.iter().next().unwrap();
+        assert_eq!(CompileErrorLevel::Error, first_error.level);
+    } else {
+        panic!("Expected Error::Compile, found {:?}", err);
+    }
 }
 
 #[test]
