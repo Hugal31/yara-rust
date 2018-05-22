@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["Hugo Laloge <hugo.laloge@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "Native bindings to the libyara library"
+readme = "README.md"
 repository = "https://github.com/Hugal31/yara-rust"
 keywords = ["yara", "ffi"]
 categories = ["external-ffi-bindings"]
