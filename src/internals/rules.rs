@@ -35,7 +35,7 @@ pub fn rules_load<'a>(filename: &str) -> Result<&'a mut yara_sys::YR_RULES, Yara
 
 impl<'a, 'b: 'a> From<&'a yara_sys::YR_RULE> for Rule<'b> {
     fn from(rule: &yara_sys::YR_RULE) -> Self {
-        let identifier = unsafe { CStr::from_ptr(rule.__bindgen_anon_1.identifier) }
+        let identifier = unsafe { CStr::from_ptr(rule.get_identifier()) }
             .to_str()
             .unwrap();
         let strings = YrStringIterator::from(rule).map(YrString::from).collect();
@@ -60,8 +60,7 @@ struct YrStringIterator<'a> {
 impl<'a> From<&'a yara_sys::YR_RULE> for YrStringIterator<'a> {
     fn from(rule: &'a yara_sys::YR_RULE) -> YrStringIterator<'a> {
         YrStringIterator {
-            // TODO find another way than __bindgen_anon_4
-            head: unsafe { rule.__bindgen_anon_4.strings },
+            head: rule.get_strings() ,
             _marker: marker::PhantomData::default(),
         }
     }
@@ -99,7 +98,7 @@ pub struct MatchIterator<'a> {
 impl<'a> From<&'a yara_sys::YR_MATCHES> for MatchIterator<'a> {
     fn from(matches: &'a yara_sys::YR_MATCHES) -> MatchIterator<'a> {
         MatchIterator {
-            head: unsafe { matches.__bindgen_anon_1.head },
+            head: matches.get_head() ,
             _marker: marker::PhantomData::default(),
         }
     }
@@ -131,7 +130,7 @@ impl<'a> From<&'a yara_sys::_YR_MATCH> for Match {
 
 impl<'a, 'b: 'a> From<&'a yara_sys::YR_STRING> for YrString<'b> {
     fn from(string: &yara_sys::YR_STRING) -> Self {
-        let identifier = unsafe { CStr::from_ptr(string.__bindgen_anon_1.identifier) }
+        let identifier = unsafe { CStr::from_ptr(string.get_identifier()) }
             .to_str()
             .unwrap();
         let tidx = get_tidx();
