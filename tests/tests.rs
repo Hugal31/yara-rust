@@ -1,9 +1,9 @@
 extern crate yara;
 
-use yara::{CompileErrorLevel, Error, Yara};
+use yara::{CompileErrorLevel, Error, Rule, Yara};
 
 const RULES: &str = "
-rule is_awesome: a_tag another_tag {
+rule is_awesome {
   strings:
     $rust = \"rust\" nocase
 
@@ -18,6 +18,20 @@ rule is_ok {
   condition:
     $go
 }";
+
+fn compile_and_scan<'a>(yara: &'a mut Yara, rule: &str, mem: &[u8]) -> Vec<Rule<'a>> {
+    let mut compiler = yara.new_compiler().expect("Should create compiler");
+    compiler.add_rules_str(rule).expect("Should parse rule");
+    let mut rules = compiler.compile_rules().expect("Should compile rules");
+    rules.scan_mem(mem, 10).expect("Should scan")
+}
+
+fn compile_and_scan_with_namespace<'a>(yara: &'a mut Yara, rule: &str, namespace: &str, mem: &[u8]) -> Vec<Rule<'a>> {
+    let mut compiler = yara.new_compiler().expect("Should create compiler");
+    compiler.add_rules_str_with_namespace(rule, namespace).expect("Should parse rule");
+    let mut rules = compiler.compile_rules().expect("Should compile rules");
+    rules.scan_mem(mem, 10).expect("Should scan")
+}
 
 #[test]
 fn test_initialize() {
@@ -67,12 +81,48 @@ fn test_scan_mem() {
     let result = rules.scan_mem("I love Rust!".as_bytes(), 10);
 
     let result = result.expect("Should be Ok");
+    let rule = &result[0];
     assert_eq!(1, result.len());
-    assert_eq!("is_awesome", result[0].identifier);
-    assert_eq!(&["a_tag", "another_tag"], result[0].tags.as_slice());
-    assert_eq!(1, result[0].strings.len());
-    assert_eq!("$rust", result[0].strings[0].identifier);
-    assert_eq!(1, result[0].strings[0].matches.len());
-    assert_eq!(7, result[0].strings[0].matches[0].offset);
-    assert_eq!(b"Rust", result[0].strings[0].matches[0].data.as_slice());
+    assert_eq!("is_awesome", rule.identifier);
+    assert_eq!(1, rule.strings.len());
+    assert_eq!("$rust", rule.strings[0].identifier);
+    assert_eq!(1, rule.strings[0].matches.len());
+    assert_eq!(7, rule.strings[0].matches[0].offset);
+    assert_eq!(b"Rust", rule.strings[0].matches[0].data.as_slice());
+}
+
+#[test]
+fn test_tags() {
+    let mut yara = Yara::create().unwrap();
+    let rules = compile_and_scan(&mut yara, "rule is_empty: file size {
+  condition:
+    filesize == 0
+}", b"");
+
+    assert_eq!(1, rules.len());
+    let rule = &rules[0];
+    assert_eq!(&["file", "size"], rule.tags.as_slice());
+}
+
+#[test]
+fn test_namespace() {
+    let rule = "rule is_empty {
+  condition:
+    filesize == 0
+}";
+    let mut yara = Yara::create().unwrap();
+    {
+        let rules = compile_and_scan(&mut yara, rule, b"");
+
+        assert_eq!(1, rules.len());
+        let rule = &rules[0];
+        assert_eq!("default", rule.namespace);
+    }
+    {
+        let rules = compile_and_scan_with_namespace(&mut yara, rule, "ns", b"");
+
+        assert_eq!(1, rules.len());
+        let rule = &rules[0];
+        assert_eq!("ns", rule.namespace);
+    }
 }

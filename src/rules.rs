@@ -72,6 +72,8 @@ impl<'a> Drop for Rules<'a> {
 pub struct Rule<'a> {
     /// Name of the rule.
     pub identifier: &'a str,
+    /// Namespace of the rule.
+    pub namespace: &'a str,
     /// Tags of the rule.
     pub tags: Vec<&'a str>,
     /// Matcher strings of the rule.

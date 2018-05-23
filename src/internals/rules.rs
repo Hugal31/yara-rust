@@ -37,11 +37,15 @@ impl<'a> From<&'a yara_sys::YR_RULE> for Rule<'a> {
         let identifier = unsafe { CStr::from_ptr(rule.get_identifier()) }
             .to_str()
             .unwrap();
+        let namespace = unsafe { CStr::from_ptr((&*rule.get_ns()).get_name()) }
+            .to_str()
+            .unwrap();
         let tags = TagIterator::from(rule).map(|c| c.to_str().unwrap()).collect();
         let strings = YrStringIterator::from(rule).map(YrString::from).collect();
 
         Rule {
             identifier,
+            namespace,
             tags,
             strings,
         }
