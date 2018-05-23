@@ -46,7 +46,7 @@ impl<'a> Iterator for YrStringIterator<'a> {
     }
 }
 
-impl<'a, 'b: 'a> From<&'a yara_sys::YR_STRING> for YrString<'b> {
+impl<'a> From<&'a yara_sys::YR_STRING> for YrString<'a> {
     fn from(string: &yara_sys::YR_STRING) -> Self {
         let identifier = unsafe { CStr::from_ptr(string.get_identifier()) }
             .to_str()

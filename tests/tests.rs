@@ -3,7 +3,7 @@ extern crate yara;
 use yara::{CompileErrorLevel, Error, Yara};
 
 const RULES: &str = "
-rule is_awesome {
+rule is_awesome: a_tag another_tag {
   strings:
     $rust = \"rust\" nocase
 
@@ -69,6 +69,7 @@ fn test_scan_mem() {
     let result = result.expect("Should be Ok");
     assert_eq!(1, result.len());
     assert_eq!("is_awesome", result[0].identifier);
+    assert_eq!(&["a_tag", "another_tag"], result[0].tags.as_slice());
     assert_eq!(1, result[0].strings.len());
     assert_eq!("$rust", result[0].strings[0].identifier);
     assert_eq!(1, result[0].strings[0].matches.len());
