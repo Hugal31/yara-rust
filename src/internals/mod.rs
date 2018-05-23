@@ -1,3 +1,6 @@
+pub mod matches;
+pub mod string;
+
 mod compiler;
 mod rules;
 mod scan;

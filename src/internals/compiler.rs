@@ -52,7 +52,6 @@ pub fn compiler_add_string(
         )
     };
 
-    // TODO Add callbacks to get better errors
     if result == 0 {
         Ok(())
     } else {
@@ -80,7 +79,6 @@ pub fn compiler_add_file<P: AsRef<Path>>(
     let result =
         compiler_add_file_raw(compiler, file, &path, namespace.as_ref().map(|e| e.deref()));
 
-    // TODO Add callbacks to get better errors
     if result == 0 {
         Ok(())
     } else {

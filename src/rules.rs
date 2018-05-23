@@ -2,6 +2,7 @@ use yara_sys;
 
 use errors::*;
 use internals;
+use YrString;
 
 /// A set of rules.
 pub struct Rules<'a> {
@@ -73,24 +74,4 @@ pub struct Rule<'a> {
     pub identifier: &'a str,
     /// Matcher strings of the rule.
     pub strings: Vec<YrString<'a>>,
-}
-
-/// A matcher string that matched during a scan.
-#[derive(Debug)]
-pub struct YrString<'a> {
-    /// Name of the string, with the '$'.
-    pub identifier: &'a str,
-    /// Matches of the string for the scan.
-    pub matches: Vec<Match>,
-}
-
-/// A match within a scan.
-#[derive(Debug)]
-pub struct Match {
-    /// Offset of the match within the scanning area.
-    pub offset: usize,
-    /// Length of the file. Can be useful if the matcher string has not a fixed length.
-    pub length: usize,
-    /// Matched data.
-    pub data: Vec<u8>,
 }
