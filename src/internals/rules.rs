@@ -6,9 +6,9 @@ use std::ptr;
 use yara_sys;
 
 use errors::*;
+use internals::meta::MetadataIterator;
 use internals::string::YrStringIterator;
-use Rule;
-use YrString;
+use {Metadata, Rule, YrString};
 
 pub fn rules_destroy(rules: &mut yara_sys::YR_RULES) {
     unsafe {
@@ -40,12 +40,16 @@ impl<'a> From<&'a yara_sys::YR_RULE> for Rule<'a> {
         let namespace = unsafe { CStr::from_ptr((&*rule.get_ns()).get_name()) }
             .to_str()
             .unwrap();
-        let tags = TagIterator::from(rule).map(|c| c.to_str().unwrap()).collect();
+        let metadatas = MetadataIterator::from(rule).map(Metadata::from).collect();
+        let tags = TagIterator::from(rule)
+            .map(|c| c.to_str().unwrap())
+            .collect();
         let strings = YrStringIterator::from(rule).map(YrString::from).collect();
 
         Rule {
             identifier,
             namespace,
+            metadatas,
             tags,
             strings,
         }

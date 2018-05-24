@@ -1,6 +1,6 @@
 extern crate yara;
 
-use yara::{CompileErrorLevel, Error, Rule, Yara};
+use yara::{CompileErrorLevel, Error, Metadata, MetadataValue, Rule, Yara};
 
 const RULES: &str = "
 rule is_awesome {
@@ -26,9 +26,16 @@ fn compile_and_scan<'a>(yara: &'a mut Yara, rule: &str, mem: &[u8]) -> Vec<Rule<
     rules.scan_mem(mem, 10).expect("Should scan")
 }
 
-fn compile_and_scan_with_namespace<'a>(yara: &'a mut Yara, rule: &str, namespace: &str, mem: &[u8]) -> Vec<Rule<'a>> {
+fn compile_and_scan_with_namespace<'a>(
+    yara: &'a mut Yara,
+    rule: &str,
+    namespace: &str,
+    mem: &[u8],
+) -> Vec<Rule<'a>> {
     let mut compiler = yara.new_compiler().expect("Should create compiler");
-    compiler.add_rules_str_with_namespace(rule, namespace).expect("Should parse rule");
+    compiler
+        .add_rules_str_with_namespace(rule, namespace)
+        .expect("Should parse rule");
     let mut rules = compiler.compile_rules().expect("Should compile rules");
     rules.scan_mem(mem, 10).expect("Should scan")
 }
@@ -94,10 +101,14 @@ fn test_scan_mem() {
 #[test]
 fn test_tags() {
     let mut yara = Yara::create().unwrap();
-    let rules = compile_and_scan(&mut yara, "rule is_empty: file size {
+    let rules = compile_and_scan(
+        &mut yara,
+        "rule is_empty: file size {
   condition:
     filesize == 0
-}", b"");
+}",
+        b"",
+    );
 
     assert_eq!(1, rules.len());
     let rule = &rules[0];
@@ -125,4 +136,45 @@ fn test_namespace() {
         let rule = &rules[0];
         assert_eq!("ns", rule.namespace);
     }
+}
+
+#[test]
+fn test_metadata() {
+    let mut yara = Yara::create().unwrap();
+    let rules = compile_and_scan(&mut yara, "
+rule is_empty {
+  condition:
+    filesize == 3
+}
+rule contains_abc {
+  meta:
+    a_string = \"value\"
+    an_integer = 42
+    a_bool = true
+  strings:
+    $abc = \"abc\"
+  condition:
+    $abc at 0
+}
+", b"abc");
+
+    assert_eq!(2, rules.len());
+
+    let is_empty = &rules[0];
+    assert_eq!(0, is_empty.metadatas.len());
+
+    let contains_a = &rules[1];
+    assert_eq!(3, contains_a.metadatas.len());
+    assert_eq!(Metadata {
+        identifier: "a_string",
+        value: MetadataValue::String("value")
+    }, contains_a.metadatas[0]);
+    assert_eq!(Metadata {
+        identifier: "an_integer",
+        value: MetadataValue::Integer(42)
+    }, contains_a.metadatas[1]);
+    assert_eq!(Metadata {
+        identifier: "a_bool",
+        value: MetadataValue::Boolean(true)
+    }, contains_a.metadatas[2]);
 }

@@ -34,6 +34,7 @@ mod build {
             .header("wrapper.h")
             .whitelist_var("CALLBACK_.*")
             .whitelist_var("ERROR_.*")
+            .whitelist_var("META_TYPE_.*")
             .whitelist_var("STRING_GFLAGS_NULL")
             .whitelist_var("YARA_ERROR_LEVEL_.*")
             .whitelist_function("yr_initialize")

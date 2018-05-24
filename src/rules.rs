@@ -74,8 +74,23 @@ pub struct Rule<'a> {
     pub identifier: &'a str,
     /// Namespace of the rule.
     pub namespace: &'a str,
+    /// Metadatas of the rule.
+    pub metadatas: Vec<Metadata<'a>>,
     /// Tags of the rule.
     pub tags: Vec<&'a str>,
     /// Matcher strings of the rule.
     pub strings: Vec<YrString<'a>>,
+}
+
+#[derive(Debug, Eq, PartialEq)]
+pub struct Metadata<'a> {
+    pub identifier: &'a str,
+    pub value: MetadataValue<'a>,
+}
+
+#[derive(Debug, Eq, PartialEq)]
+pub enum MetadataValue<'a> {
+    Integer(i64),
+    String(&'a str),
+    Boolean(bool),
 }

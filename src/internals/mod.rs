@@ -1,4 +1,5 @@
 pub mod matches;
+pub mod meta;
 pub mod string;
 
 mod compiler;

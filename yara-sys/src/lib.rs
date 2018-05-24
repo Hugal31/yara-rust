@@ -9,6 +9,27 @@ use std::os::raw::c_char;
 
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum MetaType {
+    Null,
+    Integer,
+    String,
+    Boolean,
+}
+
+impl MetaType {
+    pub fn from_code(code: i32) -> Result<Self, i32> {
+        use self::MetaType::*;
+        match code as u32 {
+            META_TYPE_NULL => Ok(Null),
+            META_TYPE_INTEGER => Ok(Integer),
+            META_TYPE_STRING => Ok(String),
+            META_TYPE_BOOLEAN => Ok(Boolean),
+            _ => Err(code),
+        }
+    }
+}
+
 // TODO: Find a better way than accessing anonymous fields or use flag yara 3.7 or something else.
 impl YR_MATCHES {
     pub fn get_head(&self) -> *const _YR_MATCH {
