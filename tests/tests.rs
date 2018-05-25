@@ -99,6 +99,17 @@ fn test_scan_mem() {
 }
 
 #[test]
+fn test_scan_file() {
+    let mut yara = Yara::create().unwrap();
+    let mut compiler = yara.new_compiler().unwrap();
+    compiler.add_rules_str(RULES).expect("Should be Ok");
+    let mut rules = compiler.compile_rules().unwrap();
+
+    let result = rules.scan_file("tests/scanfile.txt", 10).expect("Should have scanned file");
+    assert_eq!(1, result.len());
+}
+
+#[test]
 fn test_tags() {
     let mut yara = Yara::create().unwrap();
     let rules = compile_and_scan(
@@ -141,7 +152,9 @@ fn test_namespace() {
 #[test]
 fn test_metadata() {
     let mut yara = Yara::create().unwrap();
-    let rules = compile_and_scan(&mut yara, "
+    let rules = compile_and_scan(
+        &mut yara,
+        "
 rule is_empty {
   condition:
     filesize == 3
@@ -156,7 +169,9 @@ rule contains_abc {
   condition:
     $abc at 0
 }
-", b"abc");
+",
+        b"abc",
+    );
 
     assert_eq!(2, rules.len());
 
@@ -165,16 +180,25 @@ rule contains_abc {
 
     let contains_a = &rules[1];
     assert_eq!(3, contains_a.metadatas.len());
-    assert_eq!(Metadata {
-        identifier: "a_string",
-        value: MetadataValue::String("value")
-    }, contains_a.metadatas[0]);
-    assert_eq!(Metadata {
-        identifier: "an_integer",
-        value: MetadataValue::Integer(42)
-    }, contains_a.metadatas[1]);
-    assert_eq!(Metadata {
-        identifier: "a_bool",
-        value: MetadataValue::Boolean(true)
-    }, contains_a.metadatas[2]);
+    assert_eq!(
+        Metadata {
+            identifier: "a_string",
+            value: MetadataValue::String("value")
+        },
+        contains_a.metadatas[0]
+    );
+    assert_eq!(
+        Metadata {
+            identifier: "an_integer",
+            value: MetadataValue::Integer(42)
+        },
+        contains_a.metadatas[1]
+    );
+    assert_eq!(
+        Metadata {
+            identifier: "a_bool",
+            value: MetadataValue::Boolean(true)
+        },
+        contains_a.metadatas[2]
+    );
 }

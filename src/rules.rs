@@ -1,3 +1,7 @@
+use std::fs::File;
+use std::path::Path;
+
+use failure::ResultExt;
 use yara_sys;
 
 use errors::*;
@@ -51,6 +55,20 @@ impl<'a> Rules<'a> {
     /// ```
     pub fn scan_mem(&mut self, mem: &[u8], timeout: u16) -> Result<Vec<Rule<'a>>, YaraError> {
         internals::rules_scan_mem(self.inner, mem, i32::from(timeout))
+    }
+
+    pub fn scan_file<P: AsRef<Path>>(
+        &mut self,
+        path: P,
+        timeout: u16,
+    ) -> Result<Vec<Rule<'a>>, Error> {
+        File::open(path)
+            .context(IoErrorKind::OpenScanFile)
+            .map_err(|e| Into::<IoError>::into(e).into())
+            .and_then(|file| {
+                internals::rules_scan_file(self.inner, &file, i32::from(timeout))
+                    .map_err(|e| e.into())
+            })
     }
 
     /// Save the rules to a file.

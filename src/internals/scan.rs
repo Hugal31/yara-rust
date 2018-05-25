@@ -1,10 +1,14 @@
+use std::fs::File;
 use std::os::raw::c_void;
+#[cfg(unix)]
+use std::os::unix::io::AsRawFd;
+#[cfg(windows)]
+use std::os::windows::io::AsRawHandle;
 
 use yara_sys;
 
-use Rule;
-
 use errors::*;
+use Rule;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum CallbackMsg {
@@ -55,7 +59,7 @@ impl CallbackReturn {
 }
 
 pub fn rules_scan_mem<'a>(
-    rules: *mut yara_sys::YR_RULES,
+    rules: &mut yara_sys::YR_RULES,
     mem: &[u8],
     timeout: i32,
 ) -> Result<Vec<Rule<'a>>, YaraError> {
@@ -75,6 +79,59 @@ pub fn rules_scan_mem<'a>(
     yara_sys::Error::from_code(result)
         .map_err(|e| e.into())
         .map(|_| results)
+}
+
+pub fn rules_scan_file<'a>(
+    rules: &mut yara_sys::YR_RULES,
+    file: &File,
+    timeout: i32,
+) -> Result<Vec<Rule<'a>>, YaraError> {
+    let mut results = Vec::<Rule<'a>>::new();
+    let result = rules_scan_raw(rules, file, timeout, &mut results);
+
+    yara_sys::Error::from_code(result)
+        .map_err(|e| e.into())
+        .map(|_| results)
+}
+
+#[cfg(unix)]
+pub fn rules_scan_raw(
+    rules: &mut yara_sys::YR_RULES,
+    file: &File,
+    timeout: i32,
+    results: &mut Vec<Rule>,
+) -> i32 {
+    let fd = file.as_raw_fd();
+    unsafe {
+        yara_sys::yr_rules_scan_fd(
+            rules,
+            fd,
+            0,
+            Some(scan_callback),
+            results as *mut Vec<_> as *mut c_void,
+            timeout,
+        )
+    }
+}
+
+#[cfg(windows)]
+pub fn rules_scan_raw(
+    rules: &mut yara_sys::YR_RULES,
+    file: &File,
+    timeout: i32,
+    results: &mut Vec<Rule>,
+) -> i32 {
+    let handle = file.as_raw_handle();
+    unsafe {
+        yara_sys::yr_rules_scan_fd(
+            rules,
+            handle,
+            0,
+            Some(scan_callback),
+            results as *mut Vec<_> as *mut c_void,
+            timeout,
+        )
+    }
 }
 
 extern "C" fn scan_callback(

@@ -82,6 +82,8 @@ impl fmt::Display for IoError {
 
 #[derive(Clone, Copy, Debug, Fail, Eq, PartialEq)]
 pub enum IoErrorKind {
+    #[fail(display = "Error while opening scan file")]
+    OpenScanFile,
     #[fail(display = "Error while opening rules file")]
     OpenRulesFile,
 }
