@@ -85,7 +85,6 @@ impl<'a> Drop for Rules<'a> {
 }
 
 /// A rule that matched during a scan.
-// TODO Add other fields as metadata.
 #[derive(Debug)]
 pub struct Rule<'a> {
     /// Name of the rule.

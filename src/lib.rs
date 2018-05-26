@@ -51,7 +51,6 @@ impl Yara {
 }
 
 /// Finalize the Yara library
-// TODO: What to do if yr_finalize return something else than ERROR_SUCCESS ?
 impl Drop for Yara {
     fn drop(&mut self) {
         internals::finalize().expect("Expect correct Yara finalization");
