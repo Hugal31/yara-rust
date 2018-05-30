@@ -7,7 +7,7 @@ Only works with Yara 3.7 for now.
 
 More documentation can be found on [the Yara's documentation](https://yara.readthedocs.io/en/v3.7.0/index.html).
 
-## How to use it
+## Example
 
 The implementation is inspired from [yara-python](https://github.com/VirusTotal/yara-python).
 
@@ -27,8 +27,22 @@ assert!(results.iter().find(|r| r.identifier == "contains_rust").is_some());
 
 ## Features
 
+* Support Yara 3.7.
+* Compile rules from strings or files.
+* Save and load compiled rules.
+* Scan byte arrays (`&[u8]`) or files.
+
+### Crate features
+
 By default, this crate use a pre-built bindings file for Yara 3.7,
 but you can use the feature `bindgen` to use on-the-fly generated bindings.
+
+### TODO
+
+- [ ] Support other versions of yara.
+- [ ] Remove some `unwrap` on string conversions (currently this crate assume the rules, meta and namespace identifier are valid Rust's `str`).
+- [ ] Look at the source code of Yara (or in documentation if specified) to assess thread safety.
+- [ ] Look at the source code of Yara (or in documentation if specified) to see if we can remove some `mut` in some functions (as `Yara::new_compiler` and `Yara::load_rules`).
 
 ## License
 
