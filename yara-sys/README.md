@@ -1,5 +1,8 @@
 # yara-sys
 
+[![Crates.io](https://img.shields.io/crates/v/yara-sys.svg)](https://crates.io/crates/yara-sys)
+[![Documentation](https://docs.rs/yara-sys/badge.svg)](https://docs.rs/yara-sys)
+
 Native bindings for the [Yara library from VirusTotal](https://github.com/VirusTotal/yara).
 Only works with Yara 3.7 for now.
 
