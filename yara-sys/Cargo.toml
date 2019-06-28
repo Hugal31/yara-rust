@@ -1,6 +1,6 @@
 [package]
 name = "yara-sys"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Hugo Laloge <hugo.laloge@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "Native bindings to the libyara library"
@@ -11,4 +11,4 @@ categories = ["external-ffi-bindings"]
 edition = "2018"
 
 [build-dependencies]
-bindgen = { version = "0.36", optional = true }
+bindgen = { version = "0.49.3", optional = true }
