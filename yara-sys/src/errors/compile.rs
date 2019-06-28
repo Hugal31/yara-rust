@@ -9,7 +9,6 @@ pub enum CompileErrorLevel {
 }
 
 impl CompileErrorLevel {
-
     /// Convert from an i32 error code
     ///
     /// # Panics
@@ -19,7 +18,10 @@ impl CompileErrorLevel {
         match code as u32 {
             YARA_ERROR_LEVEL_ERROR => CompileErrorLevel::Error,
             YARA_ERROR_LEVEL_WARNING => CompileErrorLevel::Warning,
-            _ => panic!("Should be {} or {}", YARA_ERROR_LEVEL_ERROR, YARA_ERROR_LEVEL_WARNING),
+            _ => panic!(
+                "Should be {} or {}",
+                YARA_ERROR_LEVEL_ERROR, YARA_ERROR_LEVEL_WARNING
+            ),
         }
     }
 
@@ -41,8 +43,14 @@ mod tests {
 
     #[test]
     fn test_from_code() {
-        assert_eq!(CompileErrorLevel::Error, CompileErrorLevel::from_code(YARA_ERROR_LEVEL_ERROR as i32));
-        assert_eq!(CompileErrorLevel::Warning, CompileErrorLevel::from_code(YARA_ERROR_LEVEL_WARNING as i32));
+        assert_eq!(
+            CompileErrorLevel::Error,
+            CompileErrorLevel::from_code(YARA_ERROR_LEVEL_ERROR as i32)
+        );
+        assert_eq!(
+            CompileErrorLevel::Warning,
+            CompileErrorLevel::from_code(YARA_ERROR_LEVEL_WARNING as i32)
+        );
     }
 
     #[test]
@@ -53,8 +61,14 @@ mod tests {
 
     #[test]
     fn test_try_from_code() {
-        assert_eq!(Ok(CompileErrorLevel::Error), CompileErrorLevel::try_from_code(YARA_ERROR_LEVEL_ERROR as i32));
-        assert_eq!(Ok(CompileErrorLevel::Warning), CompileErrorLevel::try_from_code(YARA_ERROR_LEVEL_WARNING as i32));
+        assert_eq!(
+            Ok(CompileErrorLevel::Error),
+            CompileErrorLevel::try_from_code(YARA_ERROR_LEVEL_ERROR as i32)
+        );
+        assert_eq!(
+            Ok(CompileErrorLevel::Warning),
+            CompileErrorLevel::try_from_code(YARA_ERROR_LEVEL_WARNING as i32)
+        );
         assert_eq!(Err(42), CompileErrorLevel::try_from_code(42));
     }
 }

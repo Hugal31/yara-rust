@@ -105,7 +105,9 @@ fn test_scan_file() {
     compiler.add_rules_str(RULES).expect("Should be Ok");
     let mut rules = compiler.compile_rules().unwrap();
 
-    let result = rules.scan_file("tests/scanfile.txt", 10).expect("Should have scanned file");
+    let result = rules
+        .scan_file("tests/scanfile.txt", 10)
+        .expect("Should have scanned file");
     assert_eq!(1, result.len());
 }
 
