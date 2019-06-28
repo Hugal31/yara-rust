@@ -5,7 +5,7 @@ rust:
   - nightly
 before_install:
   # Add packages for typical configuration
-  - sudo apt-get install -y libjansson-dev libmagic-dev openssl-dev zlib1g
+  - sudo apt-get install -y libjansson-dev libmagic-dev libssl-dev zlib1g
   # TODO: Find a cheaper way to get yara. Maybe using a container ? Or wait for xenial in Travis-ci.
   - wget https://github.com/VirusTotal/yara/archive/v3.10.0.tar.gz && tar xzf v3.10.0.tar.gz
   - cd yara-3.10.0
