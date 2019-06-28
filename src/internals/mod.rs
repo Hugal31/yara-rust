@@ -14,7 +14,7 @@ use std::sync::Mutex;
 
 use yara_sys;
 
-use errors::*;
+use crate::errors::*;
 
 lazy_static! {
     static ref INIT_MUTEX: Mutex<()> = Mutex::new(());

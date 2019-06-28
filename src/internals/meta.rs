@@ -3,7 +3,7 @@ use std::marker;
 
 use yara_sys;
 
-use {Metadata, MetadataValue};
+use crate::{Metadata, MetadataValue};
 
 pub struct MetadataIterator<'a> {
     head: *const yara_sys::YR_META,

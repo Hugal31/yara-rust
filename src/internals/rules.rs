@@ -5,10 +5,10 @@ use std::ptr;
 
 use yara_sys;
 
-use errors::*;
-use internals::meta::MetadataIterator;
-use internals::string::YrStringIterator;
-use {Metadata, Rule, YrString};
+use crate::errors::*;
+use crate::internals::meta::MetadataIterator;
+use crate::internals::string::YrStringIterator;
+use crate::{Metadata, Rule, YrString};
 
 pub fn rules_destroy(rules: &mut yara_sys::YR_RULES) {
     unsafe {
