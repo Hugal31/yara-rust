@@ -3,7 +3,7 @@
 
 pub mod errors;
 
-pub use errors::*;
+pub use crate::errors::*;
 
 use std::os::raw::c_char;
 

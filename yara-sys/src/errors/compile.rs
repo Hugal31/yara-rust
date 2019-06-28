@@ -1,5 +1,5 @@
-use YARA_ERROR_LEVEL_ERROR;
-use YARA_ERROR_LEVEL_WARNING;
+use crate::YARA_ERROR_LEVEL_ERROR;
+use crate::YARA_ERROR_LEVEL_WARNING;
 
 /// The level of an error while parsing a rule file.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
