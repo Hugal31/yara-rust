@@ -5,8 +5,8 @@ rust:
   - nightly
 before_install:
   # TODO: Find a cheaper way to get yara. Maybe using a container ? Or wait for xenial in Travis-ci.
-  - wget https://github.com/VirusTotal/yara/archive/v3.7.1.tar.gz && tar xzf v3.7.1.tar.gz
-  - cd yara-3.7.1
+  - wget https://github.com/VirusTotal/yara/archive/v3.10.0.tar.gz && tar xzf v3.10.0.tar.gz
+  - cd yara-3.10.0
   - ./bootstrap.sh && ./configure
   - make
   - sudo make install
