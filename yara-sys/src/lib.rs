@@ -32,11 +32,11 @@ impl MetaType {
 
 // TODO: Find a better way than accessing anonymous fields or use flag yara 3.7 or something else.
 impl YR_MATCHES {
-    pub fn get_head(&self) -> *const _YR_MATCH {
+    pub fn get_head(&self) -> *const YR_MATCH {
         unsafe { self.__bindgen_anon_1.head }
     }
 
-    pub fn get_tail(&self) -> *const _YR_MATCH {
+    pub fn get_tail(&self) -> *const YR_MATCH {
         unsafe { self.__bindgen_anon_2.tail }
     }
 }

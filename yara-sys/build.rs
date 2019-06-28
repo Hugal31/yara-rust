@@ -1,28 +1,34 @@
-// Inspired from https://github.com/jgallagher/rusqlite/blob/master/libsqlite3-sys/build.rs
-
 fn main() {
-    // Tell cargo to tell rustc to link the system yara
-    // shared library.
-    println!("cargo:rustc-link-lib=yara");
+
+    // Tell cargo to tell rustc to link statically to the Yara lib and its dependencies
+    #[cfg(target_os = "macos")]
+    {
+        // These are the locations of individual libraries installed by Homebrew.
+        // macOS OpenSSL shenanigans means it's best to just explicitly say where each of
+        // the dependencies lives.
+        // Install depedencies with `brew install yara openssl jansson libmagic zlib`
+        println!("cargo:rustc-link-search=/usr/local/opt/jansson/lib");
+        println!("cargo:rustc-link-search=/usr/local/opt/libmagic/lib");
+        println!("cargo:rustc-link-search=/usr/local/opt/openssl/lib");
+        println!("cargo:rustc-link-search=/usr/local/opt/yara/lib");
+        println!("cargo:rustc-link-search=/usr/local/opt/zlib/lib");
+    }
+    #[cfg(any(target_os = "linux",target_os = "openbsd"))]
+    {
+        println!("cargo:rustc-link-search=/usr/local/lib");
+        println!("cargo:rustc-link-search=/usr/lib");
+    }
+
+    println!("cargo:rustc-link-lib=static=crypto");
+    println!("cargo:rustc-link-lib=static=ssl");
+    println!("cargo:rustc-link-lib=static=jansson");
+    println!("cargo:rustc-link-lib=static=magic");
+    println!("cargo:rustc-link-lib=static=yara");
+    println!("cargo:rustc-link-lib=static=z");
 
     build::add_bindings();
 }
 
-#[cfg(not(feature = "bindgen"))]
-mod build {
-    use std::env;
-    use std::fs;
-    use std::path::PathBuf;
-
-    pub fn add_bindings() {
-        let out_dir = env::var("OUT_DIR").unwrap();
-        let out_path = PathBuf::from(out_dir).join("bindings.rs");
-        fs::copy("bindings/yara-3.7.rs", out_path)
-            .expect("Could not copy bindings to output directory");
-    }
-}
-
-#[cfg(feature = "bindgen")]
 mod build {
     extern crate bindgen;
 
@@ -30,26 +36,66 @@ mod build {
     use std::path::PathBuf;
 
     pub fn add_bindings() {
-        let bindings = bindgen::Builder::default()
-            .header("wrapper.h")
-            .whitelist_var("CALLBACK_.*")
-            .whitelist_var("ERROR_.*")
-            .whitelist_var("META_TYPE_.*")
-            .whitelist_var("STRING_GFLAGS_NULL")
-            .whitelist_var("YARA_ERROR_LEVEL_.*")
-            .whitelist_function("yr_initialize")
-            .whitelist_function("yr_finalize")
-            .whitelist_function("yr_compiler_.*")
-            .whitelist_function("yr_rule_.*")
-            .whitelist_function("yr_rules_.*")
-            .whitelist_function("yr_get_tidx")
-            .opaque_type("YR_COMPILER")
-            .opaque_type("YR_ARENA")
-            .opaque_type("YR_AC_MATCH_TABLE")
-            .opaque_type("YR_AC_TRANSITION_TABLE")
-            .opaque_type("YR_EXTERNAL_VARIABLE")
-            .generate()
-            .expect("Unable to generate bindings");
+
+        // Initialise some bindings with the header wrapper
+        let mut bindings = bindgen::Builder::default()
+            .header("wrapper.h");
+
+        // Whitelist specific variables
+        for wlvar in &[
+            "CALLBACK_.*",
+            "ERROR_.*",
+            "META_TYPE_.*",
+            "STRING_GFLAGS_NULL",
+            "YARA_ERROR_LEVEL_.*"
+        ] {
+            bindings = bindings.whitelist_var(wlvar);
+        }
+
+        // Whitelist specific functions
+        for wlfunc in &[
+            "yr_initialize",
+            "yr_finalize",
+            "yr_compiler_.*",
+            "yr_rule_.*",
+            "yr_rules_.*",
+            "yr_get_tidx"
+        ] {
+            bindings = bindings.whitelist_function(wlfunc);
+        }
+
+        // Opaque types
+        for opqtype in &[
+            "YR_COMPILER",
+            "YR_ARENA",
+            "YR_AC_MATCH_TABLE",
+            "YR_AC_TRANSITION_TABLE"
+        ] {
+            bindings = bindings.opaque_type(opqtype);
+        }
+
+        // macOS explicit homebrew include paths
+        #[cfg(target_os = "macos")]
+        {
+            for path in &[
+                "/usr/local/opt/jansson/include",
+                "/usr/local/opt/libmagic/include",
+                "/usr/local/opt/openssl/include",
+                "/usr/local/opt/yara/include",
+                "/usr/local/opt/zlib/include"
+            ] {
+                let include_path = format!("-I{}", path);
+                bindings = bindings.clang_arg(include_path);
+            }
+        }
+        // Linux/OpenBSD include path
+        #[cfg(any(target_os = "linux",target_os = "openbsd"))]
+        {
+            bindings = bindings.clang_arg("-I/usr/local/include");
+        }
+
+        // Finalise our bindings
+        let bindings = bindings.generate().expect("Unable to generate bindings");
 
         // Write the bindings to the $OUT_DIR/bindings.rs file.
         let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());

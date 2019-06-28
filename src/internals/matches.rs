@@ -11,8 +11,8 @@ use crate::Match;
 ///
 /// See `yr_string_matches_foreach` in Yara.
 pub struct MatchIterator<'a> {
-    head: *const yara_sys::_YR_MATCH,
-    _marker: marker::PhantomData<&'a yara_sys::_YR_MATCH>,
+    head: *const yara_sys::YR_MATCH,
+    _marker: marker::PhantomData<&'a yara_sys::YR_MATCH>,
 }
 
 impl<'a> From<&'a yara_sys::YR_MATCHES> for MatchIterator<'a> {
@@ -25,7 +25,7 @@ impl<'a> From<&'a yara_sys::YR_MATCHES> for MatchIterator<'a> {
 }
 
 impl<'a> Iterator for MatchIterator<'a> {
-    type Item = &'a yara_sys::_YR_MATCH;
+    type Item = &'a yara_sys::YR_MATCH;
 
     fn next(&mut self) -> Option<Self::Item> {
         if !self.head.is_null() {
@@ -38,8 +38,8 @@ impl<'a> Iterator for MatchIterator<'a> {
     }
 }
 
-impl<'a> From<&'a yara_sys::_YR_MATCH> for Match {
-    fn from(m: &yara_sys::_YR_MATCH) -> Self {
+impl<'a> From<&'a yara_sys::YR_MATCH> for Match {
+    fn from(m: &yara_sys::YR_MATCH) -> Self {
         Match {
             offset: m.offset as usize,
             length: m.match_length as usize,
