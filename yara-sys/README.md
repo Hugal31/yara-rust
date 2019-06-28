@@ -3,15 +3,20 @@
 [![Crates.io](https://img.shields.io/crates/v/yara-sys.svg)](https://crates.io/crates/yara-sys)
 [![Documentation](https://docs.rs/yara-sys/badge.svg)](https://docs.rs/yara-sys)
 
-Native bindings for the [Yara library from VirusTotal](https://github.com/VirusTotal/yara).
-Only works with Yara 3.7 for now.
+Native bindings for VirusTotal's [Yara library](https://github.com/VirusTotal/yara).
 
-More documentation can be found on [the Yara's documentation](https://yara.readthedocs.io/en/v3.7.0/index.html).
+Tested with Yara 3.10.
 
-## Features
+Yara documentation can be found [here](https://yara.readthedocs.io/en/v3.10.0/index.html).
 
-By default, this crate use a pre-built bindings file for Yara 3.7,
-but you can use the feature `bindgen` to use on-the-fly generated bindings.
+## Requirements
+
+Works with Linux, OpenBSD, and macOS. In order to build, the following packages must be installed:
+* jansson
+* libmagic
+* openssl
+* yara
+* zlib
 
 ## License
 
