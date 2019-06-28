@@ -12,6 +12,7 @@ pub use self::scan::*;
 
 use std::sync::Mutex;
 
+use lazy_static::lazy_static;
 use yara_sys;
 
 use crate::errors::*;

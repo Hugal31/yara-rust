@@ -1,9 +1,3 @@
-#[macro_use]
-extern crate failure;
-#[macro_use]
-extern crate lazy_static;
-extern crate yara_sys;
-
 mod compiler;
 mod internals;
 mod matches;
