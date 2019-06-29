@@ -13,12 +13,17 @@ fn main() {
         println!("cargo:rustc-link-search=/usr/local/opt/yara/lib");
         println!("cargo:rustc-link-search=/usr/local/opt/zlib/lib");
     }
-    #[cfg(any(target_os = "linux",target_os = "openbsd"))]
+    #[cfg(target_os = "openbsd")]
     {
         println!("cargo:rustc-link-search=/usr/local/lib");
         println!("cargo:rustc-link-search=/usr/lib");
     }
-
+    #[cfg(target_os = "linux")]
+    {
+        println!("cargo:rustc-link-search=/usr/lib/x86_64-linux-gnu/");
+        println!("cargo:rustc-link-search=/usr/local/lib");
+    }
+    
     println!("cargo:rustc-link-lib=static=crypto");
     println!("cargo:rustc-link-lib=static=ssl");
     println!("cargo:rustc-link-lib=static=jansson");
@@ -88,8 +93,8 @@ mod build {
                 bindings = bindings.clang_arg(include_path);
             }
         }
-        // Linux/OpenBSD include path
-        #[cfg(any(target_os = "linux",target_os = "openbsd"))]
+        // OpenBSD include path
+        #[cfg(target_os = "openbsd")]
         {
             bindings = bindings.clang_arg("-I/usr/local/include");
         }
