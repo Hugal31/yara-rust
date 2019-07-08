@@ -144,7 +144,9 @@ extern "C" fn compile_callback(
     });
 }
 
-pub fn compiler_get_rules(compiler: &mut YR_COMPILER) -> Result<&mut YR_RULES, YaraError> {
+pub fn compiler_get_rules<'c, 'y: 'c>(
+    compiler: &'c mut YR_COMPILER,
+) -> Result<&'y mut YR_RULES, YaraError> {
     let mut pointer = ptr::null_mut();
     let result = unsafe { yara_sys::yr_compiler_get_rules(compiler, &mut pointer) };
 

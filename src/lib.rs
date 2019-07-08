@@ -32,8 +32,8 @@ impl Yara {
 
     /// Create a new compiler.
     // TODO Check if method is thread safe, and if "mut" is needed.
-    pub fn new_compiler<'a>(&'a mut self) -> Result<Compiler<'a>, YaraError> {
-        Compiler::<'a>::create()
+    pub fn new_compiler<'c, 'y: 'c>(&'y mut self) -> Result<Compiler<'c, 'y>, YaraError> {
+        Compiler::create()
     }
 
     /// Load rules from a pre-compiled rules file.

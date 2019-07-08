@@ -1,4 +1,5 @@
 use std::fs::File;
+use std::marker::PhantomData;
 use std::path::Path;
 
 use failure::ResultExt;
@@ -9,13 +10,17 @@ use crate::internals;
 use crate::Rules;
 
 /// Yara rules compiler
-pub struct Compiler<'a> {
-    inner: &'a mut yara_sys::YR_COMPILER,
+pub struct Compiler<'c, 'y: 'c> {
+    inner: &'c mut yara_sys::YR_COMPILER,
+    _marker: PhantomData<&'y ()>,
 }
 
-impl<'a> Compiler<'a> {
-    pub(crate) fn create() -> Result<Compiler<'a>, YaraError> {
-        internals::compiler_create().map(|compiler| Compiler { inner: compiler })
+impl<'c, 'y: 'c> Compiler<'c, 'y> {
+    pub(crate) fn create() -> Result<Self, YaraError> {
+        internals::compiler_create().map(|compiler| Compiler {
+            inner: compiler,
+            _marker: PhantomData,
+        })
     }
 
     /// Add rule definitions from a file.
@@ -95,12 +100,17 @@ impl<'a> Compiler<'a> {
     }
 
     /// Compile the rules.
-    pub fn compile_rules(self) -> Result<Rules<'a>, YaraError> {
+    ///
+    /// # Implementation notes
+    ///
+    /// It is safe to destroy the compiler after, because the rules do not depends on the compiler.
+    /// In addition, we must hide the compiler from the user because it can be used only once.
+    pub fn compile_rules(self) -> Result<Rules<'y>, YaraError> {
         internals::compiler_get_rules(self.inner).map(Rules::from)
     }
 }
 
-impl<'a> Drop for Compiler<'a> {
+impl<'c, 'y: 'c> Drop for Compiler<'c, 'y> {
     fn drop(&mut self) {
         internals::compiler_destroy(self.inner);
     }
