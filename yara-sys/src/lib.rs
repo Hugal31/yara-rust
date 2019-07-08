@@ -3,7 +3,7 @@
 
 pub mod errors;
 
-pub use errors::*;
+pub use crate::errors::*;
 
 use std::os::raw::c_char;
 
@@ -58,7 +58,6 @@ impl YR_NAMESPACE {
 }
 
 impl YR_RULE {
-
     pub fn get_identifier(&self) -> *const c_char {
         unsafe { self.__bindgen_anon_1.identifier }
     }

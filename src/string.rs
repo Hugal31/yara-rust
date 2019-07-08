@@ -1,4 +1,4 @@
-use Match;
+use crate::Match;
 
 /// A matcher string that matched during a scan.
 #[derive(Debug)]

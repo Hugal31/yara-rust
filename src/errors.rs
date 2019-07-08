@@ -65,7 +65,7 @@ impl From<Context<IoErrorKind>> for IoError {
 }
 
 impl Fail for IoError {
-    fn cause(&self) -> Option<&Fail> {
+    fn cause(&self) -> Option<&dyn Fail> {
         self.inner.cause()
     }
 
@@ -119,10 +119,10 @@ impl CompileErrors {
 
 impl Fail for CompileErrors {
     /// Returns the first error.
-    fn cause(&self) -> Option<&Fail> {
+    fn cause(&self) -> Option<&dyn Fail> {
         self.iter()
             .find(|e| e.level == yara_sys::CompileErrorLevel::Error)
-            .map(|e| e as &Fail)
+            .map(|e| e as &dyn Fail)
     }
 }
 

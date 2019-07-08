@@ -12,7 +12,7 @@ use std::ptr;
 use yara_sys;
 use yara_sys::{YR_COMPILER, YR_RULES};
 
-use errors::*;
+use crate::errors::*;
 
 pub fn compiler_create<'a>() -> Result<&'a mut YR_COMPILER, YaraError> {
     let mut pointer: *mut YR_COMPILER = ptr::null_mut();

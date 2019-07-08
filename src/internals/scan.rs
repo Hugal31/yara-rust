@@ -7,8 +7,8 @@ use std::os::windows::io::AsRawHandle;
 
 use yara_sys;
 
-use errors::*;
-use Rule;
+use crate::errors::*;
+use crate::Rule;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum CallbackMsg {

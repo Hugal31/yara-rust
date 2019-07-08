@@ -1,9 +1,3 @@
-#[macro_use]
-extern crate failure;
-#[macro_use]
-extern crate lazy_static;
-extern crate yara_sys;
-
 mod compiler;
 mod internals;
 mod matches;
@@ -12,11 +6,11 @@ mod string;
 
 pub mod errors;
 
-pub use compiler::Compiler;
-pub use errors::*;
-pub use matches::Match;
-pub use rules::*;
-pub use string::YrString;
+pub use crate::compiler::Compiler;
+pub use crate::errors::*;
+pub use crate::matches::Match;
+pub use crate::rules::*;
+pub use crate::string::YrString;
 
 /// Yara library.
 /// Necessary to use the features of this crate.

@@ -4,9 +4,9 @@ use std::path::Path;
 use failure::ResultExt;
 use yara_sys;
 
-use errors::*;
-use internals;
-use YrString;
+use crate::errors::*;
+use crate::internals;
+use crate::YrString;
 
 /// A set of rules.
 pub struct Rules<'a> {

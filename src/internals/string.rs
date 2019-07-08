@@ -3,10 +3,10 @@ use std::marker;
 
 use yara_sys;
 
-use internals::get_tidx;
-use internals::matches::MatchIterator;
-use Match;
-use YrString;
+use crate::internals::get_tidx;
+use crate::internals::matches::MatchIterator;
+use crate::Match;
+use crate::YrString;
 
 /// Iterate over YR_STRING in a YR_RULE.
 ///
