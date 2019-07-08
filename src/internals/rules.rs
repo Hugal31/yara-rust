@@ -76,7 +76,7 @@ impl<'a> Iterator for TagIterator<'a> {
     fn next(&mut self) -> Option<Self::Item> {
         if !self.head.is_null() && unsafe { *self.head } != 0 {
             let s = unsafe { CStr::from_ptr(self.head) };
-            self.head = unsafe { self.head.offset(s.to_bytes_with_nul().len() as isize) };
+            self.head = unsafe { self.head.add(s.to_bytes_with_nul().len()) };
             Some(s)
         } else {
             None

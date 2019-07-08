@@ -46,7 +46,7 @@ enum CallbackReturn {
 }
 
 impl CallbackReturn {
-    pub fn to_yara(&self) -> i32 {
+    pub fn to_yara(self) -> i32 {
         use self::CallbackReturn::*;
 
         let res = match self {
