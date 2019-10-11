@@ -2,7 +2,7 @@ extern crate yara;
 
 use std::fs::remove_file;
 
-use yara::Yara;
+use yara::{Compiler, Rules};
 
 const RULES_FILE: &str = "test_save_1.yar";
 
@@ -13,8 +13,7 @@ const RULES: &str = "rule a_rule {
 ";
 
 fn test_save() {
-    let mut yara = Yara::create().unwrap();
-    let mut compiler = yara.new_compiler().unwrap();
+    let mut compiler = Compiler::new().unwrap();
     compiler
         .add_rules_str(RULES)
         .expect("add_rules_str should not fail");
@@ -23,8 +22,7 @@ fn test_save() {
 }
 
 fn test_load() {
-    let mut yara = Yara::create().unwrap();
-    assert!(yara.load_rules(RULES_FILE).is_ok());
+    assert!(Rules::load_from_file(RULES_FILE).is_ok());
 }
 
 #[test]

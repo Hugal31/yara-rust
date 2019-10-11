@@ -10,25 +10,25 @@ use crate::internals::meta::MetadataIterator;
 use crate::internals::string::YrStringIterator;
 use crate::{Metadata, Rule, YrString};
 
-pub fn rules_destroy(rules: &mut yara_sys::YR_RULES) {
+pub fn rules_destroy(rules: *mut yara_sys::YR_RULES) {
     unsafe {
         yara_sys::yr_rules_destroy(rules);
     }
 }
 
 // TODO Check if non mut
-pub fn rules_save(rules: &mut yara_sys::YR_RULES, filename: &str) -> Result<(), YaraError> {
+pub fn rules_save(rules: *mut yara_sys::YR_RULES, filename: &str) -> Result<(), YaraError> {
     let filename = CString::new(filename).unwrap();
     let result = unsafe { yara_sys::yr_rules_save(rules, filename.as_ptr()) };
     yara_sys::Error::from_code(result).map_err(|e| e.into())
 }
 
-pub fn rules_load<'a>(filename: &str) -> Result<&'a mut yara_sys::YR_RULES, YaraError> {
+pub fn rules_load(filename: &str) -> Result<*mut yara_sys::YR_RULES, YaraError> {
     let filename = CString::new(filename).unwrap();
     let mut pointer: *mut yara_sys::YR_RULES = ptr::null_mut();
     let result = unsafe { yara_sys::yr_rules_load(filename.as_ptr(), &mut pointer) };
     yara_sys::Error::from_code(result)
-        .map(|()| unsafe { &mut *pointer })
+        .map(|()| pointer)
         .map_err(|e| e.into())
 }
 

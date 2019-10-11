@@ -1,26 +1,29 @@
+use std::convert::TryFrom as _;
 use std::ffi::CStr;
 use std::fs::File;
-use std::marker::PhantomData;
 use std::path::Path;
 
 use failure::ResultExt;
 use yara_sys;
 
 use crate::errors::*;
+use crate::initialize::InitializationToken;
 use crate::internals;
 use crate::Rules;
 
 /// Yara rules compiler
-pub struct Compiler<'c, 'y: 'c> {
-    inner: &'c mut yara_sys::YR_COMPILER,
-    _marker: PhantomData<&'y ()>,
+pub struct Compiler {
+    inner: *mut yara_sys::YR_COMPILER,
+    _token: InitializationToken,
 }
 
-impl<'c, 'y: 'c> Compiler<'c, 'y> {
-    pub(crate) fn create() -> Result<Self, YaraError> {
-        internals::compiler_create().map(|compiler| Compiler {
-            inner: compiler,
-            _marker: PhantomData,
+impl Compiler {
+    pub fn new() -> Result<Self, YaraError> {
+        let token = InitializationToken::new()?;
+
+        internals::compiler_create().map(|inner| Compiler {
+            inner,
+            _token: token,
         })
     }
 
@@ -106,8 +109,8 @@ impl<'c, 'y: 'c> Compiler<'c, 'y> {
     ///
     /// It is safe to destroy the compiler after, because the rules do not depends on the compiler.
     /// In addition, we must hide the compiler from the user because it can be used only once.
-    pub fn compile_rules(self) -> Result<Rules<'y>, YaraError> {
-        internals::compiler_get_rules(self.inner).map(Rules::from)
+    pub fn compile_rules(self) -> Result<Rules, YaraError> {
+        internals::compiler_get_rules(self.inner).and_then(Rules::try_from)
     }
 
     /// Add a variable to the compiler.
@@ -119,9 +122,8 @@ impl<'c, 'y: 'c> Compiler<'c, 'y> {
     /// # Example
     ///
     /// ```
-    /// # use yara::Yara;
-    /// let mut yara = Yara::create().unwrap();
-    /// let mut compiler = yara.new_compiler().unwrap();
+    /// # use yara::Compiler;
+    /// let mut compiler = Compiler::new().unwrap();
     /// // Add the variables
     /// compiler.define_variable("file_name", "thing.txt")
     ///     .expect("Should add the variable");
@@ -152,7 +154,7 @@ impl<'c, 'y: 'c> Compiler<'c, 'y> {
     }
 }
 
-impl<'c, 'y: 'c> Drop for Compiler<'c, 'y> {
+impl Drop for Compiler {
     fn drop(&mut self) {
         internals::compiler_destroy(self.inner);
     }
@@ -162,7 +164,7 @@ impl<'c, 'y: 'c> Drop for Compiler<'c, 'y> {
 pub trait CompilerVariableValue {
     fn add_to_compiler(
         &self,
-        compiler: &mut yara_sys::YR_COMPILER,
+        compiler: *mut yara_sys::YR_COMPILER,
         identifier: &str,
     ) -> Result<(), YaraError>;
 }
@@ -170,7 +172,7 @@ pub trait CompilerVariableValue {
 impl CompilerVariableValue for bool {
     fn add_to_compiler(
         &self,
-        compiler: &mut yara_sys::YR_COMPILER,
+        compiler: *mut yara_sys::YR_COMPILER,
         identifier: &str,
     ) -> Result<(), YaraError> {
         internals::compiler_define_boolean_variable(compiler, identifier, *self)
@@ -180,7 +182,7 @@ impl CompilerVariableValue for bool {
 impl CompilerVariableValue for f64 {
     fn add_to_compiler(
         &self,
-        compiler: &mut yara_sys::YR_COMPILER,
+        compiler: *mut yara_sys::YR_COMPILER,
         identifier: &str,
     ) -> Result<(), YaraError> {
         internals::compiler_define_float_variable(compiler, identifier, *self)
@@ -190,7 +192,7 @@ impl CompilerVariableValue for f64 {
 impl CompilerVariableValue for i64 {
     fn add_to_compiler(
         &self,
-        compiler: &mut yara_sys::YR_COMPILER,
+        compiler: *mut yara_sys::YR_COMPILER,
         identifier: &str,
     ) -> Result<(), YaraError> {
         internals::compiler_define_integer_variable(compiler, identifier, *self)
@@ -200,7 +202,7 @@ impl CompilerVariableValue for i64 {
 impl CompilerVariableValue for &str {
     fn add_to_compiler(
         &self,
-        compiler: &mut yara_sys::YR_COMPILER,
+        compiler: *mut yara_sys::YR_COMPILER,
         identifier: &str,
     ) -> Result<(), YaraError> {
         internals::compiler_define_str_variable(compiler, identifier, *self)
@@ -210,7 +212,7 @@ impl CompilerVariableValue for &str {
 impl CompilerVariableValue for &CStr {
     fn add_to_compiler(
         &self,
-        compiler: &mut yara_sys::YR_COMPILER,
+        compiler: *mut yara_sys::YR_COMPILER,
         identifier: &str,
     ) -> Result<(), YaraError> {
         internals::compiler_define_cstr_variable(compiler, identifier, *self)

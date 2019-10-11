@@ -1,11 +1,11 @@
 extern crate yara;
 
-use yara::{CompileErrorLevel, Error, Metadata, MetadataValue, Rules, Yara};
+use yara::{CompileErrorLevel, Compiler, Error, Metadata, MetadataValue, Rules, Yara};
 
-const RULES: &str = "
+const RULES: &str = r#"
 rule is_awesome {
   strings:
-    $rust = \"rust\" nocase
+    $rust = /[Rr]ust/
 
   condition:
     $rust
@@ -13,20 +13,20 @@ rule is_awesome {
 
 rule is_ok {
   strings:
-    $go = \"go\"
+    $go = "go"
 
   condition:
     $go
-}";
+}"#;
 
-fn compile<'a>(yara: &'a mut Yara, rule: &str) -> Rules<'a> {
-    let mut compiler = yara.new_compiler().expect("Should create compiler");
+fn compile(rule: &str) -> Rules {
+    let mut compiler = Compiler::new().expect("Should create compiler");
     compiler.add_rules_str(rule).expect("Should parse rule");
     compiler.compile_rules().expect("Should compile rules")
 }
 
-fn compile_with_namespace<'a>(yara: &'a mut Yara, rule: &str, namespace: &str) -> Rules<'a> {
-    let mut compiler = yara.new_compiler().expect("Should create compiler");
+fn compile_with_namespace(rule: &str, namespace: &str) -> Rules {
+    let mut compiler = Compiler::new().expect("Should create compiler");
     compiler
         .add_rules_str_with_namespace(rule, namespace)
         .expect("Should parse rule");
@@ -35,27 +35,24 @@ fn compile_with_namespace<'a>(yara: &'a mut Yara, rule: &str, namespace: &str) -
 
 #[test]
 fn test_initialize() {
-    assert!(Yara::create().is_ok());
+    assert!(Yara::new().is_ok());
 }
 
 #[test]
 fn test_create_compiler() {
-    let mut yara = Yara::create().unwrap();
-    assert!(yara.new_compiler().is_ok());
+    assert!(Compiler::new().is_ok());
 }
 
 #[test]
 fn test_compile_string_rules() {
-    let mut yara = Yara::create().unwrap();
-    let mut compiler = yara.new_compiler().unwrap();
+    let mut compiler = Compiler::new().unwrap();
     assert!(compiler.add_rules_str(RULES).is_ok());
     assert!(compiler.add_rules_str("nop.").is_err());
 }
 
 #[test]
 fn test_compile_error() {
-    let mut yara = Yara::create().unwrap();
-    let mut compiler = yara.new_compiler().unwrap();
+    let mut compiler = Compiler::new().unwrap();
     let err = compiler.add_rules_str("rule nop {\n").unwrap_err();
     if let Error::Compile(compile_error) = err {
         let first_error = compile_error.iter().next().unwrap();
@@ -67,17 +64,13 @@ fn test_compile_error() {
 
 #[test]
 fn test_compile_file_rules() {
-    let mut yara = Yara::create().unwrap();
-    let mut compiler = yara.new_compiler().unwrap();
+    let mut compiler = Compiler::new().unwrap();
     assert!(compiler.add_rules_file("tests/rules.txt").is_ok());
 }
 
 #[test]
 fn test_scan_mem() {
-    let mut yara = Yara::create().unwrap();
-    let mut compiler = yara.new_compiler().unwrap();
-    compiler.add_rules_str(RULES).expect("Should be Ok");
-    let mut rules = compiler.compile_rules().unwrap();
+    let rules = compile(RULES);
     let result = rules.scan_mem("I love Rust!".as_bytes(), 10);
 
     let result = result.expect("Should be Ok");
@@ -93,10 +86,9 @@ fn test_scan_mem() {
 
 #[test]
 fn test_scan_file() {
-    let mut yara = Yara::create().unwrap();
-    let mut compiler = yara.new_compiler().unwrap();
+    let mut compiler = Compiler::new().unwrap();
     compiler.add_rules_str(RULES).expect("Should be Ok");
-    let mut rules = compiler.compile_rules().unwrap();
+    let rules = compiler.compile_rules().unwrap();
 
     let result = rules
         .scan_file("tests/scanfile.txt", 10)
@@ -106,13 +98,13 @@ fn test_scan_file() {
 
 #[test]
 fn test_tags() {
-    let mut yara = Yara::create().unwrap();
-    let mut rules = compile(
-        &mut yara,
-        "rule is_empty: file size {
+    let rules = compile(
+        "
+rule is_empty: file size {
   condition:
     filesize == 0
-}");
+}",
+    );
     let matches = rules.scan_mem(b"", 10).expect("should have scanned");
 
     assert_eq!(1, matches.len());
@@ -126,18 +118,18 @@ fn test_namespace() {
   condition:
     filesize == 0
 }";
-    let mut yara = Yara::create().unwrap();
+    let _yara = Yara::new().unwrap();
     {
-        let mut rules = compile(&mut yara, rule);
-	let matches = rules.scan_mem(b"", 10).expect("should have scanned");
+        let rules = compile(rule);
+        let matches = rules.scan_mem(b"", 10).expect("should have scanned");
 
         assert_eq!(1, matches.len());
         let is_empty_match = &matches[0];
         assert_eq!("default", is_empty_match.namespace);
     }
     {
-        let mut rules = compile_with_namespace(&mut yara, rule, "ns");
-	let matches = rules.scan_mem(b"", 10).expect("should have scanned");
+        let rules = compile_with_namespace(rule, "ns");
+        let matches = rules.scan_mem(b"", 10).expect("should have scanned");
 
         assert_eq!(1, matches.len());
         let is_empty_match = &matches[0];
@@ -147,25 +139,24 @@ fn test_namespace() {
 
 #[test]
 fn test_metadata() {
-    let mut yara = Yara::create().unwrap();
-    let mut rules = compile(
-        &mut yara,
-        "
+    let rules = compile(
+        r#"
 rule is_three_char_long {
   condition:
     filesize == 3
 }
 rule contains_abc {
   meta:
-    a_string = \"value\"
+    a_string = "value"
     an_integer = 42
     a_bool = true
   strings:
-    $abc = \"abc\"
+    $abc = "abc"
   condition:
     $abc at 0
 }
-");
+"#,
+    );
 
     let matches = rules.scan_mem(b"abc", 10).expect("should have scanned");
     assert_eq!(2, matches.len());
@@ -207,8 +198,7 @@ rule IsNCharLong {
 }
 ";
 
-    let mut yara = Yara::create().unwrap();
-    let mut compiler = yara.new_compiler().expect("Should create compiler");
+    let mut compiler = Compiler::new().expect("Should create compiler");
     compiler
         .define_variable("desired_length", 5)
         .expect("Should have added a rule");
@@ -216,8 +206,30 @@ rule IsNCharLong {
         .add_rules_str(rule_definition)
         .expect("Should parse rule");
 
-    let mut rules = compiler.compile_rules().expect("Should compile rules");
+    let rules = compiler.compile_rules().expect("Should compile rules");
     let result = rules.scan_mem(b"abcde", 10).expect("Should scan");
 
     assert_eq!(1, result.len());
+}
+
+#[test]
+fn test_mutlithread() {
+    use crossbeam::scope;
+
+    let rules = compile(RULES);
+
+    scope(|scope| {
+        scope.spawn(|_| {
+            let matches = rules.scan_mem(b"rust", 10)
+                .expect("should have scanned");
+            assert_eq!(matches.len(), 1);
+            assert_eq!(matches[0].identifier, "is_awesome")
+        });
+        scope.spawn(|_| {
+            let matches = rules.scan_mem(b"go", 10)
+                .expect("should have scanned");
+            assert_eq!(matches.len(), 1);
+            assert_eq!(matches[0].identifier, "is_ok")
+        });
+    }).unwrap();
 }

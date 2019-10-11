@@ -20,6 +20,9 @@ bundled-3_11 = ["yara-sys/bundled-3_11"]
 failure = "0.1.5"
 lazy_static = "1.3.0"
 
+[dev-dependencies]
+crossbeam = "0.7"
+
 [dependencies.yara-sys]
 path = "yara-sys"
 version = "0.3.1"

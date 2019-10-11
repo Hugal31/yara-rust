@@ -25,6 +25,12 @@ lazy_static! {
 ///
 /// Can be called multiple times without problems.
 /// Is thread safe.
+///
+/// # Implementation details
+///
+/// yr_initialize is not actually thread safe, because it use an `int` to count the number of
+/// initialization and finalization, instead of an atomic int. Thus, we lock a global mutex each
+/// time we call yr_initialize and yr_finalize.
 pub fn initialize() -> Result<(), YaraError> {
     let _guard = INIT_MUTEX.lock();
     let result = unsafe { yara_sys::yr_initialize() };

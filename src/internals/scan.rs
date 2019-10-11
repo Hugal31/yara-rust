@@ -59,7 +59,7 @@ impl CallbackReturn {
 }
 
 pub fn rules_scan_mem<'a>(
-    rules: &mut yara_sys::YR_RULES,
+    rules: *mut yara_sys::YR_RULES,
     mem: &[u8],
     timeout: i32,
 ) -> Result<Vec<Rule<'a>>, YaraError> {
@@ -82,7 +82,7 @@ pub fn rules_scan_mem<'a>(
 }
 
 pub fn rules_scan_file<'a>(
-    rules: &mut yara_sys::YR_RULES,
+    rules: *mut yara_sys::YR_RULES,
     file: &File,
     timeout: i32,
 ) -> Result<Vec<Rule<'a>>, YaraError> {
@@ -96,7 +96,7 @@ pub fn rules_scan_file<'a>(
 
 #[cfg(unix)]
 pub fn rules_scan_raw(
-    rules: &mut yara_sys::YR_RULES,
+    rules: *mut yara_sys::YR_RULES,
     file: &File,
     timeout: i32,
     results: &mut Vec<Rule>,
@@ -116,7 +116,7 @@ pub fn rules_scan_raw(
 
 #[cfg(windows)]
 pub fn rules_scan_raw(
-    rules: &mut yara_sys::YR_RULES,
+    rules: *mut yara_sys::YR_RULES,
     file: &File,
     timeout: i32,
     results: &mut Vec<Rule>,

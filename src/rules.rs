@@ -1,25 +1,35 @@
+use std::convert::TryFrom;
 use std::fs::File;
 use std::path::Path;
 
 use failure::ResultExt;
 use yara_sys;
 
-use crate::errors::*;
-use crate::internals;
-use crate::YrString;
+use crate::{errors::*, initialize::InitializationToken, internals, YrString};
 
 /// A set of rules.
-pub struct Rules<'a> {
-    inner: &'a mut yara_sys::YR_RULES,
+pub struct Rules {
+    inner: *mut yara_sys::YR_RULES,
+    pub(crate) _token: InitializationToken,
 }
 
-impl<'a> From<&'a mut yara_sys::YR_RULES> for Rules<'a> {
-    fn from(rules: &'a mut yara_sys::YR_RULES) -> Rules<'a> {
-        Rules { inner: rules }
+/// This is safe because Yara have a mutex on the YR_RULES
+unsafe impl std::marker::Sync for Rules {}
+
+impl TryFrom<*mut yara_sys::YR_RULES> for Rules {
+    type Error = YaraError;
+
+    fn try_from(rules: *mut yara_sys::YR_RULES) -> Result<Self, Self::Error> {
+        let token = InitializationToken::new()?;
+
+        Ok(Rules {
+            inner: rules,
+            _token: token,
+        })
     }
 }
 
-impl<'a> Rules<'a> {
+impl Rules {
     /// Scan memory
     ///
     /// * `mem` - Slice to scan.
@@ -53,15 +63,15 @@ impl<'a> Rules<'a> {
     /// assert_eq!(4, m.length);
     /// assert_eq!(b"Rust", m.data.as_slice());
     /// ```
-    pub fn scan_mem(&mut self, mem: &[u8], timeout: u16) -> Result<Vec<Rule>, YaraError> {
+    pub fn scan_mem(&self, mem: &[u8], timeout: u16) -> Result<Vec<Rule>, YaraError> {
         internals::rules_scan_mem(self.inner, mem, i32::from(timeout))
     }
 
-    pub fn scan_file<P: AsRef<Path>>(
-        &mut self,
+    pub fn scan_file<'r, P: AsRef<Path>>(
+        &self,
         path: P,
         timeout: u16,
-    ) -> Result<Vec<Rule<'a>>, Error> {
+    ) -> Result<Vec<Rule<'r>>, Error> {
         File::open(path)
             .context(IoErrorKind::OpenScanFile)
             .map_err(|e| Into::<IoError>::into(e).into())
@@ -72,13 +82,25 @@ impl<'a> Rules<'a> {
     }
 
     /// Save the rules to a file.
+    // TODO Check if mut is necessary.
     // TODO Take AsRef<Path> ?
     pub fn save(&mut self, filename: &str) -> Result<(), YaraError> {
         internals::rules_save(self.inner, filename)
     }
+
+    /// Load rules from a pre-compiled rules file.
+    // TODO Take AsRef<Path> ?
+    pub fn load_from_file(filename: &str) -> Result<Self, YaraError> {
+        let token = InitializationToken::new()?;
+
+        internals::rules_load(filename).map(|inner| Rules {
+            inner,
+            _token: token,
+        })
+    }
 }
 
-impl<'a> Drop for Rules<'a> {
+impl Drop for Rules {
     fn drop(&mut self) {
         internals::rules_destroy(self.inner);
     }
@@ -86,28 +108,28 @@ impl<'a> Drop for Rules<'a> {
 
 /// A rule that matched during a scan.
 #[derive(Debug)]
-pub struct Rule<'a> {
+pub struct Rule<'r> {
     /// Name of the rule.
-    pub identifier: &'a str,
+    pub identifier: &'r str,
     /// Namespace of the rule.
-    pub namespace: &'a str,
+    pub namespace: &'r str,
     /// Metadatas of the rule.
-    pub metadatas: Vec<Metadata<'a>>,
+    pub metadatas: Vec<Metadata<'r>>,
     /// Tags of the rule.
-    pub tags: Vec<&'a str>,
+    pub tags: Vec<&'r str>,
     /// Matcher strings of the rule.
-    pub strings: Vec<YrString<'a>>,
+    pub strings: Vec<YrString<'r>>,
 }
 
 #[derive(Debug, Eq, PartialEq)]
-pub struct Metadata<'a> {
-    pub identifier: &'a str,
-    pub value: MetadataValue<'a>,
+pub struct Metadata<'r> {
+    pub identifier: &'r str,
+    pub value: MetadataValue<'r>,
 }
 
 #[derive(Debug, Eq, PartialEq)]
-pub enum MetadataValue<'a> {
+pub enum MetadataValue<'r> {
     Integer(i64),
-    String(&'a str),
+    String(&'r str),
     Boolean(bool),
 }

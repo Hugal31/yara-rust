@@ -23,14 +23,14 @@ pub fn compiler_create<'a>() -> Result<&'a mut YR_COMPILER, YaraError> {
         .map_err(|e| e.into())
 }
 
-pub fn compiler_destroy(compiler_ptr: &mut YR_COMPILER) {
+pub fn compiler_destroy(compiler_ptr: *mut YR_COMPILER) {
     unsafe {
         yara_sys::yr_compiler_destroy(compiler_ptr);
     }
 }
 
 pub fn compiler_add_string(
-    compiler: &mut YR_COMPILER,
+    compiler: *mut YR_COMPILER,
     string: &str,
     namespace: Option<&str>,
 ) -> Result<(), Error> {
@@ -60,7 +60,7 @@ pub fn compiler_add_string(
 }
 
 pub fn compiler_add_file<P: AsRef<Path>>(
-    compiler: &mut YR_COMPILER,
+    compiler: *mut YR_COMPILER,
     file: &File,
     path: P,
     namespace: Option<&str>,
@@ -88,7 +88,7 @@ pub fn compiler_add_file<P: AsRef<Path>>(
 
 #[cfg(unix)]
 fn compiler_add_file_raw(
-    compiler: &mut YR_COMPILER,
+    compiler: *mut YR_COMPILER,
     file: &File,
     path: &CStr,
     namespace: Option<&CStr>,
@@ -106,7 +106,7 @@ fn compiler_add_file_raw(
 
 #[cfg(windows)]
 fn compiler_add_file_raw(
-    compiler: &mut YR_COMPILER,
+    compiler: *mut YR_COMPILER,
     file: &File,
     path: &CStr,
     namespace: Option<&CStr>,
@@ -145,7 +145,7 @@ extern "C" fn compile_callback(
 }
 
 pub fn compiler_define_integer_variable(
-    compiler: &mut YR_COMPILER,
+    compiler: *mut YR_COMPILER,
     identifier: &str,
     value: i64,
 ) -> Result<(), YaraError> {
@@ -157,7 +157,7 @@ pub fn compiler_define_integer_variable(
 }
 
 pub fn compiler_define_float_variable(
-    compiler: &mut YR_COMPILER,
+    compiler: *mut YR_COMPILER,
     identifier: &str,
     value: f64,
 ) -> Result<(), YaraError> {
@@ -169,7 +169,7 @@ pub fn compiler_define_float_variable(
 }
 
 pub fn compiler_define_boolean_variable(
-    compiler: &mut YR_COMPILER,
+    compiler: *mut YR_COMPILER,
     identifier: &str,
     value: bool,
 ) -> Result<(), YaraError> {
@@ -182,7 +182,7 @@ pub fn compiler_define_boolean_variable(
 }
 
 pub fn compiler_define_str_variable(
-    compiler: &mut YR_COMPILER,
+    compiler: *mut YR_COMPILER,
     identifier: &str,
     value: &str,
 ) -> Result<(), YaraError> {
@@ -195,7 +195,7 @@ pub fn compiler_define_str_variable(
 }
 
 pub fn compiler_define_cstr_variable(
-    compiler: &mut YR_COMPILER,
+    compiler: *mut YR_COMPILER,
     identifier: &str,
     value: &CStr,
 ) -> Result<(), YaraError> {
@@ -206,13 +206,11 @@ pub fn compiler_define_cstr_variable(
     yara_sys::Error::from_code(result).map_err(Into::into)
 }
 
-pub fn compiler_get_rules<'c, 'y: 'c>(
-    compiler: &'c mut YR_COMPILER,
-) -> Result<&'y mut YR_RULES, YaraError> {
+pub fn compiler_get_rules(compiler: *mut YR_COMPILER) -> Result<*mut YR_RULES, YaraError> {
     let mut pointer = ptr::null_mut();
     let result = unsafe { yara_sys::yr_compiler_get_rules(compiler, &mut pointer) };
 
     yara_sys::Error::from_code(result)
-        .map(|()| unsafe { &mut *pointer })
+        .map(|()| pointer)
         .map_err(Into::into)
 }
