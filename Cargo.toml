@@ -10,9 +10,6 @@ keywords = ["yara"]
 categories = ["api-bindings"]
 edition = "2018"
 
-[badges]
-travis-ci = { repository = "Hugal31/yara-rust" }
-
 [dependencies]
 failure = "0.1.5"
 lazy_static = "1.3.0"

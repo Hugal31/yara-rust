@@ -28,7 +28,7 @@ assert!(results.iter().find(|r| r.identifier == "contains_rust").is_some());
 
 ## Features
 
-* Support from Yara 3.7 to 3.10.
+* Support from Yara 3.7 to 3.11.0.
 * Compile rules from strings or files.
 * Save and load compiled rules.
 * Scan byte arrays (`&[u8]`) or files.
