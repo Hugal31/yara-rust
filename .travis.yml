@@ -3,6 +3,9 @@ rust:
   - stable
   - beta
   - nightly
+env:
+  global:
+    - MAKEFLAGS="-j 2"
 before_install:
   # TODO: Find a cheaper way to get yara. Maybe using a container ? Or wait for xenial in Travis-ci.
   - wget https://github.com/VirusTotal/yara/archive/v3.7.1.tar.gz && tar xzf v3.7.1.tar.gz
