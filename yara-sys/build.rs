@@ -15,22 +15,6 @@ fn main() {
 
     build::add_bindings();
 }
-
-#[cfg(not(feature = "bindgen"))]
-mod build {
-    use std::env;
-    use std::fs;
-    use std::path::PathBuf;
-
-    pub fn add_bindings() {
-        let out_dir = env::var("OUT_DIR").unwrap();
-        let out_path = PathBuf::from(out_dir).join("bindings.rs");
-        fs::copy("bindings/yara-3.7.rs", out_path)
-            .expect("Could not copy bindings to output directory");
-    }
-}
-
-#[cfg(feature = "bindgen")]
 mod build {
     extern crate bindgen;
 

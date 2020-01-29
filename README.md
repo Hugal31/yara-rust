@@ -34,11 +34,6 @@ assert!(results.iter().find(|r| r.identifier == "contains_rust").is_some());
 * Save and load compiled rules.
 * Scan byte arrays (`&[u8]`) or files.
 
-### Crate features
-
-By default, this crate use a pre-built bindings file for Yara 3.7,
-but you can use the feature `bindgen` to use on-the-fly generated bindings.
-
 ### TODO
 
 - [ ] Support other versions of yara.
