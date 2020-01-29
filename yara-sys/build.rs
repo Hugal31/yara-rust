@@ -5,6 +5,14 @@ fn main() {
     // shared library.
     println!("cargo:rustc-link-lib=yara");
 
+    // Add the environment variable YARA_LIBRARY_PATH to the library search path.
+    if let Some(yara_library_path) = std::env::var("YARA_LIBRARY_PATH")
+	.ok()
+	.filter(|path| !path.is_empty())
+    {
+	println!("cargo:rustc-link-search=native={}", yara_library_path);
+    }
+
     build::add_bindings();
 }
 
@@ -30,7 +38,7 @@ mod build {
     use std::path::PathBuf;
 
     pub fn add_bindings() {
-        let bindings = bindgen::Builder::default()
+        let mut builder = bindgen::Builder::default()
             .header("wrapper.h")
             .whitelist_var("CALLBACK_.*")
             .whitelist_var("ERROR_.*")
@@ -47,7 +55,16 @@ mod build {
             .opaque_type("YR_ARENA")
             .opaque_type("YR_AC_MATCH_TABLE")
             .opaque_type("YR_AC_TRANSITION_TABLE")
-            .opaque_type("YR_EXTERNAL_VARIABLE")
+            .opaque_type("YR_EXTERNAL_VARIABLE");
+
+	if let Some(yara_include_dir) = env::var("YARA_INCLUDE_DIR")
+	    .ok()
+	    .filter(|dir| !dir.is_empty())
+	{
+	    builder = builder.clang_arg(format!("-I{}", yara_include_dir))
+	}
+
+	let bindings = builder
             .generate()
             .expect("Unable to generate bindings");
 

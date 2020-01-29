@@ -13,6 +13,13 @@ More documentation can be found on [the Yara's documentation](https://yara.readt
 By default, this crate use a pre-built bindings file for Yara 3.7,
 but you can use the feature `bindgen` to use on-the-fly generated bindings.
 
+You can specify the location of Yara:
+
+- The path of the Yara library by setting the `YARA_LIBRARY_PATH` environment
+  variable.
+- The path of the Yara headers by setting the `YARA_INCLUDE_DIR` environment
+  variable, if you use the `bindgen` feature.
+
 ## License
 
 Licensed under either of
