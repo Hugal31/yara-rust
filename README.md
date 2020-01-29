@@ -5,7 +5,6 @@
 [![Documentation](https://docs.rs/yara/badge.svg)](https://docs.rs/yara)
 
 Bindings for the [Yara library from VirusTotal](https://github.com/VirusTotal/yara).
-Only works with Yara 3.7 for now.
 
 More documentation can be found on [the Yara's documentation](https://yara.readthedocs.io/en/v3.7.0/index.html).
 
@@ -29,15 +28,15 @@ assert!(results.iter().find(|r| r.identifier == "contains_rust").is_some());
 
 ## Features
 
-* Support Yara 3.7.
+* Support from Yara 3.7 to 3.10.
 * Compile rules from strings or files.
 * Save and load compiled rules.
 * Scan byte arrays (`&[u8]`) or files.
 
 ### TODO
 
-- [ ] Support other versions of yara.
 - [ ] Remove some `unwrap` on string conversions (currently this crate assume the rules, meta and namespace identifier are valid Rust's `str`).
+- [ ] Implement the scanner API.
 - [ ] Look at the source code of Yara (or in documentation if specified) to assess thread safety.
 - [ ] Look at the source code of Yara (or in documentation if specified) to see if we can remove some `mut` in some functions (as `Yara::new_compiler` and `Yara::load_rules`).
 
