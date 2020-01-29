@@ -6,10 +6,13 @@ rust:
 env:
   global:
     - MAKEFLAGS="-j 2"
+  jobs:
+    - YARA_VERSION=3.7.1
+    - YARA_VERSION=3.11.0
 before_install:
-  # TODO: Find a cheaper way to get yara. Maybe using a container ? Or wait for xenial in Travis-ci.
-  - wget https://github.com/VirusTotal/yara/archive/v3.7.1.tar.gz && tar xzf v3.7.1.tar.gz
-  - cd yara-3.7.1
+  - wget https://github.com/VirusTotal/yara/archive/v$YARA_VERSION.tar.gz
+  - tar xzf v$YARA_VERSION.tar.gz
+  - cd yara-$YARA_VERSION
   - ./bootstrap.sh && ./configure
   - make
   - sudo make install
