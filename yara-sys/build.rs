@@ -35,11 +35,13 @@ mod build {
             .whitelist_function("yr_rule_.*")
             .whitelist_function("yr_rules_.*")
             .whitelist_function("yr_get_tidx")
+            .whitelist_type("YR_EXTERNAL_VARIABLE")
+	    .whitelist_type("YR_MATCH")
             .opaque_type("YR_COMPILER")
             .opaque_type("YR_ARENA")
             .opaque_type("YR_AC_MATCH_TABLE")
             .opaque_type("YR_AC_TRANSITION_TABLE")
-            .opaque_type("YR_EXTERNAL_VARIABLE");
+            .opaque_type("_YR_EXTERNAL_VARIABLE");
 
 	if let Some(yara_include_dir) = env::var("YARA_INCLUDE_DIR")
 	    .ok()
