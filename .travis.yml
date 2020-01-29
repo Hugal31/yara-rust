@@ -1,14 +1,13 @@
 language: rust
 rust:
   - stable
-  - beta
   - nightly
 env:
   global:
     - MAKEFLAGS="-j 2"
   jobs:
     - YARA_VERSION=3.7.1
-    - YARA_VERSION=3.11.0
+    - YARA_VERSION=3.8.1
 before_install:
   - wget https://github.com/VirusTotal/yara/archive/v$YARA_VERSION.tar.gz
   - tar xzf v$YARA_VERSION.tar.gz
