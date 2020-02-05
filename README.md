@@ -33,6 +33,11 @@ assert!(results.iter().find(|r| r.identifier == "contains_rust").is_some());
 * Save and load compiled rules.
 * Scan byte arrays (`&[u8]`) or files.
 
+## Feature flags and Yara linking.
+
+Look at the [yara-sys](yara-sys) crate documentation for a list of feature flags
+and how to link to your Yara crate.
+
 ### TODO
 
 - [ ] Remove some `unwrap` on string conversions (currently this crate assume the rules, meta and namespace identifier are valid Rust's `str`).

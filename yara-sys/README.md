@@ -10,8 +10,14 @@ More documentation can be found on [the Yara's documentation](https://yara.readt
 
 ## Features
 
-By default, this crate use a pre-built bindings file for Yara 3.7,
-but you can use the feature `bindgen` to use on-the-fly generated bindings.
+By default, this crate uses bindgen to generate bindings on-the-fly, but you can
+also use the following features to use pre-built bindings file for different
+version of Yara. Just make sure the version you specify is the same that the
+version on your system!
+
+- `bindgen`: this is the default feature, to use generated bindings.
+- `bundled-3_7`: use pre-generated bindings for Yara 3.7.1
+- `bundled-3_11` use pre-generated bindings for Yara 3.11.0
 
 You can specify the location of Yara:
 

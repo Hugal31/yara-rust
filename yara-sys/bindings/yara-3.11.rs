@@ -60,6 +60,14 @@ pub const ERROR_REGULAR_EXPRESSION_TOO_COMPLEX: u32 = 49;
 pub const ERROR_INVALID_MODULE_NAME: u32 = 50;
 pub const ERROR_TOO_MANY_STRINGS: u32 = 51;
 pub const ERROR_INTEGER_OVERFLOW: u32 = 52;
+pub const ERROR_CALLBACK_REQUIRED: u32 = 53;
+pub const ERROR_INVALID_OPERAND: u32 = 54;
+pub const ERROR_COULD_NOT_READ_FILE: u32 = 55;
+pub const ERROR_DUPLICATED_EXTERNAL_VARIABLE: u32 = 56;
+pub const ERROR_INVALID_MODULE_DATA: u32 = 57;
+pub const ERROR_WRITING_FILE: u32 = 58;
+pub const ERROR_INVALID_MODIFIER: u32 = 59;
+pub const ERROR_DUPLICATED_MODIFIER: u32 = 60;
 pub const CALLBACK_MSG_RULE_MATCHING: u32 = 1;
 pub const CALLBACK_MSG_RULE_NOT_MATCHING: u32 = 2;
 pub const CALLBACK_MSG_SCAN_FINISHED: u32 = 3;
@@ -70,12 +78,11 @@ pub const CALLBACK_ABORT: u32 = 1;
 pub const CALLBACK_ERROR: u32 = 2;
 pub type __uint8_t = ::std::os::raw::c_uchar;
 pub type __int32_t = ::std::os::raw::c_int;
+pub type __uint32_t = ::std::os::raw::c_uint;
 pub type __int64_t = ::std::os::raw::c_long;
 pub type __uint64_t = ::std::os::raw::c_ulong;
 pub type __off_t = ::std::os::raw::c_long;
 pub type __off64_t = ::std::os::raw::c_long;
-pub type __clock_t = ::std::os::raw::c_long;
-pub type clock_t = __clock_t;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct __pthread_internal_list {
@@ -731,125 +738,122 @@ pub type YR_ARENA = [u64; 3usize];
 pub type YR_MUTEX = pthread_mutex_t;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct _YR_NAMESPACE {
+pub struct YR_NAMESPACE {
     pub t_flags: [i32; 32usize],
-    pub __bindgen_anon_1: _YR_NAMESPACE__bindgen_ty_1,
+    pub __bindgen_anon_1: YR_NAMESPACE__bindgen_ty_1,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _YR_NAMESPACE__bindgen_ty_1 {
+pub union YR_NAMESPACE__bindgen_ty_1 {
     pub name: *mut ::std::os::raw::c_char,
     pub name_: i64,
     _bindgen_union_align: u64,
 }
 #[test]
-fn bindgen_test_layout__YR_NAMESPACE__bindgen_ty_1() {
+fn bindgen_test_layout_YR_NAMESPACE__bindgen_ty_1() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_NAMESPACE__bindgen_ty_1>(),
+        ::std::mem::size_of::<YR_NAMESPACE__bindgen_ty_1>(),
         8usize,
-        concat!("Size of: ", stringify!(_YR_NAMESPACE__bindgen_ty_1))
+        concat!("Size of: ", stringify!(YR_NAMESPACE__bindgen_ty_1))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_NAMESPACE__bindgen_ty_1>(),
+        ::std::mem::align_of::<YR_NAMESPACE__bindgen_ty_1>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_NAMESPACE__bindgen_ty_1))
+        concat!("Alignment of ", stringify!(YR_NAMESPACE__bindgen_ty_1))
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<_YR_NAMESPACE__bindgen_ty_1>())).name as *const _ as usize
-        },
+        unsafe { &(*(::std::ptr::null::<YR_NAMESPACE__bindgen_ty_1>())).name as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_NAMESPACE__bindgen_ty_1),
+            stringify!(YR_NAMESPACE__bindgen_ty_1),
             "::",
             stringify!(name)
         )
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<_YR_NAMESPACE__bindgen_ty_1>())).name_ as *const _ as usize
+            &(*(::std::ptr::null::<YR_NAMESPACE__bindgen_ty_1>())).name_ as *const _ as usize
         },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_NAMESPACE__bindgen_ty_1),
+            stringify!(YR_NAMESPACE__bindgen_ty_1),
             "::",
             stringify!(name_)
         )
     );
 }
 #[test]
-fn bindgen_test_layout__YR_NAMESPACE() {
+fn bindgen_test_layout_YR_NAMESPACE() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_NAMESPACE>(),
+        ::std::mem::size_of::<YR_NAMESPACE>(),
         136usize,
-        concat!("Size of: ", stringify!(_YR_NAMESPACE))
+        concat!("Size of: ", stringify!(YR_NAMESPACE))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_NAMESPACE>(),
+        ::std::mem::align_of::<YR_NAMESPACE>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_NAMESPACE))
+        concat!("Alignment of ", stringify!(YR_NAMESPACE))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_NAMESPACE>())).t_flags as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_NAMESPACE>())).t_flags as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_NAMESPACE),
+            stringify!(YR_NAMESPACE),
             "::",
             stringify!(t_flags)
         )
     );
 }
-pub type YR_NAMESPACE = _YR_NAMESPACE;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct _YR_META {
+pub struct YR_META {
     pub type_: i32,
     pub integer: i64,
-    pub __bindgen_anon_1: _YR_META__bindgen_ty_1,
-    pub __bindgen_anon_2: _YR_META__bindgen_ty_2,
+    pub __bindgen_anon_1: YR_META__bindgen_ty_1,
+    pub __bindgen_anon_2: YR_META__bindgen_ty_2,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _YR_META__bindgen_ty_1 {
+pub union YR_META__bindgen_ty_1 {
     pub identifier: *const ::std::os::raw::c_char,
     pub identifier_: i64,
     _bindgen_union_align: u64,
 }
 #[test]
-fn bindgen_test_layout__YR_META__bindgen_ty_1() {
+fn bindgen_test_layout_YR_META__bindgen_ty_1() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_META__bindgen_ty_1>(),
+        ::std::mem::size_of::<YR_META__bindgen_ty_1>(),
         8usize,
-        concat!("Size of: ", stringify!(_YR_META__bindgen_ty_1))
+        concat!("Size of: ", stringify!(YR_META__bindgen_ty_1))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_META__bindgen_ty_1>(),
+        ::std::mem::align_of::<YR_META__bindgen_ty_1>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_META__bindgen_ty_1))
+        concat!("Alignment of ", stringify!(YR_META__bindgen_ty_1))
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<_YR_META__bindgen_ty_1>())).identifier as *const _ as usize
+            &(*(::std::ptr::null::<YR_META__bindgen_ty_1>())).identifier as *const _ as usize
         },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_META__bindgen_ty_1),
+            stringify!(YR_META__bindgen_ty_1),
             "::",
             stringify!(identifier)
         )
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<_YR_META__bindgen_ty_1>())).identifier_ as *const _ as usize
+            &(*(::std::ptr::null::<YR_META__bindgen_ty_1>())).identifier_ as *const _ as usize
         },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_META__bindgen_ty_1),
+            stringify!(YR_META__bindgen_ty_1),
             "::",
             stringify!(identifier_)
         )
@@ -857,120 +861,119 @@ fn bindgen_test_layout__YR_META__bindgen_ty_1() {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _YR_META__bindgen_ty_2 {
+pub union YR_META__bindgen_ty_2 {
     pub string: *mut ::std::os::raw::c_char,
     pub string_: i64,
     _bindgen_union_align: u64,
 }
 #[test]
-fn bindgen_test_layout__YR_META__bindgen_ty_2() {
+fn bindgen_test_layout_YR_META__bindgen_ty_2() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_META__bindgen_ty_2>(),
+        ::std::mem::size_of::<YR_META__bindgen_ty_2>(),
         8usize,
-        concat!("Size of: ", stringify!(_YR_META__bindgen_ty_2))
+        concat!("Size of: ", stringify!(YR_META__bindgen_ty_2))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_META__bindgen_ty_2>(),
+        ::std::mem::align_of::<YR_META__bindgen_ty_2>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_META__bindgen_ty_2))
+        concat!("Alignment of ", stringify!(YR_META__bindgen_ty_2))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_META__bindgen_ty_2>())).string as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_META__bindgen_ty_2>())).string as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_META__bindgen_ty_2),
+            stringify!(YR_META__bindgen_ty_2),
             "::",
             stringify!(string)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_META__bindgen_ty_2>())).string_ as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_META__bindgen_ty_2>())).string_ as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_META__bindgen_ty_2),
+            stringify!(YR_META__bindgen_ty_2),
             "::",
             stringify!(string_)
         )
     );
 }
 #[test]
-fn bindgen_test_layout__YR_META() {
+fn bindgen_test_layout_YR_META() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_META>(),
+        ::std::mem::size_of::<YR_META>(),
         32usize,
-        concat!("Size of: ", stringify!(_YR_META))
+        concat!("Size of: ", stringify!(YR_META))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_META>(),
+        ::std::mem::align_of::<YR_META>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_META))
+        concat!("Alignment of ", stringify!(YR_META))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_META>())).type_ as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_META>())).type_ as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_META),
+            stringify!(YR_META),
             "::",
             stringify!(type_)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_META>())).integer as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_META>())).integer as *const _ as usize },
         8usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_META),
+            stringify!(YR_META),
             "::",
             stringify!(integer)
         )
     );
 }
-pub type YR_META = _YR_META;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct _YR_MATCHES {
+pub struct YR_MATCHES {
     pub count: i32,
-    pub __bindgen_anon_1: _YR_MATCHES__bindgen_ty_1,
-    pub __bindgen_anon_2: _YR_MATCHES__bindgen_ty_2,
+    pub __bindgen_anon_1: YR_MATCHES__bindgen_ty_1,
+    pub __bindgen_anon_2: YR_MATCHES__bindgen_ty_2,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _YR_MATCHES__bindgen_ty_1 {
-    pub head: *mut _YR_MATCH,
+pub union YR_MATCHES__bindgen_ty_1 {
+    pub head: *mut YR_MATCH,
     pub head_: i64,
     _bindgen_union_align: u64,
 }
 #[test]
-fn bindgen_test_layout__YR_MATCHES__bindgen_ty_1() {
+fn bindgen_test_layout_YR_MATCHES__bindgen_ty_1() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_MATCHES__bindgen_ty_1>(),
+        ::std::mem::size_of::<YR_MATCHES__bindgen_ty_1>(),
         8usize,
-        concat!("Size of: ", stringify!(_YR_MATCHES__bindgen_ty_1))
+        concat!("Size of: ", stringify!(YR_MATCHES__bindgen_ty_1))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_MATCHES__bindgen_ty_1>(),
+        ::std::mem::align_of::<YR_MATCHES__bindgen_ty_1>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_MATCHES__bindgen_ty_1))
+        concat!("Alignment of ", stringify!(YR_MATCHES__bindgen_ty_1))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_MATCHES__bindgen_ty_1>())).head as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_MATCHES__bindgen_ty_1>())).head as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_MATCHES__bindgen_ty_1),
+            stringify!(YR_MATCHES__bindgen_ty_1),
             "::",
             stringify!(head)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_MATCHES__bindgen_ty_1>())).head_ as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_MATCHES__bindgen_ty_1>())).head_ as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_MATCHES__bindgen_ty_1),
+            stringify!(YR_MATCHES__bindgen_ty_1),
             "::",
             stringify!(head_)
         )
@@ -978,122 +981,122 @@ fn bindgen_test_layout__YR_MATCHES__bindgen_ty_1() {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _YR_MATCHES__bindgen_ty_2 {
-    pub tail: *mut _YR_MATCH,
+pub union YR_MATCHES__bindgen_ty_2 {
+    pub tail: *mut YR_MATCH,
     pub tail_: i64,
     _bindgen_union_align: u64,
 }
 #[test]
-fn bindgen_test_layout__YR_MATCHES__bindgen_ty_2() {
+fn bindgen_test_layout_YR_MATCHES__bindgen_ty_2() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_MATCHES__bindgen_ty_2>(),
+        ::std::mem::size_of::<YR_MATCHES__bindgen_ty_2>(),
         8usize,
-        concat!("Size of: ", stringify!(_YR_MATCHES__bindgen_ty_2))
+        concat!("Size of: ", stringify!(YR_MATCHES__bindgen_ty_2))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_MATCHES__bindgen_ty_2>(),
+        ::std::mem::align_of::<YR_MATCHES__bindgen_ty_2>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_MATCHES__bindgen_ty_2))
+        concat!("Alignment of ", stringify!(YR_MATCHES__bindgen_ty_2))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_MATCHES__bindgen_ty_2>())).tail as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_MATCHES__bindgen_ty_2>())).tail as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_MATCHES__bindgen_ty_2),
+            stringify!(YR_MATCHES__bindgen_ty_2),
             "::",
             stringify!(tail)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_MATCHES__bindgen_ty_2>())).tail_ as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_MATCHES__bindgen_ty_2>())).tail_ as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_MATCHES__bindgen_ty_2),
+            stringify!(YR_MATCHES__bindgen_ty_2),
             "::",
             stringify!(tail_)
         )
     );
 }
 #[test]
-fn bindgen_test_layout__YR_MATCHES() {
+fn bindgen_test_layout_YR_MATCHES() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_MATCHES>(),
+        ::std::mem::size_of::<YR_MATCHES>(),
         24usize,
-        concat!("Size of: ", stringify!(_YR_MATCHES))
+        concat!("Size of: ", stringify!(YR_MATCHES))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_MATCHES>(),
+        ::std::mem::align_of::<YR_MATCHES>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_MATCHES))
+        concat!("Alignment of ", stringify!(YR_MATCHES))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_MATCHES>())).count as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_MATCHES>())).count as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_MATCHES),
+            stringify!(YR_MATCHES),
             "::",
             stringify!(count)
         )
     );
 }
-pub type YR_MATCHES = _YR_MATCHES;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct _YR_STRING {
+pub struct YR_STRING {
     pub g_flags: i32,
     pub length: i32,
-    pub __bindgen_anon_1: _YR_STRING__bindgen_ty_1,
-    pub __bindgen_anon_2: _YR_STRING__bindgen_ty_2,
-    pub __bindgen_anon_3: _YR_STRING__bindgen_ty_3,
+    pub __bindgen_anon_1: YR_STRING__bindgen_ty_1,
+    pub __bindgen_anon_2: YR_STRING__bindgen_ty_2,
+    pub __bindgen_anon_3: YR_STRING__bindgen_ty_3,
+    pub __bindgen_anon_4: YR_STRING__bindgen_ty_4,
     pub chain_gap_min: i32,
     pub chain_gap_max: i32,
     pub fixed_offset: i64,
     pub matches: [YR_MATCHES; 32usize],
+    pub private_matches: [YR_MATCHES; 32usize],
     pub unconfirmed_matches: [YR_MATCHES; 32usize],
-    pub clock_ticks: u64,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _YR_STRING__bindgen_ty_1 {
+pub union YR_STRING__bindgen_ty_1 {
     pub identifier: *mut ::std::os::raw::c_char,
     pub identifier_: i64,
     _bindgen_union_align: u64,
 }
 #[test]
-fn bindgen_test_layout__YR_STRING__bindgen_ty_1() {
+fn bindgen_test_layout_YR_STRING__bindgen_ty_1() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_STRING__bindgen_ty_1>(),
+        ::std::mem::size_of::<YR_STRING__bindgen_ty_1>(),
         8usize,
-        concat!("Size of: ", stringify!(_YR_STRING__bindgen_ty_1))
+        concat!("Size of: ", stringify!(YR_STRING__bindgen_ty_1))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_STRING__bindgen_ty_1>(),
+        ::std::mem::align_of::<YR_STRING__bindgen_ty_1>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_STRING__bindgen_ty_1))
+        concat!("Alignment of ", stringify!(YR_STRING__bindgen_ty_1))
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<_YR_STRING__bindgen_ty_1>())).identifier as *const _ as usize
+            &(*(::std::ptr::null::<YR_STRING__bindgen_ty_1>())).identifier as *const _ as usize
         },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_STRING__bindgen_ty_1),
+            stringify!(YR_STRING__bindgen_ty_1),
             "::",
             stringify!(identifier)
         )
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<_YR_STRING__bindgen_ty_1>())).identifier_ as *const _ as usize
+            &(*(::std::ptr::null::<YR_STRING__bindgen_ty_1>())).identifier_ as *const _ as usize
         },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_STRING__bindgen_ty_1),
+            stringify!(YR_STRING__bindgen_ty_1),
             "::",
             stringify!(identifier_)
         )
@@ -1101,41 +1104,39 @@ fn bindgen_test_layout__YR_STRING__bindgen_ty_1() {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _YR_STRING__bindgen_ty_2 {
+pub union YR_STRING__bindgen_ty_2 {
     pub string: *mut u8,
     pub string_: i64,
     _bindgen_union_align: u64,
 }
 #[test]
-fn bindgen_test_layout__YR_STRING__bindgen_ty_2() {
+fn bindgen_test_layout_YR_STRING__bindgen_ty_2() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_STRING__bindgen_ty_2>(),
+        ::std::mem::size_of::<YR_STRING__bindgen_ty_2>(),
         8usize,
-        concat!("Size of: ", stringify!(_YR_STRING__bindgen_ty_2))
+        concat!("Size of: ", stringify!(YR_STRING__bindgen_ty_2))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_STRING__bindgen_ty_2>(),
+        ::std::mem::align_of::<YR_STRING__bindgen_ty_2>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_STRING__bindgen_ty_2))
+        concat!("Alignment of ", stringify!(YR_STRING__bindgen_ty_2))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_STRING__bindgen_ty_2>())).string as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_STRING__bindgen_ty_2>())).string as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_STRING__bindgen_ty_2),
+            stringify!(YR_STRING__bindgen_ty_2),
             "::",
             stringify!(string)
         )
     );
     assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<_YR_STRING__bindgen_ty_2>())).string_ as *const _ as usize
-        },
+        unsafe { &(*(::std::ptr::null::<YR_STRING__bindgen_ty_2>())).string_ as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_STRING__bindgen_ty_2),
+            stringify!(YR_STRING__bindgen_ty_2),
             "::",
             stringify!(string_)
         )
@@ -1143,193 +1144,234 @@ fn bindgen_test_layout__YR_STRING__bindgen_ty_2() {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _YR_STRING__bindgen_ty_3 {
-    pub chained_to: *mut _YR_STRING,
+pub union YR_STRING__bindgen_ty_3 {
+    pub chained_to: *mut YR_STRING,
     pub chained_to_: i64,
     _bindgen_union_align: u64,
 }
 #[test]
-fn bindgen_test_layout__YR_STRING__bindgen_ty_3() {
+fn bindgen_test_layout_YR_STRING__bindgen_ty_3() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_STRING__bindgen_ty_3>(),
+        ::std::mem::size_of::<YR_STRING__bindgen_ty_3>(),
         8usize,
-        concat!("Size of: ", stringify!(_YR_STRING__bindgen_ty_3))
+        concat!("Size of: ", stringify!(YR_STRING__bindgen_ty_3))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_STRING__bindgen_ty_3>(),
+        ::std::mem::align_of::<YR_STRING__bindgen_ty_3>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_STRING__bindgen_ty_3))
+        concat!("Alignment of ", stringify!(YR_STRING__bindgen_ty_3))
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<_YR_STRING__bindgen_ty_3>())).chained_to as *const _ as usize
+            &(*(::std::ptr::null::<YR_STRING__bindgen_ty_3>())).chained_to as *const _ as usize
         },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_STRING__bindgen_ty_3),
+            stringify!(YR_STRING__bindgen_ty_3),
             "::",
             stringify!(chained_to)
         )
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<_YR_STRING__bindgen_ty_3>())).chained_to_ as *const _ as usize
+            &(*(::std::ptr::null::<YR_STRING__bindgen_ty_3>())).chained_to_ as *const _ as usize
         },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_STRING__bindgen_ty_3),
+            stringify!(YR_STRING__bindgen_ty_3),
             "::",
             stringify!(chained_to_)
         )
     );
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union YR_STRING__bindgen_ty_4 {
+    pub rule: *mut YR_RULE,
+    pub rule_: i64,
+    _bindgen_union_align: u64,
+}
 #[test]
-fn bindgen_test_layout__YR_STRING() {
+fn bindgen_test_layout_YR_STRING__bindgen_ty_4() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_STRING>(),
-        1592usize,
-        concat!("Size of: ", stringify!(_YR_STRING))
-    );
-    assert_eq!(
-        ::std::mem::align_of::<_YR_STRING>(),
+        ::std::mem::size_of::<YR_STRING__bindgen_ty_4>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_STRING))
+        concat!("Size of: ", stringify!(YR_STRING__bindgen_ty_4))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_STRING>())).g_flags as *const _ as usize },
+        ::std::mem::align_of::<YR_STRING__bindgen_ty_4>(),
+        8usize,
+        concat!("Alignment of ", stringify!(YR_STRING__bindgen_ty_4))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<YR_STRING__bindgen_ty_4>())).rule as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_STRING),
+            stringify!(YR_STRING__bindgen_ty_4),
+            "::",
+            stringify!(rule)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<YR_STRING__bindgen_ty_4>())).rule_ as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_STRING__bindgen_ty_4),
+            "::",
+            stringify!(rule_)
+        )
+    );
+}
+#[test]
+fn bindgen_test_layout_YR_STRING() {
+    assert_eq!(
+        ::std::mem::size_of::<YR_STRING>(),
+        2360usize,
+        concat!("Size of: ", stringify!(YR_STRING))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<YR_STRING>(),
+        8usize,
+        concat!("Alignment of ", stringify!(YR_STRING))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<YR_STRING>())).g_flags as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_STRING),
             "::",
             stringify!(g_flags)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_STRING>())).length as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_STRING>())).length as *const _ as usize },
         4usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_STRING),
+            stringify!(YR_STRING),
             "::",
             stringify!(length)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_STRING>())).chain_gap_min as *const _ as usize },
-        32usize,
+        unsafe { &(*(::std::ptr::null::<YR_STRING>())).chain_gap_min as *const _ as usize },
+        40usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_STRING),
+            stringify!(YR_STRING),
             "::",
             stringify!(chain_gap_min)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_STRING>())).chain_gap_max as *const _ as usize },
-        36usize,
+        unsafe { &(*(::std::ptr::null::<YR_STRING>())).chain_gap_max as *const _ as usize },
+        44usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_STRING),
+            stringify!(YR_STRING),
             "::",
             stringify!(chain_gap_max)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_STRING>())).fixed_offset as *const _ as usize },
-        40usize,
+        unsafe { &(*(::std::ptr::null::<YR_STRING>())).fixed_offset as *const _ as usize },
+        48usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_STRING),
+            stringify!(YR_STRING),
             "::",
             stringify!(fixed_offset)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_STRING>())).matches as *const _ as usize },
-        48usize,
+        unsafe { &(*(::std::ptr::null::<YR_STRING>())).matches as *const _ as usize },
+        56usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_STRING),
+            stringify!(YR_STRING),
             "::",
             stringify!(matches)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_STRING>())).unconfirmed_matches as *const _ as usize },
-        816usize,
+        unsafe { &(*(::std::ptr::null::<YR_STRING>())).private_matches as *const _ as usize },
+        824usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_STRING),
+            stringify!(YR_STRING),
+            "::",
+            stringify!(private_matches)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<YR_STRING>())).unconfirmed_matches as *const _ as usize },
+        1592usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_STRING),
             "::",
             stringify!(unconfirmed_matches)
         )
     );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_STRING>())).clock_ticks as *const _ as usize },
-        1584usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_YR_STRING),
-            "::",
-            stringify!(clock_ticks)
-        )
-    );
 }
-pub type YR_STRING = _YR_STRING;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct _YR_RULE {
+pub struct YR_RULE {
     pub g_flags: i32,
     pub t_flags: [i32; 32usize],
-    pub __bindgen_anon_1: _YR_RULE__bindgen_ty_1,
-    pub __bindgen_anon_2: _YR_RULE__bindgen_ty_2,
-    pub __bindgen_anon_3: _YR_RULE__bindgen_ty_3,
-    pub __bindgen_anon_4: _YR_RULE__bindgen_ty_4,
-    pub __bindgen_anon_5: _YR_RULE__bindgen_ty_5,
-    pub clock_ticks: clock_t,
+    pub __bindgen_anon_1: YR_RULE__bindgen_ty_1,
+    pub __bindgen_anon_2: YR_RULE__bindgen_ty_2,
+    pub __bindgen_anon_3: YR_RULE__bindgen_ty_3,
+    pub __bindgen_anon_4: YR_RULE__bindgen_ty_4,
+    pub __bindgen_anon_5: YR_RULE__bindgen_ty_5,
+    pub num_atoms: i32,
+    pub time_cost: i64,
+    pub time_cost_per_thread: [i64; 32usize],
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _YR_RULE__bindgen_ty_1 {
+pub union YR_RULE__bindgen_ty_1 {
     pub identifier: *const ::std::os::raw::c_char,
     pub identifier_: i64,
     _bindgen_union_align: u64,
 }
 #[test]
-fn bindgen_test_layout__YR_RULE__bindgen_ty_1() {
+fn bindgen_test_layout_YR_RULE__bindgen_ty_1() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_RULE__bindgen_ty_1>(),
+        ::std::mem::size_of::<YR_RULE__bindgen_ty_1>(),
         8usize,
-        concat!("Size of: ", stringify!(_YR_RULE__bindgen_ty_1))
+        concat!("Size of: ", stringify!(YR_RULE__bindgen_ty_1))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_RULE__bindgen_ty_1>(),
+        ::std::mem::align_of::<YR_RULE__bindgen_ty_1>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_RULE__bindgen_ty_1))
+        concat!("Alignment of ", stringify!(YR_RULE__bindgen_ty_1))
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<_YR_RULE__bindgen_ty_1>())).identifier as *const _ as usize
+            &(*(::std::ptr::null::<YR_RULE__bindgen_ty_1>())).identifier as *const _ as usize
         },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULE__bindgen_ty_1),
+            stringify!(YR_RULE__bindgen_ty_1),
             "::",
             stringify!(identifier)
         )
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<_YR_RULE__bindgen_ty_1>())).identifier_ as *const _ as usize
+            &(*(::std::ptr::null::<YR_RULE__bindgen_ty_1>())).identifier_ as *const _ as usize
         },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULE__bindgen_ty_1),
+            stringify!(YR_RULE__bindgen_ty_1),
             "::",
             stringify!(identifier_)
         )
@@ -1337,39 +1379,39 @@ fn bindgen_test_layout__YR_RULE__bindgen_ty_1() {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _YR_RULE__bindgen_ty_2 {
+pub union YR_RULE__bindgen_ty_2 {
     pub tags: *const ::std::os::raw::c_char,
     pub tags_: i64,
     _bindgen_union_align: u64,
 }
 #[test]
-fn bindgen_test_layout__YR_RULE__bindgen_ty_2() {
+fn bindgen_test_layout_YR_RULE__bindgen_ty_2() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_RULE__bindgen_ty_2>(),
+        ::std::mem::size_of::<YR_RULE__bindgen_ty_2>(),
         8usize,
-        concat!("Size of: ", stringify!(_YR_RULE__bindgen_ty_2))
+        concat!("Size of: ", stringify!(YR_RULE__bindgen_ty_2))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_RULE__bindgen_ty_2>(),
+        ::std::mem::align_of::<YR_RULE__bindgen_ty_2>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_RULE__bindgen_ty_2))
+        concat!("Alignment of ", stringify!(YR_RULE__bindgen_ty_2))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULE__bindgen_ty_2>())).tags as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULE__bindgen_ty_2>())).tags as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULE__bindgen_ty_2),
+            stringify!(YR_RULE__bindgen_ty_2),
             "::",
             stringify!(tags)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULE__bindgen_ty_2>())).tags_ as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULE__bindgen_ty_2>())).tags_ as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULE__bindgen_ty_2),
+            stringify!(YR_RULE__bindgen_ty_2),
             "::",
             stringify!(tags_)
         )
@@ -1377,39 +1419,39 @@ fn bindgen_test_layout__YR_RULE__bindgen_ty_2() {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _YR_RULE__bindgen_ty_3 {
+pub union YR_RULE__bindgen_ty_3 {
     pub metas: *mut YR_META,
     pub metas_: i64,
     _bindgen_union_align: u64,
 }
 #[test]
-fn bindgen_test_layout__YR_RULE__bindgen_ty_3() {
+fn bindgen_test_layout_YR_RULE__bindgen_ty_3() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_RULE__bindgen_ty_3>(),
+        ::std::mem::size_of::<YR_RULE__bindgen_ty_3>(),
         8usize,
-        concat!("Size of: ", stringify!(_YR_RULE__bindgen_ty_3))
+        concat!("Size of: ", stringify!(YR_RULE__bindgen_ty_3))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_RULE__bindgen_ty_3>(),
+        ::std::mem::align_of::<YR_RULE__bindgen_ty_3>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_RULE__bindgen_ty_3))
+        concat!("Alignment of ", stringify!(YR_RULE__bindgen_ty_3))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULE__bindgen_ty_3>())).metas as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULE__bindgen_ty_3>())).metas as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULE__bindgen_ty_3),
+            stringify!(YR_RULE__bindgen_ty_3),
             "::",
             stringify!(metas)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULE__bindgen_ty_3>())).metas_ as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULE__bindgen_ty_3>())).metas_ as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULE__bindgen_ty_3),
+            stringify!(YR_RULE__bindgen_ty_3),
             "::",
             stringify!(metas_)
         )
@@ -1417,39 +1459,39 @@ fn bindgen_test_layout__YR_RULE__bindgen_ty_3() {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _YR_RULE__bindgen_ty_4 {
+pub union YR_RULE__bindgen_ty_4 {
     pub strings: *mut YR_STRING,
     pub strings_: i64,
     _bindgen_union_align: u64,
 }
 #[test]
-fn bindgen_test_layout__YR_RULE__bindgen_ty_4() {
+fn bindgen_test_layout_YR_RULE__bindgen_ty_4() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_RULE__bindgen_ty_4>(),
+        ::std::mem::size_of::<YR_RULE__bindgen_ty_4>(),
         8usize,
-        concat!("Size of: ", stringify!(_YR_RULE__bindgen_ty_4))
+        concat!("Size of: ", stringify!(YR_RULE__bindgen_ty_4))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_RULE__bindgen_ty_4>(),
+        ::std::mem::align_of::<YR_RULE__bindgen_ty_4>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_RULE__bindgen_ty_4))
+        concat!("Alignment of ", stringify!(YR_RULE__bindgen_ty_4))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULE__bindgen_ty_4>())).strings as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULE__bindgen_ty_4>())).strings as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULE__bindgen_ty_4),
+            stringify!(YR_RULE__bindgen_ty_4),
             "::",
             stringify!(strings)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULE__bindgen_ty_4>())).strings_ as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULE__bindgen_ty_4>())).strings_ as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULE__bindgen_ty_4),
+            stringify!(YR_RULE__bindgen_ty_4),
             "::",
             stringify!(strings_)
         )
@@ -1457,149 +1499,169 @@ fn bindgen_test_layout__YR_RULE__bindgen_ty_4() {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _YR_RULE__bindgen_ty_5 {
+pub union YR_RULE__bindgen_ty_5 {
     pub ns: *mut YR_NAMESPACE,
     pub ns_: i64,
     _bindgen_union_align: u64,
 }
 #[test]
-fn bindgen_test_layout__YR_RULE__bindgen_ty_5() {
+fn bindgen_test_layout_YR_RULE__bindgen_ty_5() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_RULE__bindgen_ty_5>(),
+        ::std::mem::size_of::<YR_RULE__bindgen_ty_5>(),
         8usize,
-        concat!("Size of: ", stringify!(_YR_RULE__bindgen_ty_5))
+        concat!("Size of: ", stringify!(YR_RULE__bindgen_ty_5))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_RULE__bindgen_ty_5>(),
+        ::std::mem::align_of::<YR_RULE__bindgen_ty_5>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_RULE__bindgen_ty_5))
+        concat!("Alignment of ", stringify!(YR_RULE__bindgen_ty_5))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULE__bindgen_ty_5>())).ns as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULE__bindgen_ty_5>())).ns as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULE__bindgen_ty_5),
+            stringify!(YR_RULE__bindgen_ty_5),
             "::",
             stringify!(ns)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULE__bindgen_ty_5>())).ns_ as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULE__bindgen_ty_5>())).ns_ as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULE__bindgen_ty_5),
+            stringify!(YR_RULE__bindgen_ty_5),
             "::",
             stringify!(ns_)
         )
     );
 }
 #[test]
-fn bindgen_test_layout__YR_RULE() {
+fn bindgen_test_layout_YR_RULE() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_RULE>(),
-        184usize,
-        concat!("Size of: ", stringify!(_YR_RULE))
+        ::std::mem::size_of::<YR_RULE>(),
+        448usize,
+        concat!("Size of: ", stringify!(YR_RULE))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_RULE>(),
+        ::std::mem::align_of::<YR_RULE>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_RULE))
+        concat!("Alignment of ", stringify!(YR_RULE))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULE>())).g_flags as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULE>())).g_flags as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULE),
+            stringify!(YR_RULE),
             "::",
             stringify!(g_flags)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULE>())).t_flags as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULE>())).t_flags as *const _ as usize },
         4usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULE),
+            stringify!(YR_RULE),
             "::",
             stringify!(t_flags)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULE>())).clock_ticks as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULE>())).num_atoms as *const _ as usize },
         176usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULE),
+            stringify!(YR_RULE),
             "::",
-            stringify!(clock_ticks)
+            stringify!(num_atoms)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<YR_RULE>())).time_cost as *const _ as usize },
+        184usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULE),
+            "::",
+            stringify!(time_cost)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<YR_RULE>())).time_cost_per_thread as *const _ as usize },
+        192usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULE),
+            "::",
+            stringify!(time_cost_per_thread)
         )
     );
 }
-pub type YR_RULE = _YR_RULE;
 #[repr(C)]
-#[repr(align(8))]
-#[derive(Debug, Copy, Clone)]
-pub struct _YR_EXTERNAL_VARIABLE {
-    pub _bindgen_opaque_blob: [u64; 3usize],
+#[derive(Copy, Clone)]
+pub struct YR_EXTERNAL_VARIABLE {
+    pub type_: i32,
+    pub value: YR_EXTERNAL_VARIABLE__bindgen_ty_1,
+    pub __bindgen_anon_1: YR_EXTERNAL_VARIABLE__bindgen_ty_2,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _YR_EXTERNAL_VARIABLE__bindgen_ty_1 {
+pub union YR_EXTERNAL_VARIABLE__bindgen_ty_1 {
     pub i: i64,
     pub f: f64,
     pub s: *mut ::std::os::raw::c_char,
     _bindgen_union_align: u64,
 }
 #[test]
-fn bindgen_test_layout__YR_EXTERNAL_VARIABLE__bindgen_ty_1() {
+fn bindgen_test_layout_YR_EXTERNAL_VARIABLE__bindgen_ty_1() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_EXTERNAL_VARIABLE__bindgen_ty_1>(),
+        ::std::mem::size_of::<YR_EXTERNAL_VARIABLE__bindgen_ty_1>(),
         8usize,
-        concat!("Size of: ", stringify!(_YR_EXTERNAL_VARIABLE__bindgen_ty_1))
+        concat!("Size of: ", stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_1))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_EXTERNAL_VARIABLE__bindgen_ty_1>(),
+        ::std::mem::align_of::<YR_EXTERNAL_VARIABLE__bindgen_ty_1>(),
         8usize,
         concat!(
             "Alignment of ",
-            stringify!(_YR_EXTERNAL_VARIABLE__bindgen_ty_1)
+            stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_1)
         )
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<_YR_EXTERNAL_VARIABLE__bindgen_ty_1>())).i as *const _ as usize
+            &(*(::std::ptr::null::<YR_EXTERNAL_VARIABLE__bindgen_ty_1>())).i as *const _ as usize
         },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_EXTERNAL_VARIABLE__bindgen_ty_1),
+            stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_1),
             "::",
             stringify!(i)
         )
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<_YR_EXTERNAL_VARIABLE__bindgen_ty_1>())).f as *const _ as usize
+            &(*(::std::ptr::null::<YR_EXTERNAL_VARIABLE__bindgen_ty_1>())).f as *const _ as usize
         },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_EXTERNAL_VARIABLE__bindgen_ty_1),
+            stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_1),
             "::",
             stringify!(f)
         )
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<_YR_EXTERNAL_VARIABLE__bindgen_ty_1>())).s as *const _ as usize
+            &(*(::std::ptr::null::<YR_EXTERNAL_VARIABLE__bindgen_ty_1>())).s as *const _ as usize
         },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_EXTERNAL_VARIABLE__bindgen_ty_1),
+            stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_1),
             "::",
             stringify!(s)
         )
@@ -1607,281 +1669,724 @@ fn bindgen_test_layout__YR_EXTERNAL_VARIABLE__bindgen_ty_1() {
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _YR_EXTERNAL_VARIABLE__bindgen_ty_2 {
-    pub identifier: *mut ::std::os::raw::c_char,
+pub union YR_EXTERNAL_VARIABLE__bindgen_ty_2 {
+    pub identifier: *const ::std::os::raw::c_char,
     pub identifier_: i64,
     _bindgen_union_align: u64,
 }
 #[test]
-fn bindgen_test_layout__YR_EXTERNAL_VARIABLE__bindgen_ty_2() {
+fn bindgen_test_layout_YR_EXTERNAL_VARIABLE__bindgen_ty_2() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_EXTERNAL_VARIABLE__bindgen_ty_2>(),
+        ::std::mem::size_of::<YR_EXTERNAL_VARIABLE__bindgen_ty_2>(),
         8usize,
-        concat!("Size of: ", stringify!(_YR_EXTERNAL_VARIABLE__bindgen_ty_2))
+        concat!("Size of: ", stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_2))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_EXTERNAL_VARIABLE__bindgen_ty_2>(),
+        ::std::mem::align_of::<YR_EXTERNAL_VARIABLE__bindgen_ty_2>(),
         8usize,
         concat!(
             "Alignment of ",
-            stringify!(_YR_EXTERNAL_VARIABLE__bindgen_ty_2)
+            stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_2)
         )
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<_YR_EXTERNAL_VARIABLE__bindgen_ty_2>())).identifier as *const _
+            &(*(::std::ptr::null::<YR_EXTERNAL_VARIABLE__bindgen_ty_2>())).identifier as *const _
                 as usize
         },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_EXTERNAL_VARIABLE__bindgen_ty_2),
+            stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_2),
             "::",
             stringify!(identifier)
         )
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<_YR_EXTERNAL_VARIABLE__bindgen_ty_2>())).identifier_ as *const _
+            &(*(::std::ptr::null::<YR_EXTERNAL_VARIABLE__bindgen_ty_2>())).identifier_ as *const _
                 as usize
         },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_EXTERNAL_VARIABLE__bindgen_ty_2),
+            stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_2),
             "::",
             stringify!(identifier_)
         )
     );
 }
 #[test]
-fn bindgen_test_layout__YR_EXTERNAL_VARIABLE() {
+fn bindgen_test_layout_YR_EXTERNAL_VARIABLE() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_EXTERNAL_VARIABLE>(),
+        ::std::mem::size_of::<YR_EXTERNAL_VARIABLE>(),
         24usize,
-        concat!("Size of: ", stringify!(_YR_EXTERNAL_VARIABLE))
+        concat!("Size of: ", stringify!(YR_EXTERNAL_VARIABLE))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_EXTERNAL_VARIABLE>(),
+        ::std::mem::align_of::<YR_EXTERNAL_VARIABLE>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_EXTERNAL_VARIABLE))
+        concat!("Alignment of ", stringify!(YR_EXTERNAL_VARIABLE))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<YR_EXTERNAL_VARIABLE>())).type_ as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_EXTERNAL_VARIABLE),
+            "::",
+            stringify!(type_)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<YR_EXTERNAL_VARIABLE>())).value as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_EXTERNAL_VARIABLE),
+            "::",
+            stringify!(value)
+        )
     );
 }
-pub type YR_EXTERNAL_VARIABLE = _YR_EXTERNAL_VARIABLE;
 pub type YR_AC_TRANSITION_TABLE = u64;
 pub type YR_AC_MATCH_TABLE = u64;
 #[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RE_NODE {
+    pub type_: ::std::os::raw::c_int,
+    pub __bindgen_anon_1: RE_NODE__bindgen_ty_1,
+    pub __bindgen_anon_2: RE_NODE__bindgen_ty_2,
+    pub greedy: ::std::os::raw::c_int,
+    pub re_class: *mut RE_CLASS,
+    pub children_head: *mut RE_NODE,
+    pub children_tail: *mut RE_NODE,
+    pub prev_sibling: *mut RE_NODE,
+    pub next_sibling: *mut RE_NODE,
+    pub forward_code: *mut u8,
+    pub backward_code: *mut u8,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union RE_NODE__bindgen_ty_1 {
+    pub value: ::std::os::raw::c_int,
+    pub count: ::std::os::raw::c_int,
+    pub start: ::std::os::raw::c_int,
+    _bindgen_union_align: u32,
+}
+#[test]
+fn bindgen_test_layout_RE_NODE__bindgen_ty_1() {
+    assert_eq!(
+        ::std::mem::size_of::<RE_NODE__bindgen_ty_1>(),
+        4usize,
+        concat!("Size of: ", stringify!(RE_NODE__bindgen_ty_1))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<RE_NODE__bindgen_ty_1>(),
+        4usize,
+        concat!("Alignment of ", stringify!(RE_NODE__bindgen_ty_1))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_NODE__bindgen_ty_1>())).value as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_NODE__bindgen_ty_1),
+            "::",
+            stringify!(value)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_NODE__bindgen_ty_1>())).count as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_NODE__bindgen_ty_1),
+            "::",
+            stringify!(count)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_NODE__bindgen_ty_1>())).start as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_NODE__bindgen_ty_1),
+            "::",
+            stringify!(start)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union RE_NODE__bindgen_ty_2 {
+    pub mask: ::std::os::raw::c_int,
+    pub end: ::std::os::raw::c_int,
+    _bindgen_union_align: u32,
+}
+#[test]
+fn bindgen_test_layout_RE_NODE__bindgen_ty_2() {
+    assert_eq!(
+        ::std::mem::size_of::<RE_NODE__bindgen_ty_2>(),
+        4usize,
+        concat!("Size of: ", stringify!(RE_NODE__bindgen_ty_2))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<RE_NODE__bindgen_ty_2>(),
+        4usize,
+        concat!("Alignment of ", stringify!(RE_NODE__bindgen_ty_2))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_NODE__bindgen_ty_2>())).mask as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_NODE__bindgen_ty_2),
+            "::",
+            stringify!(mask)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_NODE__bindgen_ty_2>())).end as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_NODE__bindgen_ty_2),
+            "::",
+            stringify!(end)
+        )
+    );
+}
+#[test]
+fn bindgen_test_layout_RE_NODE() {
+    assert_eq!(
+        ::std::mem::size_of::<RE_NODE>(),
+        72usize,
+        concat!("Size of: ", stringify!(RE_NODE))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<RE_NODE>(),
+        8usize,
+        concat!("Alignment of ", stringify!(RE_NODE))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_NODE>())).type_ as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(type_)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_NODE>())).greedy as *const _ as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(greedy)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_NODE>())).re_class as *const _ as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(re_class)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_NODE>())).children_head as *const _ as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(children_head)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_NODE>())).children_tail as *const _ as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(children_tail)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_NODE>())).prev_sibling as *const _ as usize },
+        40usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(prev_sibling)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_NODE>())).next_sibling as *const _ as usize },
+        48usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(next_sibling)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_NODE>())).forward_code as *const _ as usize },
+        56usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(forward_code)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_NODE>())).backward_code as *const _ as usize },
+        64usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(backward_code)
+        )
+    );
+}
+#[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct _YR_MATCH {
+pub struct RE_CLASS {
+    pub negated: u8,
+    pub bitmap: [u8; 32usize],
+}
+#[test]
+fn bindgen_test_layout_RE_CLASS() {
+    assert_eq!(
+        ::std::mem::size_of::<RE_CLASS>(),
+        33usize,
+        concat!("Size of: ", stringify!(RE_CLASS))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<RE_CLASS>(),
+        1usize,
+        concat!("Alignment of ", stringify!(RE_CLASS))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_CLASS>())).negated as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_CLASS),
+            "::",
+            stringify!(negated)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_CLASS>())).bitmap as *const _ as usize },
+        1usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_CLASS),
+            "::",
+            stringify!(bitmap)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct RE_AST {
+    pub flags: u32,
+    pub root_node: *mut RE_NODE,
+}
+#[test]
+fn bindgen_test_layout_RE_AST() {
+    assert_eq!(
+        ::std::mem::size_of::<RE_AST>(),
+        16usize,
+        concat!("Size of: ", stringify!(RE_AST))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<RE_AST>(),
+        8usize,
+        concat!("Alignment of ", stringify!(RE_AST))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_AST>())).flags as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_AST),
+            "::",
+            stringify!(flags)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_AST>())).root_node as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_AST),
+            "::",
+            stringify!(root_node)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct YR_MATCH {
     pub base: i64,
     pub offset: i64,
     pub match_length: i32,
     pub data_length: i32,
     pub data: *const u8,
     pub chain_length: i32,
-    pub prev: *mut _YR_MATCH,
-    pub next: *mut _YR_MATCH,
+    pub prev: *mut YR_MATCH,
+    pub next: *mut YR_MATCH,
 }
 #[test]
-fn bindgen_test_layout__YR_MATCH() {
+fn bindgen_test_layout_YR_MATCH() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_MATCH>(),
+        ::std::mem::size_of::<YR_MATCH>(),
         56usize,
-        concat!("Size of: ", stringify!(_YR_MATCH))
+        concat!("Size of: ", stringify!(YR_MATCH))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_MATCH>(),
+        ::std::mem::align_of::<YR_MATCH>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_MATCH))
+        concat!("Alignment of ", stringify!(YR_MATCH))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_MATCH>())).base as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_MATCH>())).base as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_MATCH),
+            stringify!(YR_MATCH),
             "::",
             stringify!(base)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_MATCH>())).offset as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_MATCH>())).offset as *const _ as usize },
         8usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_MATCH),
+            stringify!(YR_MATCH),
             "::",
             stringify!(offset)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_MATCH>())).match_length as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_MATCH>())).match_length as *const _ as usize },
         16usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_MATCH),
+            stringify!(YR_MATCH),
             "::",
             stringify!(match_length)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_MATCH>())).data_length as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_MATCH>())).data_length as *const _ as usize },
         20usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_MATCH),
+            stringify!(YR_MATCH),
             "::",
             stringify!(data_length)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_MATCH>())).data as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_MATCH>())).data as *const _ as usize },
         24usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_MATCH),
+            stringify!(YR_MATCH),
             "::",
             stringify!(data)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_MATCH>())).chain_length as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_MATCH>())).chain_length as *const _ as usize },
         32usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_MATCH),
+            stringify!(YR_MATCH),
             "::",
             stringify!(chain_length)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_MATCH>())).prev as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_MATCH>())).prev as *const _ as usize },
         40usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_MATCH),
+            stringify!(YR_MATCH),
             "::",
             stringify!(prev)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_MATCH>())).next as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_MATCH>())).next as *const _ as usize },
         48usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_MATCH),
+            stringify!(YR_MATCH),
             "::",
             stringify!(next)
         )
     );
 }
-pub type YR_MATCH = _YR_MATCH;
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct _YR_RULES {
+pub struct YR_RULES {
     pub tidx_mask: [::std::os::raw::c_uchar; 4usize],
     pub code_start: *const u8,
     pub mutex: YR_MUTEX,
     pub arena: *mut YR_ARENA,
     pub rules_list_head: *mut YR_RULE,
     pub externals_list_head: *mut YR_EXTERNAL_VARIABLE,
-    pub transition_table: YR_AC_TRANSITION_TABLE,
-    pub match_table: YR_AC_MATCH_TABLE,
+    pub ac_transition_table: YR_AC_TRANSITION_TABLE,
+    pub ac_match_table: YR_AC_MATCH_TABLE,
+    pub ac_tables_size: u32,
+    pub time_cost: u64,
 }
 #[test]
-fn bindgen_test_layout__YR_RULES() {
+fn bindgen_test_layout_YR_RULES() {
     assert_eq!(
-        ::std::mem::size_of::<_YR_RULES>(),
-        96usize,
-        concat!("Size of: ", stringify!(_YR_RULES))
+        ::std::mem::size_of::<YR_RULES>(),
+        112usize,
+        concat!("Size of: ", stringify!(YR_RULES))
     );
     assert_eq!(
-        ::std::mem::align_of::<_YR_RULES>(),
+        ::std::mem::align_of::<YR_RULES>(),
         8usize,
-        concat!("Alignment of ", stringify!(_YR_RULES))
+        concat!("Alignment of ", stringify!(YR_RULES))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULES>())).tidx_mask as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULES>())).tidx_mask as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULES),
+            stringify!(YR_RULES),
             "::",
             stringify!(tidx_mask)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULES>())).code_start as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULES>())).code_start as *const _ as usize },
         8usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULES),
+            stringify!(YR_RULES),
             "::",
             stringify!(code_start)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULES>())).mutex as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULES>())).mutex as *const _ as usize },
         16usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULES),
+            stringify!(YR_RULES),
             "::",
             stringify!(mutex)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULES>())).arena as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULES>())).arena as *const _ as usize },
         56usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULES),
+            stringify!(YR_RULES),
             "::",
             stringify!(arena)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULES>())).rules_list_head as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULES>())).rules_list_head as *const _ as usize },
         64usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULES),
+            stringify!(YR_RULES),
             "::",
             stringify!(rules_list_head)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULES>())).externals_list_head as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULES>())).externals_list_head as *const _ as usize },
         72usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULES),
+            stringify!(YR_RULES),
             "::",
             stringify!(externals_list_head)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULES>())).transition_table as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULES>())).ac_transition_table as *const _ as usize },
         80usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULES),
+            stringify!(YR_RULES),
             "::",
-            stringify!(transition_table)
+            stringify!(ac_transition_table)
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_RULES>())).match_table as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<YR_RULES>())).ac_match_table as *const _ as usize },
         88usize,
         concat!(
             "Offset of field: ",
-            stringify!(_YR_RULES),
+            stringify!(YR_RULES),
             "::",
-            stringify!(match_table)
+            stringify!(ac_match_table)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<YR_RULES>())).ac_tables_size as *const _ as usize },
+        96usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES),
+            "::",
+            stringify!(ac_tables_size)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<YR_RULES>())).time_cost as *const _ as usize },
+        104usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES),
+            "::",
+            stringify!(time_cost)
         )
     );
 }
-pub type YR_RULES = _YR_RULES;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct YR_RULES_STATS {
+    pub rules: u32,
+    pub strings: u32,
+    pub ac_matches: u32,
+    pub ac_root_match_list_length: u32,
+    pub ac_average_match_list_length: f32,
+    pub top_ac_match_list_lengths: [u32; 100usize],
+    pub ac_match_list_length_pctls: [u32; 101usize],
+    pub ac_tables_size: u32,
+}
+#[test]
+fn bindgen_test_layout_YR_RULES_STATS() {
+    assert_eq!(
+        ::std::mem::size_of::<YR_RULES_STATS>(),
+        828usize,
+        concat!("Size of: ", stringify!(YR_RULES_STATS))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<YR_RULES_STATS>(),
+        4usize,
+        concat!("Alignment of ", stringify!(YR_RULES_STATS))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<YR_RULES_STATS>())).rules as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES_STATS),
+            "::",
+            stringify!(rules)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<YR_RULES_STATS>())).strings as *const _ as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES_STATS),
+            "::",
+            stringify!(strings)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<YR_RULES_STATS>())).ac_matches as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES_STATS),
+            "::",
+            stringify!(ac_matches)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<YR_RULES_STATS>())).ac_root_match_list_length as *const _
+                as usize
+        },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES_STATS),
+            "::",
+            stringify!(ac_root_match_list_length)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<YR_RULES_STATS>())).ac_average_match_list_length as *const _
+                as usize
+        },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES_STATS),
+            "::",
+            stringify!(ac_average_match_list_length)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<YR_RULES_STATS>())).top_ac_match_list_lengths as *const _
+                as usize
+        },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES_STATS),
+            "::",
+            stringify!(top_ac_match_list_lengths)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<YR_RULES_STATS>())).ac_match_list_length_pctls as *const _
+                as usize
+        },
+        420usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES_STATS),
+            "::",
+            stringify!(ac_match_list_length_pctls)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<YR_RULES_STATS>())).ac_tables_size as *const _ as usize },
+        824usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES_STATS),
+            "::",
+            stringify!(ac_tables_size)
+        )
+    );
+}
 pub type YR_CALLBACK_FUNC = ::std::option::Option<
     unsafe extern "C" fn(
         message: ::std::os::raw::c_int,
@@ -1912,7 +2417,15 @@ pub type YR_COMPILER_INCLUDE_FREE_FUNC = ::std::option::Option<
         user_data: *mut ::std::os::raw::c_void,
     ),
 >;
-pub type YR_COMPILER = [u64; 1264usize];
+pub type YR_COMPILER_RE_AST_CALLBACK_FUNC = ::std::option::Option<
+    unsafe extern "C" fn(
+        rule: *const YR_RULE,
+        string_identifier: *const ::std::os::raw::c_char,
+        re_ast: *const RE_AST,
+        user_data: *mut ::std::os::raw::c_void,
+    ),
+>;
+pub type YR_COMPILER = [u64; 1269usize];
 extern "C" {
     pub fn yr_compiler_create(compiler: *mut *mut YR_COMPILER) -> ::std::os::raw::c_int;
 }
@@ -1933,6 +2446,28 @@ extern "C" {
         include_free: YR_COMPILER_INCLUDE_FREE_FUNC,
         user_data: *mut ::std::os::raw::c_void,
     );
+}
+extern "C" {
+    pub fn yr_compiler_set_re_ast_callback(
+        compiler: *mut YR_COMPILER,
+        re_ast_callback: YR_COMPILER_RE_AST_CALLBACK_FUNC,
+        user_data: *mut ::std::os::raw::c_void,
+    );
+}
+extern "C" {
+    pub fn yr_compiler_set_atom_quality_table(
+        compiler: *mut YR_COMPILER,
+        table: *const ::std::os::raw::c_void,
+        entries: ::std::os::raw::c_int,
+        warning_threshold: ::std::os::raw::c_uchar,
+    );
+}
+extern "C" {
+    pub fn yr_compiler_load_atom_quality_table(
+        compiler: *mut YR_COMPILER,
+        filename: *const ::std::os::raw::c_char,
+        warning_threshold: ::std::os::raw::c_uchar,
+    ) -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn yr_compiler_add_file(
@@ -1966,7 +2501,7 @@ extern "C" {
 }
 extern "C" {
     pub fn yr_compiler_get_current_file_name(
-        context: *mut YR_COMPILER,
+        compiler: *mut YR_COMPILER,
     ) -> *mut ::std::os::raw::c_char;
 }
 extern "C" {
@@ -2100,7 +2635,16 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    pub fn yr_rules_reset_profiling_info(rules: *mut YR_RULES);
+}
+extern "C" {
     pub fn yr_rules_print_profiling_info(rules: *mut YR_RULES);
+}
+extern "C" {
+    pub fn yr_rules_get_stats(
+        rules: *mut YR_RULES,
+        stats: *mut YR_RULES_STATS,
+    ) -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn yr_rule_disable(rule: *mut YR_RULE);

@@ -15,6 +15,31 @@ fn main() {
 
     build::add_bindings();
 }
+
+#[cfg(any(feature = "bundled-3_7",
+	  feature = "bundled-3_11"))]
+mod build {
+    use std::env;
+    use std::fs;
+    use std::path::PathBuf;
+
+    #[cfg(feature = "bundled-3_7")]
+    const BINDING_FILE: &'static str = "yara-3.7.rs";
+
+    #[cfg(feature = "bundled-3_11")]
+    const BINDING_FILE: &'static str = "yara-3.11.rs";
+
+    pub fn add_bindings() {
+	let out_dir = env::var("OUT_DIR")
+	    .expect("$OUT_DIR should be defined");
+	let out_path = PathBuf::from(out_dir).join("bindings.rs");
+	fs::copy(PathBuf::from("bindings").join(BINDING_FILE), out_path)
+	    .expect("Could not copy bindings to output directory");
+    }
+}
+
+#[cfg(not(any(feature = "bundled-3_7",
+	      feature = "bundled-3_11")))]
 mod build {
     extern crate bindgen;
 

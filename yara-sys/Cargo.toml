@@ -10,5 +10,14 @@ keywords = ["yara", "ffi"]
 categories = ["external-ffi-bindings"]
 edition = "2018"
 
+[features]
+default = ["bindgen"]
+bundled-3_7 = []
+bundled-3_11 = []
+
 [build-dependencies]
-bindgen = "0.52"
+bindgen = { version = "0.52", optional = true }
+
+[package.metadata.docs.rs]
+no-default-features = true
+features = ["bundled-3_11"]
