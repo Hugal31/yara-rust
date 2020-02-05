@@ -144,6 +144,68 @@ extern "C" fn compile_callback(
     });
 }
 
+pub fn compiler_define_integer_variable(
+    compiler: &mut YR_COMPILER,
+    identifier: &str,
+    value: i64,
+) -> Result<(), YaraError> {
+    let identifier = CString::new(identifier).unwrap();
+    let result = unsafe {
+        yara_sys::yr_compiler_define_integer_variable(compiler, identifier.as_ptr(), value)
+    };
+    yara_sys::Error::from_code(result).map_err(Into::into)
+}
+
+pub fn compiler_define_float_variable(
+    compiler: &mut YR_COMPILER,
+    identifier: &str,
+    value: f64,
+) -> Result<(), YaraError> {
+    let identifier = CString::new(identifier).unwrap();
+    let result = unsafe {
+        yara_sys::yr_compiler_define_float_variable(compiler, identifier.as_ptr(), value)
+    };
+    yara_sys::Error::from_code(result).map_err(Into::into)
+}
+
+pub fn compiler_define_boolean_variable(
+    compiler: &mut YR_COMPILER,
+    identifier: &str,
+    value: bool,
+) -> Result<(), YaraError> {
+    let identifier = CString::new(identifier).unwrap();
+    let value = if value { 1 } else { 0 };
+    let result = unsafe {
+        yara_sys::yr_compiler_define_boolean_variable(compiler, identifier.as_ptr(), value)
+    };
+    yara_sys::Error::from_code(result).map_err(Into::into)
+}
+
+pub fn compiler_define_str_variable(
+    compiler: &mut YR_COMPILER,
+    identifier: &str,
+    value: &str,
+) -> Result<(), YaraError> {
+    let identifier = CString::new(identifier).unwrap();
+    let value = CString::new(value).unwrap();
+    let result = unsafe {
+        yara_sys::yr_compiler_define_string_variable(compiler, identifier.as_ptr(), value.as_ptr())
+    };
+    yara_sys::Error::from_code(result).map_err(Into::into)
+}
+
+pub fn compiler_define_cstr_variable(
+    compiler: &mut YR_COMPILER,
+    identifier: &str,
+    value: &CStr,
+) -> Result<(), YaraError> {
+    let identifier = CString::new(identifier).unwrap();
+    let result = unsafe {
+        yara_sys::yr_compiler_define_string_variable(compiler, identifier.as_ptr(), value.as_ptr())
+    };
+    yara_sys::Error::from_code(result).map_err(Into::into)
+}
+
 pub fn compiler_get_rules<'c, 'y: 'c>(
     compiler: &'c mut YR_COMPILER,
 ) -> Result<&'y mut YR_RULES, YaraError> {

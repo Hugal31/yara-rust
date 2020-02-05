@@ -157,7 +157,7 @@ fn test_metadata() {
     let rules = compile_and_scan(
         &mut yara,
         "
-rule is_empty {
+rule is_three_char_long {
   condition:
     filesize == 3
 }
@@ -177,8 +177,8 @@ rule contains_abc {
 
     assert_eq!(2, rules.len());
 
-    let is_empty = &rules[0];
-    assert_eq!(0, is_empty.metadatas.len());
+    let is_three_char_long = &rules[0];
+    assert_eq!(0, is_three_char_long.metadatas.len());
 
     let contains_a = &rules[1];
     assert_eq!(3, contains_a.metadatas.len());
@@ -203,4 +203,28 @@ rule contains_abc {
         },
         contains_a.metadatas[2]
     );
+}
+
+#[test]
+fn test_external_variables() {
+    let rule_definition = "
+rule IsNCharLong {
+  condition:
+    filesize == desired_length
+}
+";
+
+    let mut yara = Yara::create().unwrap();
+    let mut compiler = yara.new_compiler().expect("Should create compiler");
+    compiler
+        .define_variable("desired_length", 5)
+        .expect("Should have added a rule");
+    compiler
+        .add_rules_str(rule_definition)
+        .expect("Should parse rule");
+
+    let mut rules = compiler.compile_rules().expect("Should compile rules");
+    let result = rules.scan_mem(b"abcde", 10).expect("Should scan");
+
+    assert_eq!(1, result.len());
 }

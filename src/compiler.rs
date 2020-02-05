@@ -1,3 +1,4 @@
+use std::ffi::CStr;
 use std::fs::File;
 use std::marker::PhantomData;
 use std::path::Path;
@@ -108,10 +109,110 @@ impl<'c, 'y: 'c> Compiler<'c, 'y> {
     pub fn compile_rules(self) -> Result<Rules<'y>, YaraError> {
         internals::compiler_get_rules(self.inner).map(Rules::from)
     }
+
+    /// Add a variable to the compiler.
+    ///
+    /// Valid types are bool, i64, f64, str and cstr.
+    ///
+    /// Note: You must define all the external variables before adding rules to compile.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use yara::Yara;
+    /// let mut yara = Yara::create().unwrap();
+    /// let mut compiler = yara.new_compiler().unwrap();
+    /// // Add the variables
+    /// compiler.define_variable("file_name", "thing.txt")
+    ///     .expect("Should add the variable");
+    /// compiler.define_variable("answer", 42)
+    ///     .expect("Should add the variable");
+    /// compiler.define_variable("pi", 3.14)
+    ///     .expect("Should add the variable");
+    /// compiler.define_variable("is_a_test", true)
+    ///     .expect("Should add the variable");
+    /// // Use them in rules
+    /// compiler.add_rules_str(r#"
+    /// rule TestExternalVariables {
+    ///   condition:
+    ///     file_name == "thing.txt"
+    ///         and answer == 42
+    ///         and pi == 3.14
+    ///         and is_a_test
+    /// }
+    /// "#)
+    ///     .expect("should compile");
+    /// ```
+    pub fn define_variable<V: CompilerVariableValue>(
+        &mut self,
+        identifier: &str,
+        value: V,
+    ) -> Result<(), YaraError> {
+        value.add_to_compiler(self.inner, identifier)
+    }
 }
 
 impl<'c, 'y: 'c> Drop for Compiler<'c, 'y> {
     fn drop(&mut self) {
         internals::compiler_destroy(self.inner);
+    }
+}
+
+/// Trait implemented by the types the compiler can use as value.
+pub trait CompilerVariableValue {
+    fn add_to_compiler(
+        &self,
+        compiler: &mut yara_sys::YR_COMPILER,
+        identifier: &str,
+    ) -> Result<(), YaraError>;
+}
+
+impl CompilerVariableValue for bool {
+    fn add_to_compiler(
+        &self,
+        compiler: &mut yara_sys::YR_COMPILER,
+        identifier: &str,
+    ) -> Result<(), YaraError> {
+        internals::compiler_define_boolean_variable(compiler, identifier, *self)
+    }
+}
+
+impl CompilerVariableValue for f64 {
+    fn add_to_compiler(
+        &self,
+        compiler: &mut yara_sys::YR_COMPILER,
+        identifier: &str,
+    ) -> Result<(), YaraError> {
+        internals::compiler_define_float_variable(compiler, identifier, *self)
+    }
+}
+
+impl CompilerVariableValue for i64 {
+    fn add_to_compiler(
+        &self,
+        compiler: &mut yara_sys::YR_COMPILER,
+        identifier: &str,
+    ) -> Result<(), YaraError> {
+        internals::compiler_define_integer_variable(compiler, identifier, *self)
+    }
+}
+
+impl CompilerVariableValue for &str {
+    fn add_to_compiler(
+        &self,
+        compiler: &mut yara_sys::YR_COMPILER,
+        identifier: &str,
+    ) -> Result<(), YaraError> {
+        internals::compiler_define_str_variable(compiler, identifier, *self)
+    }
+}
+
+impl CompilerVariableValue for &CStr {
+    fn add_to_compiler(
+        &self,
+        compiler: &mut yara_sys::YR_COMPILER,
+        identifier: &str,
+    ) -> Result<(), YaraError> {
+        internals::compiler_define_cstr_variable(compiler, identifier, *self)
     }
 }
