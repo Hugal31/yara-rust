@@ -1,6 +1,6 @@
 extern crate yara;
 
-use yara::{CompileErrorLevel, Error, Metadata, MetadataValue, Rule, Yara};
+use yara::{CompileErrorLevel, Error, Metadata, MetadataValue, Rules, Yara};
 
 const RULES: &str = "
 rule is_awesome {
@@ -19,25 +19,18 @@ rule is_ok {
     $go
 }";
 
-fn compile_and_scan<'a>(yara: &'a mut Yara, rule: &str, mem: &[u8]) -> Vec<Rule<'a>> {
+fn compile<'a>(yara: &'a mut Yara, rule: &str) -> Rules<'a> {
     let mut compiler = yara.new_compiler().expect("Should create compiler");
     compiler.add_rules_str(rule).expect("Should parse rule");
-    let mut rules = compiler.compile_rules().expect("Should compile rules");
-    rules.scan_mem(mem, 10).expect("Should scan")
+    compiler.compile_rules().expect("Should compile rules")
 }
 
-fn compile_and_scan_with_namespace<'a>(
-    yara: &'a mut Yara,
-    rule: &str,
-    namespace: &str,
-    mem: &[u8],
-) -> Vec<Rule<'a>> {
+fn compile_with_namespace<'a>(yara: &'a mut Yara, rule: &str, namespace: &str) -> Rules<'a> {
     let mut compiler = yara.new_compiler().expect("Should create compiler");
     compiler
         .add_rules_str_with_namespace(rule, namespace)
         .expect("Should parse rule");
-    let mut rules = compiler.compile_rules().expect("Should compile rules");
-    rules.scan_mem(mem, 10).expect("Should scan")
+    compiler.compile_rules().expect("Should compile rules")
 }
 
 #[test]
@@ -114,18 +107,17 @@ fn test_scan_file() {
 #[test]
 fn test_tags() {
     let mut yara = Yara::create().unwrap();
-    let rules = compile_and_scan(
+    let mut rules = compile(
         &mut yara,
         "rule is_empty: file size {
   condition:
     filesize == 0
-}",
-        b"",
-    );
+}");
+    let matches = rules.scan_mem(b"", 10).expect("should have scanned");
 
-    assert_eq!(1, rules.len());
-    let rule = &rules[0];
-    assert_eq!(&["file", "size"], rule.tags.as_slice());
+    assert_eq!(1, matches.len());
+    let is_empty_match = &matches[0];
+    assert_eq!(&["file", "size"], is_empty_match.tags.as_slice());
 }
 
 #[test]
@@ -136,25 +128,27 @@ fn test_namespace() {
 }";
     let mut yara = Yara::create().unwrap();
     {
-        let rules = compile_and_scan(&mut yara, rule, b"");
+        let mut rules = compile(&mut yara, rule);
+	let matches = rules.scan_mem(b"", 10).expect("should have scanned");
 
-        assert_eq!(1, rules.len());
-        let rule = &rules[0];
-        assert_eq!("default", rule.namespace);
+        assert_eq!(1, matches.len());
+        let is_empty_match = &matches[0];
+        assert_eq!("default", is_empty_match.namespace);
     }
     {
-        let rules = compile_and_scan_with_namespace(&mut yara, rule, "ns", b"");
+        let mut rules = compile_with_namespace(&mut yara, rule, "ns");
+	let matches = rules.scan_mem(b"", 10).expect("should have scanned");
 
-        assert_eq!(1, rules.len());
-        let rule = &rules[0];
-        assert_eq!("ns", rule.namespace);
+        assert_eq!(1, matches.len());
+        let is_empty_match = &matches[0];
+        assert_eq!("ns", is_empty_match.namespace);
     }
 }
 
 #[test]
 fn test_metadata() {
     let mut yara = Yara::create().unwrap();
-    let rules = compile_and_scan(
+    let mut rules = compile(
         &mut yara,
         "
 rule is_three_char_long {
@@ -171,16 +165,15 @@ rule contains_abc {
   condition:
     $abc at 0
 }
-",
-        b"abc",
-    );
+");
 
-    assert_eq!(2, rules.len());
+    let matches = rules.scan_mem(b"abc", 10).expect("should have scanned");
+    assert_eq!(2, matches.len());
 
-    let is_three_char_long = &rules[0];
+    let is_three_char_long = &matches[0];
     assert_eq!(0, is_three_char_long.metadatas.len());
 
-    let contains_a = &rules[1];
+    let contains_a = &matches[1];
     assert_eq!(3, contains_a.metadatas.len());
     assert_eq!(
         Metadata {

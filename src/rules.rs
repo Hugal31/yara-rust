@@ -53,7 +53,7 @@ impl<'a> Rules<'a> {
     /// assert_eq!(4, m.length);
     /// assert_eq!(b"Rust", m.data.as_slice());
     /// ```
-    pub fn scan_mem(&mut self, mem: &[u8], timeout: u16) -> Result<Vec<Rule<'a>>, YaraError> {
+    pub fn scan_mem(&mut self, mem: &[u8], timeout: u16) -> Result<Vec<Rule>, YaraError> {
         internals::rules_scan_mem(self.inner, mem, i32::from(timeout))
     }
 
