@@ -3,7 +3,6 @@ use std::fmt;
 pub use yara_sys::CompileErrorLevel;
 
 use failure::{Backtrace, Context, Fail};
-use yara_sys;
 
 /// A wrapper around the kinds of errors that can happen in the library.
 #[derive(Debug, Fail)]

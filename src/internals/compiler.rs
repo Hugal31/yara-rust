@@ -1,6 +1,5 @@
 use std::ffi::{CStr, CString};
 use std::fs::File;
-use std::ops::Deref;
 use std::os::raw::{c_char, c_int, c_void};
 #[cfg(unix)]
 use std::os::unix::io::AsRawFd;
@@ -9,7 +8,6 @@ use std::os::windows::io::AsRawHandle;
 use std::path::Path;
 use std::ptr;
 
-use yara_sys;
 use yara_sys::{YR_COMPILER, YR_RULES};
 
 use crate::errors::*;
@@ -77,7 +75,7 @@ pub fn compiler_add_file<P: AsRef<Path>>(
         )
     };
     let result =
-        compiler_add_file_raw(compiler, file, &path, namespace.as_ref().map(|e| e.deref()));
+        compiler_add_file_raw(compiler, file, &path, namespace.as_deref());
 
     if result == 0 {
         Ok(())

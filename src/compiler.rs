@@ -4,7 +4,6 @@ use std::fs::File;
 use std::path::Path;
 
 use failure::ResultExt;
-use yara_sys;
 
 use crate::errors::*;
 use crate::initialize::InitializationToken;

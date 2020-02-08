@@ -1,8 +1,6 @@
 use std::ffi::CStr;
 use std::marker;
 
-use yara_sys;
-
 use crate::internals::get_tidx;
 use crate::internals::matches::MatchIterator;
 use crate::Match;

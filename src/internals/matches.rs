@@ -1,8 +1,6 @@
 use std::marker;
 use std::slice;
 
-use yara_sys;
-
 use crate::Match;
 
 /// Iterate over YR_MATCH in a YR_MATCHES

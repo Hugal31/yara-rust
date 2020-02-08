@@ -3,7 +3,6 @@ use std::fs::File;
 use std::path::Path;
 
 use failure::ResultExt;
-use yara_sys;
 
 use crate::{errors::*, initialize::InitializationToken, internals, YrString};
 

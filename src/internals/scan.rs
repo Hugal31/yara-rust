@@ -5,8 +5,6 @@ use std::os::unix::io::AsRawFd;
 #[cfg(windows)]
 use std::os::windows::io::AsRawHandle;
 
-use yara_sys;
-
 use crate::errors::*;
 use crate::Rule;
 

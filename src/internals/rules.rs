@@ -3,8 +3,6 @@ use std::marker;
 use std::os::raw::c_char;
 use std::ptr;
 
-use yara_sys;
-
 use crate::errors::*;
 use crate::internals::meta::MetadataIterator;
 use crate::internals::string::YrStringIterator;

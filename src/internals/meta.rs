@@ -1,8 +1,6 @@
 use std::ffi::CStr;
 use std::marker;
 
-use yara_sys;
-
 use crate::{Metadata, MetadataValue};
 
 pub struct MetadataIterator<'a> {
