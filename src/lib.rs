@@ -67,23 +67,54 @@ pub use crate::string::YrString;
 /// Act as an initialization token to keep the library initialized.
 /// Not mandatory, but can reduce initialization overhead when creating and destroying Yara objects:
 /// The library is initialized each time a new object is created, unless it is already initialized.
-/// When the last yara object is destroyed,
+/// When the last `Yara` object is destroyed, the library is de-initialized.
 ///
-/// # Example
 /// ```no_run
 /// # use yara::{Compiler, Rules, Yara};
 /// {  // Initialize the library...
-///     let compiler = Compiler::new().unwrap();
+///     let compiler = Compiler::new()?;
 ///     // ...
 /// } // De-initialize the library...
 ///
 /// {  // Initialize the again library...
-///     let compiler = Rules::load_from_file("compiled_rules.yr").unwrap();
+///     let rules = Rules::load_from_file("compiled_rules.yr")?;
 ///     // ...
 /// } // De-initialize the library...
 ///
-/// let _yara = Yara::new().expect("Should initialize");
+/// let _yara = Yara::new()?;
 /// // Go on, the library will be initialized until the end of the scope.
+/// # Ok::<(), yara::Error>(())
+/// ```
+///
+/// This is also true for multithreading: before version 3.8.0 of Yara, thread allocates memory on
+/// the thread local storage for regexp. This memory is de-allocated when a scan, unless there is a
+/// living Yara object on the current thread.
+///
+/// Therefore, you might want to keep a `Yara` object alive on the threads you use to scan, to
+/// reduce allocation overhead.
+///
+/// ```no_run
+/// # use yara::{Compiler, Rules, Yara};
+/// let rules = Rules::load_from_file("compiled_rules.yr")?;
+///
+/// crossbeam::scope(|scope| {
+///     scope.spawn(|_| {
+///         // Allocate thread-local memory for scan...
+///         rules.scan_file("file1.bin", 10);
+///         // Free thread-local memory for scan...
+///
+///         // Allocate thread-local memory for scan...
+///         rules.scan_file("file2.bin", 10);
+///         // Free thread-local memory for scan...
+///
+///         // Memory will be freed when leaving the scope.
+///         let _yara = Yara::new();
+///         // Allocate thread-local memory for scan...
+///         rules.scan_file("file3.bin", 10);
+///         rules.scan_file("file4.bin", 10);
+///     });
+/// });
+/// # Ok::<(), yara::Error>(())
 /// ```
 ///
 /// # Implementation notes

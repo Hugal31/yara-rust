@@ -56,6 +56,7 @@ mod build {
             .whitelist_var("YARA_ERROR_LEVEL_.*")
             .whitelist_function("yr_initialize")
             .whitelist_function("yr_finalize")
+            .whitelist_function("yr_finalize_thread")
             .whitelist_function("yr_compiler_.*")
             .whitelist_function("yr_rule_.*")
             .whitelist_function("yr_rules_.*")

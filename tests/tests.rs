@@ -213,22 +213,24 @@ rule IsNCharLong {
 }
 
 #[test]
-fn test_mutlithread() {
+fn test_multithread() {
     use crossbeam::scope;
 
     let rules = compile(RULES);
 
     scope(|scope| {
-        scope.spawn(|_| {
-            let matches = rules.scan_mem(b"rust", 10).expect("should have scanned");
-            assert_eq!(matches.len(), 1);
-            assert_eq!(matches[0].identifier, "is_awesome")
-        });
-        scope.spawn(|_| {
-            let matches = rules.scan_mem(b"go", 10).expect("should have scanned");
-            assert_eq!(matches.len(), 1);
-            assert_eq!(matches[0].identifier, "is_ok")
-        });
+        for _i in 0..10 {
+            scope.spawn(|_| {
+                let matches = rules.scan_mem(b"rust", 10).expect("should have scanned");
+                assert_eq!(matches.len(), 1);
+                assert_eq!(matches[0].identifier, "is_awesome")
+            });
+            scope.spawn(|_| {
+                let matches = rules.scan_mem(b"go", 10).expect("should have scanned");
+                assert_eq!(matches.len(), 1);
+                assert_eq!(matches[0].identifier, "is_ok")
+            });
+        }
     })
     .unwrap();
 }

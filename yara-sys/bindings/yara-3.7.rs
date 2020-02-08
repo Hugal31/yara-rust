@@ -2115,5 +2115,8 @@ extern "C" {
     pub fn yr_finalize() -> ::std::os::raw::c_int;
 }
 extern "C" {
+    pub fn yr_finalize_thread();
+}
+extern "C" {
     pub fn yr_get_tidx() -> ::std::os::raw::c_int;
 }

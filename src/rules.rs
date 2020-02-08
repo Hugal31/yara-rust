@@ -68,6 +68,10 @@ impl Rules {
     /// # Ok::<(), yara::Error>(())
     /// ```
     pub fn scan_mem(&self, mem: &[u8], timeout: u16) -> Result<Vec<Rule>, YaraError> {
+        // The token needed here because scanning allocate space for regexp on the thread_local
+        // storage before 3.8.
+        let _token = InitializationToken::new()?;
+
         internals::rules_scan_mem(self.inner, mem, i32::from(timeout))
     }
 
@@ -79,6 +83,10 @@ impl Rules {
         path: P,
         timeout: u16,
     ) -> Result<Vec<Rule<'r>>, Error> {
+        // The token needed here because scanning allocate space for regexp on the thread_local
+        // storage before 3.8.
+        let _token = InitializationToken::new()?;
+
         File::open(path)
             .context(IoErrorKind::OpenScanFile)
             .map_err(|e| Into::<IoError>::into(e).into())
