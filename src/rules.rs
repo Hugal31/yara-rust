@@ -7,7 +7,10 @@ use yara_sys;
 
 use crate::{errors::*, initialize::InitializationToken, internals, YrString};
 
-/// A set of rules.
+/// A set of compiled rules.
+///
+/// Obtained from [compiling](struct.Compiler.html) or
+/// [loading a pre-compiled rule](#method.load_from_file).
 pub struct Rules {
     inner: *mut yara_sys::YR_RULES,
     pub(crate) _token: InitializationToken,
@@ -30,7 +33,9 @@ impl TryFrom<*mut yara_sys::YR_RULES> for Rules {
 }
 
 impl Rules {
-    /// Scan memory
+    /// Scan memory.
+    ///
+    /// Returns a `Vec` of maching rules.
     ///
     /// * `mem` - Slice to scan.
     /// * `timeout` - the timeout is in seconds.
@@ -38,35 +43,38 @@ impl Rules {
     /// # Example
     ///
     /// ```
-    /// # use yara::Yara;
-    /// let mut yara = Yara::create().unwrap();
-    /// let mut compiler = yara.new_compiler().unwrap();
+    /// # use yara::Compiler;
+    /// let mut compiler = Compiler::new()?;
     /// compiler.add_rules_str("rule contains_rust {
     ///   strings:
     ///     $rust = \"rust\" nocase
     ///   condition:
     ///     $rust
-    /// }").unwrap();
-    /// let mut rules = compiler.compile_rules().unwrap();
+    /// }")?;
+    /// let rules = compiler.compile_rules().unwrap();
     /// let results = rules.scan_mem("I love Rust!".as_bytes(), 5).unwrap();
     /// assert_eq!(1, results.len());
     ///
-    /// let rule = &results[0];
-    /// assert_eq!("contains_rust", rule.identifier);
-    /// assert_eq!(1, rule.strings.len());
+    /// let contains_rust_rule = &results[0];
+    /// assert_eq!("contains_rust", contains_rust_rule.identifier);
+    /// assert_eq!(1, contains_rust_rule.strings.len());
     ///
-    /// let string = &rule.strings[0];
+    /// let string = &contains_rust_rule.strings[0];
     /// assert_eq!("$rust", string.identifier);
     ///
     /// let m = &string.matches[0];
     /// assert_eq!(7, m.offset);
     /// assert_eq!(4, m.length);
     /// assert_eq!(b"Rust", m.data.as_slice());
+    /// # Ok::<(), yara::Error>(())
     /// ```
     pub fn scan_mem(&self, mem: &[u8], timeout: u16) -> Result<Vec<Rule>, YaraError> {
         internals::rules_scan_mem(self.inner, mem, i32::from(timeout))
     }
 
+    /// Scan a file.
+    ///
+    /// Return a `Vec` of matching rules.
     pub fn scan_file<'r, P: AsRef<Path>>(
         &self,
         path: P,
@@ -121,12 +129,14 @@ pub struct Rule<'r> {
     pub strings: Vec<YrString<'r>>,
 }
 
+/// Metadata specified in a rule.
 #[derive(Debug, Eq, PartialEq)]
 pub struct Metadata<'r> {
     pub identifier: &'r str,
     pub value: MetadataValue<'r>,
 }
 
+/// Type of the value in [MetaData](struct.Metadata.html)
 #[derive(Debug, Eq, PartialEq)]
 pub enum MetadataValue<'r> {
     Integer(i64),

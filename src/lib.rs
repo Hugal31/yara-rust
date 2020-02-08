@@ -1,3 +1,50 @@
+//! Yara rust safe bindings
+//!
+//! This crate contains safe bindings to
+//! [VirusTotal's Yara library][Yara-site],
+//! "the pattern matching swiss-knife".
+//!
+//! I can be used to scan file and memory, with powerful rules statement.
+//! It is often used to recognize malwares.
+//!
+//! This example shows how to write and use a pair of rules to check if a file is an APK,
+//! from the [polydet project][polydet]:
+//!
+//! ```no_run
+//! # use yara::{Compiler, Error};
+//! let rules = r#"
+//! // Search for the ZIP EOCD magic anywhere in the file except the 22 last bytes.
+//! rule IsZIP {
+//!   strings:
+//!     $EOCD_magic = { 50 4B 05 06 }
+//!   condition:
+//!     $EOCD_magic in (0..filesize - 22)
+//! }
+//! // Search the ZIP's LFH magic followed by 26 bytes then "AndroidManifest.xml", anywhere in zip files.
+//! rule IsAPK {
+//!   strings:
+//!     //                    P  K             A  n  d  r  o  i  d  M  a  n  i  f  e  s  t  .  x  m  l
+//!     $lfh_and_android = { 50 4B 03 04 [26] 41 6E 64 72 6F 69 64 4D 61 6e 69 66 65 73 74 2E 78 6D 6C}
+//!
+//!   condition:
+//!     IsZIP and $lfh_and_android
+//! }
+//! "#;
+//!
+//! let mut compiler = Compiler::new()?;
+//! compiler.add_rules_str(rules)?;
+//! let rules = compiler.compile_rules()?;
+//! let results = rules.scan_file("File.apk", 5)?;
+//!
+//! assert!(results.iter().any(|rule| rule.identifier == "IsAPK"));
+//! # Ok::<(), yara::Error>(())
+//! ```
+//! Learn how to write rules on the [Yara documentation][Yara-doc].
+//!
+//! [Yara-site]: http://virustotal.github.io/yara/
+//! [Yara-doc]: https://yara.readthedocs.io/en/stable/gettingstarted.html
+//! [polydet]: https://github.com/Polydet/polydet/
+
 mod compiler;
 mod initialize;
 mod internals;
@@ -15,7 +62,7 @@ pub use crate::matches::Match;
 pub use crate::rules::*;
 pub use crate::string::YrString;
 
-/// Yara library.
+/// Yara initialization token.
 ///
 /// Act as an initialization token to keep the library initialized.
 /// Not mandatory, but can reduce initialization overhead when creating and destroying Yara objects:

@@ -18,6 +18,7 @@ pub struct Compiler {
 }
 
 impl Compiler {
+    /// Create a new compiler.
     pub fn new() -> Result<Self, YaraError> {
         let token = InitializationToken::new()?;
 
@@ -27,15 +28,15 @@ impl Compiler {
         })
     }
 
-    /// Add rule definitions from a file.
+    /// Add rules definitions from a file.
     ///
     /// # Example
     ///
     /// ```no_run
-    /// # use yara::Yara;
-    /// let mut yara = Yara::create().unwrap();
-    /// let mut compiler = yara.new_compiler().unwrap();
-    /// compiler.add_rules_file("rules.txt").expect("Should load rules");
+    /// # use yara::Compiler;
+    /// let mut compiler = Compiler::new()?;
+    /// compiler.add_rules_file("rules.txt")?;
+    /// # Ok::<(), yara::Error>(())
     /// ```
     pub fn add_rules_file<P: AsRef<Path>>(&mut self, path: P) -> Result<(), Error> {
         File::open(path.as_ref())
@@ -49,10 +50,10 @@ impl Compiler {
     /// # Example
     ///
     /// ```no_run
-    /// # use yara::Yara;
-    /// let mut yara = Yara::create().unwrap();
-    /// let mut compiler = yara.new_compiler().unwrap();
-    /// compiler.add_rules_file_with_namespace("CVE-2010-1297.yar", "flash").expect("Should load rules");
+    /// # use yara::Compiler;
+    /// let mut compiler = Compiler::new().unwrap();
+    /// let rules = compiler.add_rules_file_with_namespace("CVE-2010-1297.yar", "flash")?;
+    /// # Ok::<(), yara::Error>(())
     /// ```
     pub fn add_rules_file_with_namespace<P: AsRef<Path>>(
         &mut self,
@@ -70,13 +71,13 @@ impl Compiler {
     /// # Example
     ///
     /// ```
-    /// # use yara::Yara;
-    /// let mut yara = Yara::create().unwrap();
-    /// let mut compiler = yara.new_compiler().unwrap();
-    /// compiler.add_rules_str("rule is_empty {
+    /// # use yara::Compiler;
+    /// let mut compiler = Compiler::new()?;
+    /// let rules = compiler.add_rules_str("rule is_empty {
     ///   condition:
     ///     filesize == 0
-    /// }").expect("Should compile rule");
+    /// }")?;
+    /// # Ok::<(), yara::Error>(())
     /// ```
     pub fn add_rules_str(&mut self, rule: &str) -> Result<(), Error> {
         internals::compiler_add_string(self.inner, rule, None)
@@ -87,13 +88,13 @@ impl Compiler {
     /// # Example
     ///
     /// ```
-    /// # use yara::Yara;
-    /// let mut yara = Yara::create().unwrap();
-    /// let mut compiler = yara.new_compiler().unwrap();
+    /// # use yara::Compiler;
+    /// let mut compiler = Compiler::new()?;
     /// compiler.add_rules_str_with_namespace("rule is_empty {
     ///   condition:
     ///     filesize == 0
-    /// }", "misc").expect("Should compile rule");
+    /// }", "misc")?;
+    /// # Ok::<(), yara::Error>(())
     /// ```
     pub fn add_rules_str_with_namespace(
         &mut self,
@@ -104,6 +105,8 @@ impl Compiler {
     }
 
     /// Compile the rules.
+    ///
+    /// Consume the compiler.
     ///
     /// # Implementation notes
     ///
@@ -125,14 +128,10 @@ impl Compiler {
     /// # use yara::Compiler;
     /// let mut compiler = Compiler::new().unwrap();
     /// // Add the variables
-    /// compiler.define_variable("file_name", "thing.txt")
-    ///     .expect("Should add the variable");
-    /// compiler.define_variable("answer", 42)
-    ///     .expect("Should add the variable");
-    /// compiler.define_variable("pi", 3.14)
-    ///     .expect("Should add the variable");
-    /// compiler.define_variable("is_a_test", true)
-    ///     .expect("Should add the variable");
+    /// compiler.define_variable("file_name", "thing.txt")?;
+    /// compiler.define_variable("answer", 42)?;
+    /// compiler.define_variable("pi", 3.14)?;
+    /// compiler.define_variable("is_a_test", true)?;
     /// // Use them in rules
     /// compiler.add_rules_str(r#"
     /// rule TestExternalVariables {
@@ -142,8 +141,8 @@ impl Compiler {
     ///         and pi == 3.14
     ///         and is_a_test
     /// }
-    /// "#)
-    ///     .expect("should compile");
+    /// "#)?;
+    /// # Ok::<(), yara::Error>(())
     /// ```
     pub fn define_variable<V: CompilerVariableValue>(
         &mut self,

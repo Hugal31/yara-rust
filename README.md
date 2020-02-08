@@ -13,17 +13,24 @@ More documentation can be found on [the Yara's documentation](https://yara.readt
 The implementation is inspired from [yara-python](https://github.com/VirusTotal/yara-python).
 
 ```rust
-let mut yara = Yara::create().unwrap();
-let mut compiler = yara.new_compiler().unwrap();
-compiler.add_rules_str("rule contains_rust {
-  strings:
-    $rust = \"rust\" nocase
-  condition:
-    $rust
-}").expect("Should have parsed rule");
-let mut rules = compiler.compile_rules().expect("Should have compiled rules");
-let results = rules.scan_mem("I love Rust!".as_bytes(), 5).expect("Should have scanned");
-assert!(results.iter().find(|r| r.identifier == "contains_rust").is_some());
+const RULES: &str = r#"
+    rule contains_rust {
+      strings:
+        $rust = "rust" nocase
+      condition:
+        $rust
+"#;
+
+fn main() {
+    let compiler = Compiler::new().unwrap();
+    compiler.add_rules_str(RULES)
+        .expect("Should have parsed rule");
+    let rules = compiler.compile_rules()
+        .expect("Should have compiled rules");
+    let results = rules.scan_mem("I love Rust!".as_bytes(), 5)
+        .expect("Should have scanned");
+    assert!(results.iter().any(|r| r.identifier == "contains_rust"));
+}
 ```
 
 ## Features
@@ -41,9 +48,10 @@ and how to link to your Yara crate.
 ### TODO
 
 - [ ] Remove some `unwrap` on string conversions (currently this crate assume the rules, meta and namespace identifier are valid Rust's `str`).
+- [ ] Accept `AsRef<Path>` instead of `&str` on multiple functions.
+- [ ] Implement the stream API.
 - [ ] Implement the scanner API.
-- [ ] Look at the source code of Yara (or in documentation if specified) to assess thread safety.
-- [ ] Look at the source code of Yara (or in documentation if specified) to see if we can remove some `mut` in some functions (as `Yara::new_compiler` and `Yara::load_rules`).
+- [ ] Add process scanning.
 
 ## License
 
