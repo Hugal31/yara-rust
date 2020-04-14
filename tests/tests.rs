@@ -25,6 +25,10 @@ fn compile(rule: &str) -> Rules {
     compiler.compile_rules().expect("Should compile rules")
 }
 
+fn get_default_rules() -> Rules {
+    compile(RULES)
+}
+
 fn compile_with_namespace(rule: &str, namespace: &str) -> Rules {
     let mut compiler = Compiler::new().expect("Should create compiler");
     compiler
@@ -70,7 +74,7 @@ fn test_compile_file_rules() {
 
 #[test]
 fn test_scan_mem() {
-    let rules = compile(RULES);
+    let rules = get_default_rules();
     let result = rules.scan_mem("I love Rust!".as_bytes(), 10);
 
     let result = result.expect("Should be Ok");
@@ -216,7 +220,7 @@ rule IsNCharLong {
 fn test_multithread() {
     use crossbeam::scope;
 
-    let rules = compile(RULES);
+    let rules = get_default_rules();
 
     scope(|scope| {
         for _i in 0..10 {
@@ -233,4 +237,41 @@ fn test_multithread() {
         }
     })
     .unwrap();
+}
+
+#[test]
+fn test_rule_load_save_mem() {
+    let mut rules = get_default_rules();
+
+    let mut saved_rules = Vec::new();
+    rules.save_to_stream(&mut saved_rules).expect("Should save");
+
+    let loaded_rules = Rules::load_from_stream(&saved_rules[..]).expect("Should load");
+    test_default_rules(&loaded_rules);
+}
+
+#[test]
+fn test_rule_load_save_file() {
+    let filename = "_compiled_rule.yara";
+    std::fs::remove_file(filename).ok();
+
+    {
+	let save_file = std::fs::File::create(filename)
+	    .expect("should have created the file");
+	let mut rules = get_default_rules();
+	rules.save_to_stream(save_file).expect("Should save");
+    }
+
+    let load_file = std::fs::File::open(filename)
+	    .expect("should have opened the file");
+    let loaded_rules = Rules::load_from_stream(load_file).expect("Should load");
+    std::fs::remove_file(filename).ok();
+
+    test_default_rules(&loaded_rules);
+}
+
+fn test_default_rules(rules: &Rules) {
+    let scan_mem_result = rules.scan_mem("I love Rust!".as_bytes(), 10);
+    let scan_result = scan_mem_result.expect("Should be Ok");
+    assert_eq!(1, scan_result.len());
 }

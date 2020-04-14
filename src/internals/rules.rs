@@ -1,7 +1,10 @@
 use std::ffi::{CStr, CString};
+use std::io::{Read, Write};
 use std::marker;
 use std::os::raw::c_char;
 use std::ptr;
+
+use failure::ResultExt as _;
 
 use crate::errors::*;
 use crate::internals::meta::MetadataIterator;
@@ -21,6 +24,25 @@ pub fn rules_save(rules: *mut yara_sys::YR_RULES, filename: &str) -> Result<(), 
     yara_sys::Error::from_code(result).map_err(|e| e.into())
 }
 
+pub fn rules_save_stream<W>(rules: *mut yara_sys::YR_RULES, mut writer: W) -> Result<(), Error>
+where
+    W: Write,
+{
+    let mut write_stream = super::stream::WriteStream::new(&mut writer);
+    let mut yr_stream = write_stream.as_yara();
+    let result = unsafe { yara_sys::yr_rules_save_stream(rules, &mut yr_stream) };
+
+    write_stream
+        .result()
+        .context(IoErrorKind::WritingRules)
+        .map_err(|e| Into::<IoError>::into(e).into())
+        .and_then(|_| {
+            yara_sys::Error::from_code(result)
+                .map_err(From::from)
+                .map_err(|e: YaraError| e.into())
+        })
+}
+
 pub fn rules_load(filename: &str) -> Result<*mut yara_sys::YR_RULES, YaraError> {
     let filename = CString::new(filename).unwrap();
     let mut pointer: *mut yara_sys::YR_RULES = ptr::null_mut();
@@ -28,6 +50,28 @@ pub fn rules_load(filename: &str) -> Result<*mut yara_sys::YR_RULES, YaraError> 
     yara_sys::Error::from_code(result)
         .map(|()| pointer)
         .map_err(|e| e.into())
+}
+
+pub fn rules_load_stream<R>(mut reader: R) -> Result<*mut yara_sys::YR_RULES, Error>
+where
+    R: Read,
+{
+    let mut read_stream = super::stream::ReadStream::new(&mut reader);
+    let mut yr_stream = read_stream.as_yara();
+    let mut pointer: *mut yara_sys::YR_RULES = ptr::null_mut();
+    let result = unsafe { yara_sys::yr_rules_load_stream(&mut yr_stream, &mut pointer) };
+
+    read_stream
+        .result()
+        .map(|()| pointer)
+        .context(IoErrorKind::ReadingRules)
+        .map_err(|e| Into::<IoError>::into(e).into())
+        .and_then(|pointer| {
+            yara_sys::Error::from_code(result)
+                .map(|_| pointer)
+                .map_err(From::from)
+                .map_err(|e: YaraError| e.into())
+        })
 }
 
 impl<'a> From<&'a yara_sys::YR_RULE> for Rule<'a> {

@@ -5,6 +5,7 @@ pub mod string;
 mod compiler;
 mod rules;
 mod scan;
+mod stream;
 
 pub use self::compiler::*;
 pub use self::rules::*;

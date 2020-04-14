@@ -85,6 +85,10 @@ pub enum IoErrorKind {
     OpenScanFile,
     #[fail(display = "Error while opening rules file")]
     OpenRulesFile,
+    #[fail(display = "Error while reading rules stream")]
+    ReadingRules,
+    #[fail(display = "Error while writing rules stream")]
+    WritingRules,
 }
 
 #[derive(Clone, Copy, Debug, Fail, Eq, PartialEq)]

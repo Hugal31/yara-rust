@@ -1,5 +1,6 @@
 use std::convert::TryFrom;
 use std::fs::File;
+use std::io::{Read, Write};
 use std::path::Path;
 
 use failure::ResultExt;
@@ -97,10 +98,31 @@ impl Rules {
     }
 
     /// Save the rules to a file.
-    // TODO Check if mut is necessary.
+    ///
+    /// Note: this method is mut because Yara modifies the Rule arena during serialization.
     // TODO Take AsRef<Path> ?
     pub fn save(&mut self, filename: &str) -> Result<(), YaraError> {
         internals::rules_save(self.inner, filename)
+    }
+
+    /// Save the rules in a Writer.
+    ///
+    /// Note: this method is mut because Yara modifies the Rule arena during serialization.
+    pub fn save_to_stream<W>(&mut self, writer: W) -> Result<(), Error>
+    where
+        W: Write,
+    {
+        internals::rules_save_stream(self.inner, writer)
+    }
+
+    /// Load rules from a pre-compiled rules file.
+    pub fn load_from_stream<R: Read>(reader: R) -> Result<Self, Error> {
+        let token = InitializationToken::new()?;
+
+        internals::rules_load_stream(reader).map(|inner| Rules {
+            inner,
+            _token: token,
+        })
     }
 
     /// Load rules from a pre-compiled rules file.
