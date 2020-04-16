@@ -101,6 +101,7 @@ impl Rules {
     ///
     /// Note: this method is mut because Yara modifies the Rule arena during serialization.
     // TODO Take AsRef<Path> ?
+    // Yara is expecting a *const u8 string, whereas a Path on Windows is an [u16].
     pub fn save(&mut self, filename: &str) -> Result<(), YaraError> {
         internals::rules_save(self.inner, filename)
     }
