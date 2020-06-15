@@ -49,9 +49,9 @@ and how to link to your Yara crate.
 
 - [ ] Remove some `unwrap` on string conversions (currently this crate assume the rules, meta and namespace identifier are valid Rust's `str`).
 - [ ] Accept `AsRef<Path>` instead of `&str` on multiple functions.
-- [ ] Implement the stream API.
 - [ ] Implement the scanner API.
 - [ ] Add process scanning.
+- [ ] Report the warnings to the user.
 
 ## License
 
