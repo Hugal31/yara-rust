@@ -50,11 +50,7 @@ pub fn compiler_add_string(
         )
     };
 
-    if result == 0 {
-        Ok(())
-    } else {
-        Err(CompileErrors::new(errors).into())
-    }
+    compile_result(result, errors)
 }
 
 pub fn compiler_add_file<P: AsRef<Path>>(
@@ -78,10 +74,14 @@ pub fn compiler_add_file<P: AsRef<Path>>(
     let result =
         compiler_add_file_raw(compiler, file, &path, namespace.as_ref().map(|s| s.deref()));
 
-    if result == 0 {
+    compile_result(result, errors)
+}
+
+fn compile_result(compile_result: i32, messages: Vec<CompileError>) -> Result<(), Error> {
+    if compile_result == 0 || messages.iter().all(|c| c.level != CompileErrorLevel::Error) {
         Ok(())
     } else {
-        Err(CompileErrors::new(errors).into())
+        Err(CompileErrors::new(messages).into())
     }
 }
 

@@ -270,6 +270,22 @@ fn test_rule_load_save_file() {
     test_default_rules(&loaded_rules);
 }
 
+#[test]
+fn test_compile_with_warning() {
+    let rule = r#"
+rule is_slow
+{
+    strings:
+        $re1 = /state:.*(on|off)/
+
+    condition:
+        $re1
+}
+"#;
+
+    compile(rule);
+}
+
 fn test_default_rules(rules: &Rules) {
     let scan_mem_result = rules.scan_mem("I love Rust!".as_bytes(), 10);
     let scan_result = scan_mem_result.expect("Should be Ok");
