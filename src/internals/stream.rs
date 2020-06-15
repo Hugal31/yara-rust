@@ -90,7 +90,6 @@ unsafe extern "C" fn stream_write_func(
     }
 
     let buffer = std::slice::from_raw_parts(ptr as *const u8, size * count);
-    eprintln!("Ask to write {} * {}", size, count);
     let result = this.writer.write_all(buffer);
 
     match result {
