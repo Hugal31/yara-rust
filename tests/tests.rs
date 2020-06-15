@@ -256,14 +256,12 @@ fn test_rule_load_save_file() {
     std::fs::remove_file(filename).ok();
 
     {
-	let save_file = std::fs::File::create(filename)
-	    .expect("should have created the file");
-	let mut rules = get_default_rules();
-	rules.save_to_stream(save_file).expect("Should save");
+        let save_file = std::fs::File::create(filename).expect("should have created the file");
+        let mut rules = get_default_rules();
+        rules.save_to_stream(save_file).expect("Should save");
     }
 
-    let load_file = std::fs::File::open(filename)
-	    .expect("should have opened the file");
+    let load_file = std::fs::File::open(filename).expect("should have opened the file");
     let loaded_rules = Rules::load_from_stream(load_file).expect("Should load");
     std::fs::remove_file(filename).ok();
 
