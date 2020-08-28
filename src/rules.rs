@@ -7,6 +7,12 @@ use failure::ResultExt;
 
 use crate::{errors::*, initialize::InitializationToken, internals, YrString};
 
+pub const SCAN_FLAGS_FAST_MODE: i32 = 1;
+pub const SCAN_FLAGS_PROCESS_MEMORY: i32 = 2;
+pub const SCAN_FLAGS_NO_TRYCATCH: i32 = 4;
+pub const SCAN_FLAGS_REPORT_RULES_MATCHING: i32 = 8;
+pub const SCAN_FLAGS_REPORT_RULES_NOT_MATCHING: i32 = 16;
+
 /// A set of compiled rules.
 ///
 /// Obtained from [compiling](struct.Compiler.html) or
@@ -14,7 +20,9 @@ use crate::{errors::*, initialize::InitializationToken, internals, YrString};
 pub struct Rules {
     inner: *mut yara_sys::YR_RULES,
     pub(crate) _token: InitializationToken,
+    flags: i32
 }
+
 
 /// This is safe because Yara have a mutex on the YR_RULES
 unsafe impl std::marker::Sync for Rules {}
@@ -28,6 +36,7 @@ impl TryFrom<*mut yara_sys::YR_RULES> for Rules {
         Ok(Rules {
             inner: rules,
             _token: token,
+            flags: 0
         })
     }
 }
@@ -73,7 +82,7 @@ impl Rules {
         // storage before 3.8.
         let _token = InitializationToken::new()?;
 
-        internals::rules_scan_mem(self.inner, mem, i32::from(timeout))
+        internals::rules_scan_mem(self.inner, mem, i32::from(timeout), self.flags)
     }
 
     /// Scan a file.
@@ -92,7 +101,7 @@ impl Rules {
             .context(IoErrorKind::OpenScanFile)
             .map_err(|e| Into::<IoError>::into(e).into())
             .and_then(|file| {
-                internals::rules_scan_file(self.inner, &file, i32::from(timeout))
+                internals::rules_scan_file(self.inner, &file, i32::from(timeout), self.flags)
                     .map_err(|e| e.into())
             })
     }
@@ -123,6 +132,7 @@ impl Rules {
         internals::rules_load_stream(reader).map(|inner| Rules {
             inner,
             _token: token,
+            flags: 0,
         })
     }
 
@@ -134,7 +144,12 @@ impl Rules {
         internals::rules_load(filename).map(|inner| Rules {
             inner,
             _token: token,
+            flags: 0,
         })
+    }
+
+    pub fn set_flags(&mut self, flags: i32) { 
+        self.flags = flags
     }
 }
 
