@@ -2,97 +2,58 @@ use std::fmt;
 
 pub use yara_sys::CompileErrorLevel;
 
-use failure::{Backtrace, Context, Fail};
+use std::error::Error as StdError;
+
+use thiserror::Error as ThisError;
 
 /// A wrapper around the kinds of errors that can happen in the library.
-#[derive(Debug, Fail)]
+#[derive(Debug, ThisError)]
 pub enum Error {
     /// An IO error.
-    #[fail(display = "{}", _0)]
-    Io(#[cause] IoError),
+    #[error("{0}")]
+    Io(#[from] IoError),
     /// A general Yara error.
     ///
     /// See [`YaraError`] and [`yara_sys::Error`].
-    #[fail(display = "{}", _0)]
-    Yara(#[cause] YaraError),
+    #[error("{0}")]
+    Yara(#[from] YaraError),
     /// A rule compilation error.
-    #[fail(display = "{}", _0)]
-    Compile(#[cause] CompileErrors),
+    #[error("{0}")]
+    Compile(#[from] CompileErrors),
 }
 
-impl From<IoError> for Error {
-    fn from(error: IoError) -> Self {
-        Error::Io(error)
-    }
-}
-
-impl From<YaraError> for Error {
-    fn from(error: YaraError) -> Self {
-        Error::Yara(error)
-    }
-}
-
-impl From<CompileErrors> for Error {
-    fn from(error: CompileErrors) -> Self {
-        Error::Compile(error)
-    }
-}
-
-#[derive(Debug)]
+#[derive(Debug, ThisError)]
+#[error("{context}: {inner}")]
 pub struct IoError {
-    inner: Context<IoErrorKind>,
+    context: IoErrorKind,
+    #[source]
+    inner: std::io::Error,
 }
 
 impl IoError {
+    pub fn new(inner: std::io::Error, context: IoErrorKind) -> Self {
+        IoError { context, inner }
+    }
+
     pub fn kind(&self) -> &IoErrorKind {
-        self.inner.get_context()
+        &self.context
     }
 }
 
-impl From<IoErrorKind> for IoError {
-    fn from(kind: IoErrorKind) -> Self {
-        IoError {
-            inner: Context::new(kind),
-        }
-    }
-}
-
-impl From<Context<IoErrorKind>> for IoError {
-    fn from(ctx: Context<IoErrorKind>) -> Self {
-        IoError { inner: ctx }
-    }
-}
-
-impl Fail for IoError {
-    fn cause(&self) -> Option<&dyn Fail> {
-        self.inner.cause()
-    }
-
-    fn backtrace(&self) -> Option<&Backtrace> {
-        self.inner.backtrace()
-    }
-}
-
-impl fmt::Display for IoError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.inner.fmt(f)
-    }
-}
-
-#[derive(Clone, Copy, Debug, Fail, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ThisError)]
 pub enum IoErrorKind {
-    #[fail(display = "Error while opening scan file")]
+    #[error("Error while opening scan file")]
     OpenScanFile,
-    #[fail(display = "Error while opening rules file")]
+    #[error("Error while opening rules file")]
     OpenRulesFile,
-    #[fail(display = "Error while reading rules stream")]
+    #[error("Error while reading rules stream")]
     ReadingRules,
-    #[fail(display = "Error while writing rules stream")]
+    #[error("Error while writing rules stream")]
     WritingRules,
 }
 
-#[derive(Clone, Copy, Debug, Fail, Eq, PartialEq)]
-#[fail(display = "{}", kind)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ThisError)]
+#[error("{kind}")]
 pub struct YaraError {
     pub kind: yara_sys::Error,
 }
@@ -120,12 +81,12 @@ impl CompileErrors {
     }
 }
 
-impl Fail for CompileErrors {
-    /// Returns the first error.
-    fn cause(&self) -> Option<&dyn Fail> {
+impl StdError for CompileErrors {
+    /// Returns the first compile error.
+    fn source(&self) -> Option<&(dyn StdError + 'static)> {
         self.iter()
             .find(|e| e.level == yara_sys::CompileErrorLevel::Error)
-            .map(|e| e as &dyn Fail)
+            .map(|e| e as &dyn StdError)
     }
 }
 
@@ -139,7 +100,7 @@ impl fmt::Display for CompileErrors {
     }
 }
 
-#[derive(Debug, Fail)]
+#[derive(Debug, ThisError)]
 pub struct CompileError {
     pub level: CompileErrorLevel,
     pub filename: Option<String>,
