@@ -3,8 +3,6 @@ use std::ffi::CStr;
 use std::fs::File;
 use std::path::Path;
 
-use failure::ResultExt;
-
 use crate::errors::*;
 use crate::initialize::InitializationToken;
 use crate::internals;
@@ -39,8 +37,7 @@ impl Compiler {
     /// ```
     pub fn add_rules_file<P: AsRef<Path>>(&mut self, path: P) -> Result<(), Error> {
         File::open(path.as_ref())
-            .context(IoErrorKind::OpenRulesFile)
-            .map_err(|e| Into::<IoError>::into(e).into())
+            .map_err(|e| IoError::new(e, IoErrorKind::OpenRulesFile).into())
             .and_then(|file| internals::compiler_add_file(self.inner, &file, path, None))
     }
 
@@ -60,8 +57,7 @@ impl Compiler {
         namespace: &str,
     ) -> Result<(), Error> {
         File::open(path.as_ref())
-            .context(IoErrorKind::OpenRulesFile)
-            .map_err(|e| Into::<IoError>::into(e).into())
+            .map_err(|e| IoError::new(e, IoErrorKind::OpenRulesFile).into())
             .and_then(|file| internals::compiler_add_file(self.inner, &file, path, Some(namespace)))
     }
 

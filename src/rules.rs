@@ -3,8 +3,6 @@ use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
 
-use failure::ResultExt;
-
 use crate::{errors::*, initialize::InitializationToken, internals, YrString};
 
 /// A set of compiled rules.
@@ -89,8 +87,7 @@ impl Rules {
         let _token = InitializationToken::new()?;
 
         File::open(path)
-            .context(IoErrorKind::OpenScanFile)
-            .map_err(|e| Into::<IoError>::into(e).into())
+            .map_err(|e| IoError::new(e, IoErrorKind::OpenScanFile).into())
             .and_then(|file| {
                 internals::rules_scan_file(self.inner, &file, i32::from(timeout))
                     .map_err(|e| e.into())

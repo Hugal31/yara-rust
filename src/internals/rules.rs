@@ -4,8 +4,6 @@ use std::marker;
 use std::os::raw::c_char;
 use std::ptr;
 
-use failure::ResultExt as _;
-
 use crate::errors::*;
 use crate::internals::meta::MetadataIterator;
 use crate::internals::string::YrStringIterator;
@@ -34,8 +32,7 @@ where
 
     write_stream
         .result()
-        .context(IoErrorKind::WritingRules)
-        .map_err(|e| Into::<IoError>::into(e).into())
+        .map_err(|e| IoError::new(e, IoErrorKind::WritingRules).into())
         .and_then(|_| {
             yara_sys::Error::from_code(result)
                 .map_err(From::from)
@@ -64,8 +61,7 @@ where
     read_stream
         .result()
         .map(|()| pointer)
-        .context(IoErrorKind::ReadingRules)
-        .map_err(|e| Into::<IoError>::into(e).into())
+        .map_err(|e| IoError::new(e, IoErrorKind::ReadingRules).into())
         .and_then(|pointer| {
             yara_sys::Error::from_code(result)
                 .map(|_| pointer)
