@@ -2,16 +2,11 @@ use std::convert::TryFrom;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
+pub use yara_sys::{SCAN_FLAGS_FAST_MODE, SCAN_FLAGS_PROCESS_MEMORY, SCAN_FLAGS_NO_TRYCATCH};
 
 use failure::ResultExt;
 
 use crate::{errors::*, initialize::InitializationToken, internals, YrString};
-
-pub const SCAN_FLAGS_FAST_MODE: i32 = 1;
-pub const SCAN_FLAGS_PROCESS_MEMORY: i32 = 2;
-pub const SCAN_FLAGS_NO_TRYCATCH: i32 = 4;
-pub const SCAN_FLAGS_REPORT_RULES_MATCHING: i32 = 8;
-pub const SCAN_FLAGS_REPORT_RULES_NOT_MATCHING: i32 = 16;
 
 /// A set of compiled rules.
 ///
