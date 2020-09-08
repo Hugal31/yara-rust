@@ -15,7 +15,7 @@ use crate::{errors::*, initialize::InitializationToken, internals, YrString};
 pub struct Rules {
     inner: *mut yara_sys::YR_RULES,
     pub(crate) _token: InitializationToken,
-    flags: i32
+    flags: u32
 }
 
 
@@ -77,7 +77,7 @@ impl Rules {
         // storage before 3.8.
         let _token = InitializationToken::new()?;
 
-        internals::rules_scan_mem(self.inner, mem, i32::from(timeout), self.flags)
+        internals::rules_scan_mem(self.inner, mem, i32::from(timeout), self.flags as i32)
     }
 
     /// Scan a file.
@@ -96,7 +96,7 @@ impl Rules {
             .context(IoErrorKind::OpenScanFile)
             .map_err(|e| Into::<IoError>::into(e).into())
             .and_then(|file| {
-                internals::rules_scan_file(self.inner, &file, i32::from(timeout), self.flags)
+                internals::rules_scan_file(self.inner, &file, i32::from(timeout), self.flags as i32)
                     .map_err(|e| e.into())
             })
     }
@@ -143,7 +143,7 @@ impl Rules {
         })
     }
 
-    pub fn set_flags(&mut self, flags: i32) { 
+    pub fn set_flags(&mut self, flags: u32) {
         self.flags = flags
     }
 }

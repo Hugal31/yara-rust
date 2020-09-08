@@ -102,7 +102,6 @@ fn test_scan_file() {
 
 #[test]
 fn test_scan_fast_mode() {
-    use std::convert::TryInto;
     let test_mem = b"
 I love Rust!
 I love Rust!
@@ -113,7 +112,7 @@ I love Rust!
     let mut compiler = Compiler::new().unwrap();
     compiler.add_rules_str(RULES).expect("Should be Ok");
     let mut rules = compiler.compile_rules().unwrap();
-    rules.set_flags(yara::SCAN_FLAGS_FAST_MODE.try_into().expect("Should convert OK"));
+    rules.set_flags(yara::SCAN_FLAGS_FAST_MODE);
 
     let result = rules
         .scan_mem(test_mem, test_mem.len() as u16)
