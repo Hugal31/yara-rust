@@ -70,8 +70,7 @@ pub fn compiler_add_file<P: AsRef<Path>>(
             &mut errors as *mut Vec<_> as _,
         )
     };
-    let result =
-        compiler_add_file_raw(compiler, file, &path, namespace.as_deref());
+    let result = compiler_add_file_raw(compiler, file, &path, namespace.as_deref());
 
     compile_result(result, errors)
 }

@@ -15,9 +15,8 @@ use crate::{errors::*, initialize::InitializationToken, internals, YrString};
 pub struct Rules {
     inner: *mut yara_sys::YR_RULES,
     pub(crate) _token: InitializationToken,
-    flags: u32
+    flags: u32,
 }
-
 
 /// This is safe because Yara have a mutex on the YR_RULES
 unsafe impl std::marker::Sync for Rules {}
@@ -31,7 +30,7 @@ impl TryFrom<*mut yara_sys::YR_RULES> for Rules {
         Ok(Rules {
             inner: rules,
             _token: token,
-            flags: 0
+            flags: 0,
         })
     }
 }
