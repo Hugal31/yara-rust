@@ -9,6 +9,10 @@ use std::os::raw::c_char;
 
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
+pub mod scan_flags {
+    pub use super::{SCAN_FLAGS_FAST_MODE, SCAN_FLAGS_PROCESS_MEMORY, SCAN_FLAGS_NO_TRYCATCH};
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum MetaType {
     Null,

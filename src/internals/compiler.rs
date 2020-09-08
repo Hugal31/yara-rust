@@ -59,7 +59,6 @@ pub fn compiler_add_file<P: AsRef<Path>>(
     path: P,
     namespace: Option<&str>,
 ) -> Result<(), Error> {
-    use std::ops::Deref as _;
     // TODO: Improve. WTF.
     let path = CString::new(path.as_ref().as_os_str().to_str().unwrap()).unwrap();
     let namespace = namespace.map(|n| CString::new(n).unwrap());
@@ -71,8 +70,7 @@ pub fn compiler_add_file<P: AsRef<Path>>(
             &mut errors as *mut Vec<_> as _,
         )
     };
-    let result =
-        compiler_add_file_raw(compiler, file, &path, namespace.as_ref().map(|s| s.deref()));
+    let result = compiler_add_file_raw(compiler, file, &path, namespace.as_deref());
 
     compile_result(result, errors)
 }

@@ -60,6 +60,7 @@ pub fn rules_scan_mem<'a>(
     rules: *mut yara_sys::YR_RULES,
     mem: &[u8],
     timeout: i32,
+    flags: i32,
 ) -> Result<Vec<Rule<'a>>, YaraError> {
     let mut results = Vec::<Rule<'a>>::new();
     let result = unsafe {
@@ -67,7 +68,7 @@ pub fn rules_scan_mem<'a>(
             rules,
             mem.as_ptr(),
             mem.len(),
-            0,
+            flags,
             Some(scan_callback),
             &mut results as *mut Vec<_> as *mut c_void,
             timeout,
@@ -83,9 +84,10 @@ pub fn rules_scan_file<'a>(
     rules: *mut yara_sys::YR_RULES,
     file: &File,
     timeout: i32,
+    flags: i32,
 ) -> Result<Vec<Rule<'a>>, YaraError> {
     let mut results = Vec::<Rule<'a>>::new();
-    let result = rules_scan_raw(rules, file, timeout, &mut results);
+    let result = rules_scan_raw(rules, file, timeout, flags, &mut results);
 
     yara_sys::Error::from_code(result)
         .map_err(|e| e.into())
@@ -97,6 +99,7 @@ pub fn rules_scan_raw(
     rules: *mut yara_sys::YR_RULES,
     file: &File,
     timeout: i32,
+    flags: i32,
     results: &mut Vec<Rule>,
 ) -> i32 {
     let fd = file.as_raw_fd();
@@ -104,7 +107,7 @@ pub fn rules_scan_raw(
         yara_sys::yr_rules_scan_fd(
             rules,
             fd,
-            0,
+            flags,
             Some(scan_callback),
             results as *mut Vec<_> as *mut c_void,
             timeout,
@@ -117,6 +120,7 @@ pub fn rules_scan_raw(
     rules: *mut yara_sys::YR_RULES,
     file: &File,
     timeout: i32,
+    flags: i32,
     results: &mut Vec<Rule>,
 ) -> i32 {
     let handle = file.as_raw_handle();
@@ -124,7 +128,7 @@ pub fn rules_scan_raw(
         yara_sys::yr_rules_scan_fd(
             rules,
             handle,
-            0,
+            flags,
             Some(scan_callback),
             results as *mut Vec<_> as *mut c_void,
             timeout,

@@ -101,6 +101,34 @@ fn test_scan_file() {
 }
 
 #[test]
+fn test_scan_fast_mode() {
+    let test_mem = b"
+I love Rust!
+I love Rust!
+I love Rust!
+I love Rust!
+I love Rust!
+";
+    let mut compiler = Compiler::new().unwrap();
+    compiler.add_rules_str(RULES).expect("Should be Ok");
+    let mut rules = compiler.compile_rules().unwrap();
+    rules.set_flags(yara::SCAN_FLAGS_FAST_MODE);
+
+    let result = rules
+        .scan_mem(test_mem, test_mem.len() as u16)
+        .expect("Should have scanned byte string");
+    assert_eq!(1, result.len());
+    let rule = &result[0];
+    assert_eq!(1, result.len());
+    assert_eq!("is_awesome", rule.identifier);
+    assert_eq!(1, rule.strings.len());
+    assert_eq!("$rust", rule.strings[0].identifier);
+
+    // In fast mode, it should stop after a single match
+    assert_eq!(1, rule.strings[0].matches.len());
+}
+
+#[test]
 fn test_tags() {
     let rules = compile(
         "

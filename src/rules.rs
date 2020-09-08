@@ -2,6 +2,7 @@ use std::convert::TryFrom;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
+pub use yara_sys::scan_flags::*;
 
 use crate::{errors::*, initialize::InitializationToken, internals, YrString};
 
@@ -12,6 +13,7 @@ use crate::{errors::*, initialize::InitializationToken, internals, YrString};
 pub struct Rules {
     inner: *mut yara_sys::YR_RULES,
     pub(crate) _token: InitializationToken,
+    flags: u32,
 }
 
 /// This is safe because Yara have a mutex on the YR_RULES
@@ -26,6 +28,7 @@ impl TryFrom<*mut yara_sys::YR_RULES> for Rules {
         Ok(Rules {
             inner: rules,
             _token: token,
+            flags: 0,
         })
     }
 }
@@ -71,7 +74,7 @@ impl Rules {
         // storage before 3.8.
         let _token = InitializationToken::new()?;
 
-        internals::rules_scan_mem(self.inner, mem, i32::from(timeout))
+        internals::rules_scan_mem(self.inner, mem, i32::from(timeout), self.flags as i32)
     }
 
     /// Scan a file.
@@ -89,7 +92,7 @@ impl Rules {
         File::open(path)
             .map_err(|e| IoError::new(e, IoErrorKind::OpenScanFile).into())
             .and_then(|file| {
-                internals::rules_scan_file(self.inner, &file, i32::from(timeout))
+                internals::rules_scan_file(self.inner, &file, i32::from(timeout), self.flags as i32)
                     .map_err(|e| e.into())
             })
     }
@@ -120,6 +123,7 @@ impl Rules {
         internals::rules_load_stream(reader).map(|inner| Rules {
             inner,
             _token: token,
+            flags: 0,
         })
     }
 
@@ -131,7 +135,12 @@ impl Rules {
         internals::rules_load(filename).map(|inner| Rules {
             inner,
             _token: token,
+            flags: 0,
         })
+    }
+
+    pub fn set_flags(&mut self, flags: u32) {
+        self.flags = flags
     }
 }
 

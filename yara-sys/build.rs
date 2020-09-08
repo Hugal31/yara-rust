@@ -1,9 +1,11 @@
 // Inspired from https://github.com/jgallagher/rusqlite/blob/master/libsqlite3-sys/build.rs
 
+use std::env;
+
 fn main() {
     // Tell cargo to tell rustc to link the system yara
     // shared library.
-    println!("cargo:rustc-link-lib=yara");
+    link("yara");
 
     // Add the environment variable YARA_LIBRARY_PATH to the library search path.
     if let Some(yara_library_path) = std::env::var("YARA_LIBRARY_PATH")
@@ -14,6 +16,19 @@ fn main() {
     }
 
     build::add_bindings();
+}
+
+fn link(lib: &str) {
+    println!("cargo:rustc-link-lib={}={}", lib_mode(lib), lib);
+}
+
+fn lib_mode(lib: &str) -> &'static str {
+    let kind = env::var(&format!("LIB{}_STATIC", lib.to_uppercase()));
+    match kind.ok().as_deref() {
+	Some("0") => "dylib",
+	Some(_) => "static",
+	None => "dylib",
+    }
 }
 
 #[cfg(any(feature = "bundled-3_7",
@@ -54,6 +69,7 @@ mod build {
             .whitelist_var("META_TYPE_.*")
             .whitelist_var("STRING_GFLAGS_NULL")
             .whitelist_var("YARA_ERROR_LEVEL_.*")
+            .whitelist_var("SCAN_FLAGS_.*")
             .whitelist_function("yr_initialize")
             .whitelist_function("yr_finalize")
             .whitelist_function("yr_finalize_thread")
