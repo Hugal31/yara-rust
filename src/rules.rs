@@ -2,7 +2,7 @@ use std::convert::TryFrom;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
-pub use yara_sys::{SCAN_FLAGS_FAST_MODE, SCAN_FLAGS_PROCESS_MEMORY, SCAN_FLAGS_NO_TRYCATCH};
+pub use yara_sys::scan_flags::*;
 
 use failure::ResultExt;
 
