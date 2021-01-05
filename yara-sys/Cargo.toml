@@ -15,7 +15,7 @@ edition = "2018"
 default = ["bindgen"]
 bundled-3_7 = []
 bundled-3_11 = []
-vendored = ["bindgen", "yara-src"]
+vendored = ["yara-src"]
 
 [build-dependencies]
 bindgen = { version = "0.52", optional = true }
