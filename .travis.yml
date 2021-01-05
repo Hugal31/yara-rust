@@ -11,15 +11,23 @@ env:
     - YARA_VERSION=3.9.0
     - YARA_VERSION=3.10.0
     - YARA_VERSION=3.11.0
+    - YARA_FEATURES=vendored,bindgen
+    - YARA_FEATURES=vendored,bundled-3_11
 before_install:
-  - wget https://github.com/VirusTotal/yara/archive/v$YARA_VERSION.tar.gz
-  - tar xzf v$YARA_VERSION.tar.gz
-  - cd yara-$YARA_VERSION
-  - ./bootstrap.sh && ./configure
-  - make
-  - sudo make install
-  - sudo ldconfig -v
-  - cd ..
+  - |
+    if [ -n "$YARA_VERSION" ]; then
+      wget https://github.com/VirusTotal/yara/archive/v$YARA_VERSION.tar.gz
+      tar xzf v$YARA_VERSION.tar.gz
+      cd yara-$YARA_VERSION
+      ./bootstrap.sh && ./configure
+      make
+      sudo make install
+      sudo ldconfig -v
+      cd ..
+    fi
+script:
+  - cargo build --verbose --features "$YARA_FEATURES"
+  - cargo test --verbose --features "$YARA_FEATURES"
 matrix:
   allow_failures:
     - rust: nightly
