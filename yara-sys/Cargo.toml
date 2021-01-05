@@ -19,7 +19,7 @@ vendored = ["yara-src"]
 
 [build-dependencies]
 bindgen = { version = "0.52", optional = true }
-yara-src = { version = "0.1.1", optional = true }
+yara-src = { version = "0.1.2", optional = true }
 
 [package.metadata.docs.rs]
 no-default-features = true
