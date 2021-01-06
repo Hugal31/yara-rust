@@ -1,6 +1,6 @@
 [package]
 name = "yara"
-version = "0.4.2"
+version = "0.4.3"
 authors = ["Hugo Laloge <hugo.laloge@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "Rust bindings for VirusTotal/yara"
@@ -15,6 +15,7 @@ default = ["bindgen"]
 bindgen = ["yara-sys/bindgen"]
 bundled-3_7 = ["yara-sys/bundled-3_7"]
 bundled-3_11 = ["yara-sys/bundled-3_11"]
+vendored = ["yara-sys/vendored"]
 
 [dependencies]
 thiserror = "1.0"
@@ -25,7 +26,7 @@ crossbeam = "0.7"
 
 [dependencies.yara-sys]
 path = "yara-sys"
-version = "0.4.1"
+version = "0.4.2"
 default-features = false
 
 [package.metadata.docs.rs]

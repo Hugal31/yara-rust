@@ -2,7 +2,16 @@
 
 use std::env;
 
+#[cfg(feature = "vendored")]
+extern crate yara_src;
+
 fn main() {
+    #[cfg(feature = "vendored")]
+    {
+        yara_src::build();
+        yara_src::set_env();
+    }
+
     // Tell cargo to tell rustc to link the system yara
     // shared library.
     link("yara");

@@ -1,6 +1,6 @@
 [package]
 name = "yara-sys"
-version = "0.4.1"
+version = "0.4.2"
 authors = ["Hugo Laloge <hugo.laloge@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "Native bindings to the libyara library"
@@ -15,9 +15,11 @@ edition = "2018"
 default = ["bindgen"]
 bundled-3_7 = []
 bundled-3_11 = []
+vendored = ["yara-src"]
 
 [build-dependencies]
 bindgen = { version = "0.52", optional = true }
+yara-src = { version = "0.1.2", optional = true }
 
 [package.metadata.docs.rs]
 no-default-features = true
