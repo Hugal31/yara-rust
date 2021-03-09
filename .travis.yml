@@ -1,4 +1,6 @@
 language: rust
+dist: xenial
+os: linux
 rust:
   - stable
   - nightly
@@ -15,7 +17,7 @@ env:
     - YARA_FEATURES=vendored,bundled-3_11
 before_install:
   - |
-    if [ -n "$YARA_VERSION" ]; then
+    if [ -n "$YARA_VERSION" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then
       wget https://github.com/VirusTotal/yara/archive/v$YARA_VERSION.tar.gz
       tar xzf v$YARA_VERSION.tar.gz
       cd yara-$YARA_VERSION
@@ -28,7 +30,12 @@ before_install:
 script:
   - cargo build --verbose --features "$YARA_FEATURES"
   - cargo test --verbose --features "$YARA_FEATURES"
-matrix:
+jobs:
+  include:
+    - os: windows
+      rust: stable
+      env:
+        - YARA_FEATURES=vendored,bindgen
   allow_failures:
     - rust: nightly
   fast_finish: true
