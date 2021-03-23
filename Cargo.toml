@@ -1,6 +1,6 @@
 [package]
 name = "yara"
-version = "0.4.3"
+version = "0.4.4"
 authors = ["Hugo Laloge <hugo.laloge@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "Rust bindings for VirusTotal/yara"
