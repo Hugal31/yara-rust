@@ -16,6 +16,30 @@ pub struct Rules {
     flags: u32,
 }
 
+// On the subject of thread-safety:
+// scan_XXX functions use 3 Thread Local Storage variables which would
+// normally prevent the YR_RULES struct from being `Send`:
+//
+// * libyara.c:yr_tidx_key. This is a per-thread id allocated at the start of
+//   yr_rules_scan_mem_blocks, which is used to index into various arrays during
+//   the scan. It is deallocated when yr_rules_scan_mem_blocks returns.
+//   Because we do not let the user pass its own callback to scan_XXX, and because
+//   ours does not change thread or call .await, we know for a fact that there is
+//   no way for our execution flow to change thread during the call to a scan_XXX,
+//   hence having it Send is safe.
+// * libyara.c:yr_recovery_state_key. Per thread longjmp context for internal error
+//   management inside libyara. Safe on the same basis as yr_tidx_key.
+// * re.c:thread_storage_key. only prior to v3.8, later removed by #823.
+//   The regex engine kept per-thread allocated memory, which was freed when calling
+//   yr_finalize_thread. If YR_RULES is moved, and yr_finalize_thread is called
+//   from another thread, this will just be a no-op, and we will leak the memory
+//   allocated by re.c on the first thread. Although this is not ideal, it is
+//   technically considered safe Rust. We instead chose to call finalize_thread()
+//   for every scan_XXX call we make.
+//
+/// This is safe because Yara TLS have are short-lived and we control the callback,
+/// ensuring we cannot change thread while they are defined.
+unsafe impl std::marker::Send for Rules {}
 /// This is safe because Yara have a mutex on the YR_RULES
 unsafe impl std::marker::Sync for Rules {}
 
@@ -74,7 +98,13 @@ impl Rules {
         // storage before 3.8.
         let _token = InitializationToken::new()?;
 
-        internals::rules_scan_mem(self.inner, mem, i32::from(timeout), self.flags as i32)
+        let res = internals::rules_scan_mem(self.inner, mem, i32::from(timeout), self.flags as i32);
+        // Needed on Yara 3.7 only, is a no-op afterwards. Frees internal memory of the
+        // regex engine. We do it on every call so YR_RULES can be Send and not leak
+        // memory on 3.7.
+        internals::finalize_thread();
+        res
+
     }
 
     /// Scan a file.
@@ -89,12 +119,18 @@ impl Rules {
         // storage before 3.8.
         let _token = InitializationToken::new()?;
 
-        File::open(path)
+        let res = File::open(path)
             .map_err(|e| IoError::new(e, IoErrorKind::OpenScanFile).into())
             .and_then(|file| {
                 internals::rules_scan_file(self.inner, &file, i32::from(timeout), self.flags as i32)
                     .map_err(|e| e.into())
-            })
+            });
+        // Needed on Yara 3.7 only, is a no-op afterwards. Frees internal memory of the
+        // regex engine. We do it on every call so YR_RULES can be Send and not leak
+        // memory on 3.7.
+        internals::finalize_thread();
+        res
+
     }
 
     /// Save the rules to a file.
