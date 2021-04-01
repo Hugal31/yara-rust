@@ -161,6 +161,13 @@ pub trait CompilerVariableValue {
         compiler: *mut yara_sys::YR_COMPILER,
         identifier: &str,
     ) -> Result<(), YaraError>;
+
+    #[cfg(feature = "scanners")]
+    fn assign_in_scanner(
+        &self,
+        scanner: *mut yara_sys::YR_SCANNER,
+        identifier: &str,
+    ) -> Result<(), YaraError>;
 }
 
 impl CompilerVariableValue for bool {
@@ -170,6 +177,15 @@ impl CompilerVariableValue for bool {
         identifier: &str,
     ) -> Result<(), YaraError> {
         internals::compiler_define_boolean_variable(compiler, identifier, *self)
+    }
+
+    #[cfg(feature = "scanners")]
+    fn assign_in_scanner(
+        &self,
+        scanner: *mut yara_sys::YR_SCANNER,
+        identifier: &str,
+    ) -> Result<(), YaraError> {
+        internals::scanner_define_boolean_variable(scanner, identifier, *self)
     }
 }
 
@@ -181,6 +197,15 @@ impl CompilerVariableValue for f64 {
     ) -> Result<(), YaraError> {
         internals::compiler_define_float_variable(compiler, identifier, *self)
     }
+
+    #[cfg(feature = "scanners")]
+    fn assign_in_scanner(
+        &self,
+        scanner: *mut yara_sys::YR_SCANNER,
+        identifier: &str,
+    ) -> Result<(), YaraError> {
+        internals::scanner_define_float_variable(scanner, identifier, *self)
+    }
 }
 
 impl CompilerVariableValue for i64 {
@@ -190,6 +215,15 @@ impl CompilerVariableValue for i64 {
         identifier: &str,
     ) -> Result<(), YaraError> {
         internals::compiler_define_integer_variable(compiler, identifier, *self)
+    }
+
+    #[cfg(feature = "scanners")]
+    fn assign_in_scanner(
+        &self,
+        scanner: *mut yara_sys::YR_SCANNER,
+        identifier: &str,
+    ) -> Result<(), YaraError> {
+        internals::scanner_define_integer_variable(scanner, identifier, *self)
     }
 }
 
@@ -201,6 +235,15 @@ impl CompilerVariableValue for &str {
     ) -> Result<(), YaraError> {
         internals::compiler_define_str_variable(compiler, identifier, *self)
     }
+
+    #[cfg(feature = "scanners")]
+    fn assign_in_scanner(
+        &self,
+        scanner: *mut yara_sys::YR_SCANNER,
+        identifier: &str,
+    ) -> Result<(), YaraError> {
+        internals::scanner_define_str_variable(scanner, identifier, *self)
+    }
 }
 
 impl CompilerVariableValue for &CStr {
@@ -210,5 +253,14 @@ impl CompilerVariableValue for &CStr {
         identifier: &str,
     ) -> Result<(), YaraError> {
         internals::compiler_define_cstr_variable(compiler, identifier, *self)
+    }
+
+    #[cfg(feature = "scanners")]
+    fn assign_in_scanner(
+        &self,
+        scanner: *mut yara_sys::YR_SCANNER,
+        identifier: &str,
+    ) -> Result<(), YaraError> {
+        internals::scanner_define_cstr_variable(scanner, identifier, *self)
     }
 }

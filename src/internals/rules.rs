@@ -15,6 +15,29 @@ pub fn rules_destroy(rules: *mut yara_sys::YR_RULES) {
     }
 }
 
+#[cfg(feature = "scanners")]
+pub fn scanner_create(rules: *mut yara_sys::YR_RULES) -> Result<*mut yara_sys::YR_SCANNER, YaraError> {
+    let mut new_scanner: *mut yara_sys::YR_SCANNER = std::ptr::null_mut();
+
+    let result = unsafe {
+        yara_sys::yr_scanner_create(
+            rules,
+            &mut new_scanner,
+        )
+    };
+
+    yara_sys::Error::from_code(result)
+        .map_err(|e| e.into())
+        .map(|_| new_scanner)
+}
+
+#[cfg(feature = "scanners")]
+pub fn scanner_destroy(scanner: *mut yara_sys::YR_SCANNER) {
+    unsafe {
+        yara_sys::yr_scanner_destroy(scanner);
+    }
+}
+
 // TODO Check if non mut
 pub fn rules_save(rules: *mut yara_sys::YR_RULES, filename: &str) -> Result<(), YaraError> {
     let filename = CString::new(filename).unwrap();

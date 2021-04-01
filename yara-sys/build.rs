@@ -85,6 +85,7 @@ mod build {
             .whitelist_function("yr_compiler_.*")
             .whitelist_function("yr_rule_.*")
             .whitelist_function("yr_rules_.*")
+            .whitelist_function("yr_scanner_.*")
             .whitelist_function("yr_get_tidx")
             .whitelist_type("YR_EXTERNAL_VARIABLE")
 	    .whitelist_type("YR_MATCH")
