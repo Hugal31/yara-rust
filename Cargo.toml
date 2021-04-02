@@ -13,7 +13,7 @@ edition = "2018"
 [features]
 default = ["bindgen"]
 bindgen = ["yara-sys/bindgen"]
-bundled-3_7 = ["yara-sys/bundled-3_7"]
+bundled-3_8 = ["yara-sys/bundled-3_8"]
 bundled-3_11 = ["yara-sys/bundled-3_11"]
 vendored = ["yara-sys/vendored"]
 scanners = []
