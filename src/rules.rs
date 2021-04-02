@@ -102,17 +102,7 @@ impl Rules {
     /// # Ok::<(), yara::Error>(())
     /// ```
     pub fn scan_mem(&self, mem: &[u8], timeout: u16) -> Result<Vec<Rule>, YaraError> {
-        // The token needed here because scanning allocate space for regexp on the thread_local
-        // storage before 3.8.
-        let _token = InitializationToken::new()?;
-
-        let res = internals::rules_scan_mem(self.inner, mem, i32::from(timeout), self.flags as i32);
-        // Needed on Yara 3.7 only, is a no-op afterwards. Frees internal memory of the
-        // regex engine. We do it on every call so YR_RULES can be Send and not leak
-        // memory on 3.7.
-        internals::finalize_thread();
-        res
-
+        internals::rules_scan_mem(self.inner, mem, i32::from(timeout), self.flags as i32)
     }
 
     /// Scan a file.
@@ -123,22 +113,12 @@ impl Rules {
         path: P,
         timeout: u16,
     ) -> Result<Vec<Rule<'r>>, Error> {
-        // The token needed here because scanning allocate space for regexp on the thread_local
-        // storage before 3.8.
-        let _token = InitializationToken::new()?;
-
-        let res = File::open(path)
+        File::open(path)
             .map_err(|e| IoError::new(e, IoErrorKind::OpenScanFile).into())
             .and_then(|file| {
                 internals::rules_scan_file(self.inner, &file, i32::from(timeout), self.flags as i32)
                     .map_err(|e| e.into())
-            });
-        // Needed on Yara 3.7 only, is a no-op afterwards. Frees internal memory of the
-        // regex engine. We do it on every call so YR_RULES can be Send and not leak
-        // memory on 3.7.
-        internals::finalize_thread();
-        res
-
+            })
     }
 
     /// Save the rules to a file.
