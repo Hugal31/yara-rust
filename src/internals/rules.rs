@@ -15,7 +15,6 @@ pub fn rules_destroy(rules: *mut yara_sys::YR_RULES) {
     }
 }
 
-#[cfg(feature = "scanners")]
 pub fn scanner_create(rules: *mut yara_sys::YR_RULES) -> Result<*mut yara_sys::YR_SCANNER, YaraError> {
     let mut new_scanner: *mut yara_sys::YR_SCANNER = std::ptr::null_mut();
 
@@ -31,7 +30,6 @@ pub fn scanner_create(rules: *mut yara_sys::YR_RULES) -> Result<*mut yara_sys::Y
         .map(|_| new_scanner)
 }
 
-#[cfg(feature = "scanners")]
 pub fn scanner_destroy(scanner: *mut yara_sys::YR_SCANNER) {
     unsafe {
         yara_sys::yr_scanner_destroy(scanner);

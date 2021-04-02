@@ -62,7 +62,6 @@ impl Rules {
     ///
     /// You can create as many scanners as you want, and they each can have
     /// their own scan flag, timeout, and external variables defined.
-    #[cfg(feature = "scanners")]
     pub fn scanner(&self) -> Result<crate::scanner::Scanner, YaraError> {
         crate::scanner::Scanner::new(&self)
     }

@@ -4,9 +4,7 @@ use std::os::raw::c_void;
 use std::os::unix::io::AsRawFd;
 #[cfg(windows)]
 use std::os::windows::io::AsRawHandle;
-#[cfg(feature = "scanners")]
 use yara_sys::YR_SCANNER;
-#[cfg(feature = "scanners")]
 use std::ffi::{CStr, CString};
 
 use crate::errors::*;
@@ -84,7 +82,6 @@ pub fn rules_scan_mem<'a>(
         .map(|_| results)
 }
 
-#[cfg(feature = "scanners")]
 /// Scan a buffer with the provided YR_SCANNER and its defined external vars.
 ///
 /// Setting the callback function modifies the Scanner with no locks preventing
@@ -125,7 +122,6 @@ pub fn rules_scan_file<'a>(
         .map(|_| results)
 }
 
-#[cfg(feature = "scanners")]
 /// Scan a file with the provided YR_SCANNER and its defined external vars.
 ///
 /// Setting the callback function modifies the Scanner with no locks preventing
@@ -184,7 +180,7 @@ pub fn rules_scan_raw(
     }
 }
 
-#[cfg(all(feature = "scanners", unix))]
+#[cfg(unix)]
 /// Scan a file with the provided YR_SCANNER and its defined external vars.
 ///
 /// Setting the callback function modifies the Scanner with no locks preventing
@@ -207,7 +203,7 @@ pub fn scanner_scan_raw<'a>(
     }
 }
 
-#[cfg(all(feature = "scanners", windows))]
+#[cfg(windows)]
 /// Scan a file with the provided YR_SCANNER and its defined external vars.
 ///
 /// Setting the callback function modifies the Scanner with no locks preventing
@@ -246,7 +242,6 @@ extern "C" fn scan_callback(
     CallbackReturn::Continue.to_yara()
 }
 
-#[cfg(feature = "scanners")]
 /// Setting the flags modifies the Scanner with no locks preventing data races,
 /// so it should only be called from a &mut Scanner.
 pub fn scanner_set_flags<'a>(
@@ -258,7 +253,6 @@ pub fn scanner_set_flags<'a>(
     }
 }
 
-#[cfg(feature = "scanners")]
 /// Setting the timeout modifies the Scanner with no locks preventing data races,
 /// so it should only be called from a &mut Scanner.
 pub fn scanner_set_timeout<'a>(
@@ -270,7 +264,6 @@ pub fn scanner_set_timeout<'a>(
     }
 }
 
-#[cfg(feature = "scanners")]
 pub fn scanner_define_integer_variable(
     scanner: *mut YR_SCANNER,
     identifier: &str,
@@ -283,7 +276,6 @@ pub fn scanner_define_integer_variable(
     yara_sys::Error::from_code(result).map_err(Into::into)
 }
 
-#[cfg(feature = "scanners")]
 pub fn scanner_define_boolean_variable(
     scanner: *mut YR_SCANNER,
     identifier: &str,
@@ -297,7 +289,6 @@ pub fn scanner_define_boolean_variable(
     yara_sys::Error::from_code(result).map_err(Into::into)
 }
 
-#[cfg(feature = "scanners")]
 pub fn scanner_define_float_variable(
     scanner: *mut YR_SCANNER,
     identifier: &str,
@@ -310,7 +301,6 @@ pub fn scanner_define_float_variable(
     yara_sys::Error::from_code(result).map_err(Into::into)
 }
 
-#[cfg(feature = "scanners")]
 pub fn scanner_define_str_variable(
     scanner: *mut YR_SCANNER,
     identifier: &str,
@@ -324,7 +314,6 @@ pub fn scanner_define_str_variable(
     yara_sys::Error::from_code(result).map_err(Into::into)
 }
 
-#[cfg(feature = "scanners")]
 pub fn scanner_define_cstr_variable(
     scanner: *mut YR_SCANNER,
     identifier: &str,

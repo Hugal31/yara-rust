@@ -16,7 +16,6 @@ bindgen = ["yara-sys/bindgen"]
 bundled-3_8 = ["yara-sys/bundled-3_8"]
 bundled-3_11 = ["yara-sys/bundled-3_11"]
 vendored = ["yara-sys/vendored"]
-scanners = []
 
 [dependencies]
 thiserror = "1.0"
