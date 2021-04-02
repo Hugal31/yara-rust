@@ -4,6 +4,10 @@ use std::os::raw::c_void;
 use std::os::unix::io::AsRawFd;
 #[cfg(windows)]
 use std::os::windows::io::AsRawHandle;
+#[cfg(feature = "scanners")]
+use yara_sys::YR_SCANNER;
+#[cfg(feature = "scanners")]
+use std::ffi::{CStr, CString};
 
 use crate::errors::*;
 use crate::Rule;
@@ -80,6 +84,33 @@ pub fn rules_scan_mem<'a>(
         .map(|_| results)
 }
 
+#[cfg(feature = "scanners")]
+/// Scan a buffer with the provided YR_SCANNER and its defined external vars.
+///
+/// Setting the callback function modifies the Scanner with no locks preventing
+/// data races, so it should only be called from a &mut Scanner.
+pub fn scanner_scan_mem<'a>(
+    scanner: *mut yara_sys::YR_SCANNER,
+    mem: &[u8],
+) -> Result<Vec<Rule<'a>>, YaraError> {
+    let mut results = Vec::<Rule<'a>>::new();
+    let result = unsafe {
+        yara_sys::yr_scanner_set_callback(
+            scanner,
+            Some(scan_callback),
+            &mut results as *mut Vec<_> as *mut c_void);
+        yara_sys::yr_scanner_scan_mem(
+            scanner,
+            mem.as_ptr(),
+            mem.len(),
+        )
+    };
+
+    yara_sys::Error::from_code(result)
+        .map_err(|e| e.into())
+        .map(|_| results)
+}
+
 pub fn rules_scan_file<'a>(
     rules: *mut yara_sys::YR_RULES,
     file: &File,
@@ -88,6 +119,23 @@ pub fn rules_scan_file<'a>(
 ) -> Result<Vec<Rule<'a>>, YaraError> {
     let mut results = Vec::<Rule<'a>>::new();
     let result = rules_scan_raw(rules, file, timeout, flags, &mut results);
+
+    yara_sys::Error::from_code(result)
+        .map_err(|e| e.into())
+        .map(|_| results)
+}
+
+#[cfg(feature = "scanners")]
+/// Scan a file with the provided YR_SCANNER and its defined external vars.
+///
+/// Setting the callback function modifies the Scanner with no locks preventing
+/// data races, so it should only be called from a &mut Scanner.
+pub fn scanner_scan_file<'a>(
+    scanner: *mut yara_sys::YR_SCANNER,
+    file: &File,
+) -> Result<Vec<Rule<'a>>, YaraError> {
+    let mut results = Vec::<Rule<'a>>::new();
+    let result = scanner_scan_raw(scanner, file, &mut results);
 
     yara_sys::Error::from_code(result)
         .map_err(|e| e.into())
@@ -136,6 +184,52 @@ pub fn rules_scan_raw(
     }
 }
 
+#[cfg(all(feature = "scanners", unix))]
+/// Scan a file with the provided YR_SCANNER and its defined external vars.
+///
+/// Setting the callback function modifies the Scanner with no locks preventing
+/// data races, so it should only be called from a &mut Scanner.
+pub fn scanner_scan_raw<'a>(
+    scanner: *mut yara_sys::YR_SCANNER,
+    file: &File,
+    results: &mut Vec<Rule>,
+) -> i32 {
+    let fd = file.as_raw_fd();
+    unsafe {
+        yara_sys::yr_scanner_set_callback(
+            scanner,
+            Some(scan_callback),
+            results as *mut Vec<_> as *mut c_void);
+        yara_sys::yr_scanner_scan_fd(
+            scanner,
+            fd
+        )
+    }
+}
+
+#[cfg(all(feature = "scanners", windows))]
+/// Scan a file with the provided YR_SCANNER and its defined external vars.
+///
+/// Setting the callback function modifies the Scanner with no locks preventing
+/// data races, so it should only be called from a &mut Scanner.
+pub fn scanner_scan_raw<'a>(
+    scanner: *mut yara_sys::YR_SCANNER,
+    file: &File,
+    results: &mut Vec<Rule>,
+) -> i32 {
+    let handle = file.as_raw_handle();
+    unsafe {
+        yara_sys::yr_scanner_set_callback(
+            scanner,
+            Some(scan_callback),
+            results as *mut Vec<_> as *mut c_void);
+        yara_sys::yr_scanner_scan_fd(
+            scanner,
+            handle
+        )
+    }
+}
+
 extern "C" fn scan_callback(
     message: i32,
     message_data: *mut c_void,
@@ -150,4 +244,95 @@ extern "C" fn scan_callback(
     }
 
     CallbackReturn::Continue.to_yara()
+}
+
+#[cfg(feature = "scanners")]
+/// Setting the flags modifies the Scanner with no locks preventing data races,
+/// so it should only be called from a &mut Scanner.
+pub fn scanner_set_flags<'a>(
+    scanner: *mut yara_sys::YR_SCANNER,
+    flags: i32,
+) {
+    unsafe {
+        yara_sys::yr_scanner_set_flags(scanner, flags);
+    }
+}
+
+#[cfg(feature = "scanners")]
+/// Setting the timeout modifies the Scanner with no locks preventing data races,
+/// so it should only be called from a &mut Scanner.
+pub fn scanner_set_timeout<'a>(
+    scanner: *mut yara_sys::YR_SCANNER,
+    seconds: i32,
+) {
+    unsafe {
+        yara_sys::yr_scanner_set_timeout(scanner, seconds);
+    }
+}
+
+#[cfg(feature = "scanners")]
+pub fn scanner_define_integer_variable(
+    scanner: *mut YR_SCANNER,
+    identifier: &str,
+    value: i64,
+) -> Result<(), YaraError> {
+    let identifier = CString::new(identifier).unwrap();
+    let result = unsafe {
+        yara_sys::yr_scanner_define_integer_variable(scanner, identifier.as_ptr(), value)
+    };
+    yara_sys::Error::from_code(result).map_err(Into::into)
+}
+
+#[cfg(feature = "scanners")]
+pub fn scanner_define_boolean_variable(
+    scanner: *mut YR_SCANNER,
+    identifier: &str,
+    value: bool,
+) -> Result<(), YaraError> {
+    let identifier = CString::new(identifier).unwrap();
+    let value = if value { 1 } else { 0 };
+    let result = unsafe {
+        yara_sys::yr_scanner_define_boolean_variable(scanner, identifier.as_ptr(), value)
+    };
+    yara_sys::Error::from_code(result).map_err(Into::into)
+}
+
+#[cfg(feature = "scanners")]
+pub fn scanner_define_float_variable(
+    scanner: *mut YR_SCANNER,
+    identifier: &str,
+    value: f64,
+) -> Result<(), YaraError> {
+    let identifier = CString::new(identifier).unwrap();
+    let result = unsafe {
+        yara_sys::yr_scanner_define_float_variable(scanner, identifier.as_ptr(), value)
+    };
+    yara_sys::Error::from_code(result).map_err(Into::into)
+}
+
+#[cfg(feature = "scanners")]
+pub fn scanner_define_str_variable(
+    scanner: *mut YR_SCANNER,
+    identifier: &str,
+    value: &str,
+) -> Result<(), YaraError> {
+    let identifier = CString::new(identifier).unwrap();
+    let value = CString::new(value).unwrap();
+    let result = unsafe {
+        yara_sys::yr_scanner_define_string_variable(scanner, identifier.as_ptr(), value.as_ptr())
+    };
+    yara_sys::Error::from_code(result).map_err(Into::into)
+}
+
+#[cfg(feature = "scanners")]
+pub fn scanner_define_cstr_variable(
+    scanner: *mut YR_SCANNER,
+    identifier: &str,
+    value: &CStr,
+) -> Result<(), YaraError> {
+    let identifier = CString::new(identifier).unwrap();
+    let result = unsafe {
+        yara_sys::yr_scanner_define_string_variable(scanner, identifier.as_ptr(), value.as_ptr())
+    };
+    yara_sys::Error::from_code(result).map_err(Into::into)
 }

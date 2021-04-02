@@ -11,7 +11,7 @@ use crate::{errors::*, initialize::InitializationToken, internals, YrString};
 /// Obtained from [compiling](struct.Compiler.html) or
 /// [loading a pre-compiled rule](#method.load_from_file).
 pub struct Rules {
-    inner: *mut yara_sys::YR_RULES,
+    pub(crate) inner: *mut yara_sys::YR_RULES,
     pub(crate) _token: InitializationToken,
     flags: u32,
 }
@@ -58,6 +58,15 @@ impl TryFrom<*mut yara_sys::YR_RULES> for Rules {
 }
 
 impl Rules {
+    /// Create a [`Scanner`](crate::scanner::Scanner) from this set of rules.
+    ///
+    /// You can create as many scanners as you want, and they each can have
+    /// their own scan flag, timeout, and external variables defined.
+    #[cfg(feature = "scanners")]
+    pub fn scanner(&self) -> Result<crate::scanner::Scanner, YaraError> {
+        crate::scanner::Scanner::new(&self)
+    }
+
     /// Scan memory.
     ///
     /// Returns a `Vec` of maching rules.

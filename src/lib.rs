@@ -51,6 +51,8 @@ mod internals;
 mod matches;
 mod rules;
 mod string;
+#[cfg(feature = "scanners")]
+mod scanner;
 
 pub mod errors;
 
@@ -61,6 +63,8 @@ pub use crate::errors::*;
 pub use crate::matches::Match;
 pub use crate::rules::*;
 pub use crate::string::YrString;
+#[cfg(feature = "scanners")]
+pub use crate::scanner::Scanner;
 
 /// Yara initialization token.
 ///
