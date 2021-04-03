@@ -1,7 +1,8 @@
 use std::ffi::CStr;
 use std::marker;
 
-use crate::internals::get_tidx;
+use yara_sys::{YR_SCAN_CONTEXT, YR_STRING};
+
 use crate::internals::matches::MatchIterator;
 use crate::Match;
 use crate::YrString;
@@ -35,24 +36,23 @@ impl<'a> Iterator for YrStringIterator<'a> {
 
         let string = unsafe { &*self.head };
 
-        if string.g_flags as u32 & yara_sys::STRING_GFLAGS_NULL != 0 {
-            None
+        if string.flags & yara_sys::STRING_FLAGS_LAST_IN_RULE != 0 {
+            self.head = std::ptr::null();
         } else {
             self.head = unsafe { self.head.offset(1) };
-            Some(string)
         }
+
+        Some(string)
     }
 }
 
-impl<'a> From<&'a yara_sys::YR_STRING> for YrString<'a> {
-    fn from(string: &yara_sys::YR_STRING) -> Self {
+impl<'a> From<(&'a YR_SCAN_CONTEXT, &'a YR_STRING)> for YrString<'a> {
+    fn from((context, string): (&'a YR_SCAN_CONTEXT, &'a YR_STRING)) -> Self {
         let identifier = unsafe { CStr::from_ptr(string.get_identifier()) }
             .to_str()
             .unwrap();
-        let tidx = get_tidx();
-        let matches = MatchIterator::from(&string.matches[tidx as usize])
-            .map(Match::from)
-            .collect();
+        let matches = unsafe { &*context.matches.offset(string.idx as isize) };
+        let matches = MatchIterator::from(matches).map(Match::from).collect();
 
         YrString {
             identifier,

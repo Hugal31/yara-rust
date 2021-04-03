@@ -16,7 +16,7 @@ pub struct MatchIterator<'a> {
 impl<'a> From<&'a yara_sys::YR_MATCHES> for MatchIterator<'a> {
     fn from(matches: &'a yara_sys::YR_MATCHES) -> MatchIterator<'a> {
         MatchIterator {
-            head: matches.get_head(),
+            head: matches.head,
             _marker: marker::PhantomData::default(),
         }
     }

@@ -8,7 +8,7 @@ use std::os::windows::io::AsRawHandle;
 use std::path::Path;
 use std::ptr;
 
-use yara_sys::{YR_COMPILER, YR_RULES};
+use yara_sys::{YR_COMPILER, YR_RULE, YR_RULES};
 
 use crate::errors::*;
 
@@ -123,6 +123,7 @@ extern "C" fn compile_callback(
     error_level: c_int,
     filename: *const c_char,
     line_number: c_int,
+    _rule: *const YR_RULE,
     message: *const c_char,
     user_data: *mut c_void,
 ) {

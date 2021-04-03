@@ -51,6 +51,7 @@ pub enum Error {
 }
 
 impl Error {
+    #[deny(unused_variables)]
     pub fn from_code(code: c_int) -> Result<(), Error> {
         use self::Error::*;
 
@@ -82,11 +83,7 @@ impl fmt::Display for Error {
     }
 }
 
-impl error::Error for Error {
-    fn description(&self) -> &str {
-        self.clone().into()
-    }
-}
+impl error::Error for Error {}
 
 impl From<Error> for &'static str {
     fn from(error: Error) -> &'static str {

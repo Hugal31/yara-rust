@@ -1,6 +1,8 @@
 use std::ffi::CStr;
 use std::marker;
 
+use yara_sys::META_FLAGS_LAST_IN_RULE;
+
 use crate::{Metadata, MetadataValue};
 
 pub struct MetadataIterator<'a> {
@@ -23,11 +25,12 @@ impl<'a> Iterator for MetadataIterator<'a> {
     fn next(&mut self) -> Option<Self::Item> {
         if !self.head.is_null() {
             let meta = unsafe { &*self.head };
-            let t = yara_sys::MetaType::from_code(meta.type_).unwrap();
-            if t != yara_sys::MetaType::Null {
+            if (meta.flags & META_FLAGS_LAST_IN_RULE as i32) != 0 {
+                self.head = std::ptr::null();
+            } else {
                 self.head = unsafe { self.head.offset(1) };
-                return Some(meta);
             }
+            return Some(meta);
         }
 
         None
@@ -48,7 +51,6 @@ impl<'a> From<&'a yara_sys::YR_META> for Metadata<'a> {
                     .to_str()
                     .unwrap(),
             ),
-            yara_sys::MetaType::Null => unreachable!(),
         };
         Metadata { identifier, value }
     }
