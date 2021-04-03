@@ -8,12 +8,9 @@ env:
   global:
     - MAKEFLAGS="-j 2"
   jobs:
-    - YARA_VERSION=3.8.1
-    - YARA_VERSION=3.9.0
-    - YARA_VERSION=3.10.0
-    - YARA_VERSION=3.11.0
-    - YARA_FEATURES=vendored,bindgen
-    - YARA_FEATURES=vendored,bundled-3_11
+    - YARA_VERSION=4.0.5
+    #- YARA_FEATURES=vendored,bindgen
+    #- YARA_FEATURES=vendored,bundled-3_11
 before_install:
   - |
     if [ -n "$YARA_VERSION" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then
@@ -30,11 +27,11 @@ script:
   - cargo build --verbose --features "$YARA_FEATURES"
   - cargo test --verbose --features "$YARA_FEATURES"
 jobs:
-  include:
-    - os: windows
-      rust: stable
-      env:
-        - YARA_FEATURES=vendored,bindgen
+  #include:
+  #  - os: windows
+  #    rust: stable
+  #    env:
+  #      - YARA_FEATURES=vendored,bindgen
   allow_failures:
     - rust: nightly
   fast_finish: true
