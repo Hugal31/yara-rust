@@ -1,17 +1,10 @@
 language: rust
 dist: xenial
 os: linux
-rust:
-  - stable
-  - nightly
+rust: stable
 env:
   global:
     - MAKEFLAGS="-j 2"
-  jobs:
-    - YARA_VERSION=4.0.5
-    - YARA_FEATURES=bindgen
-    - YARA_FEATURES=bundled-4_0
-    #- YARA_FEATURES=vendored
 before_install:
   - |
     if [ -n "$YARA_VERSION" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then
@@ -28,9 +21,27 @@ script:
   - cargo build --verbose --no-default-features --features "$YARA_FEATURES"
   - cargo test --verbose --no-default-features --features "$YARA_FEATURES"
 jobs:
-  #include:
+  include:
+    - env:
+        - YARA_VERSION=4.0.5
+        - YARA_FEATURES=bindgen
+    - rust: nightly
+      env:
+        - YARA_VERSION=4.0.5
+        - YARA_FEATURES=bindgen
+    - env:
+        - YARA_VERSION=4.0.5
+        - YARA_FEATURES=bundled-4_0
+    - rust: nightly
+      env:
+        - YARA_VERSION=4.0.5
+        - YARA_FEATURES=bundled-4_0
+  #  - env:
+  #      - YARA_FEATURES=vendored,bindgen
+  #  - rust: nightly
+  #    env:
+  #      - YARA_FEATURES=vendored,bindgen
   #  - os: windows
-  #    rust: stable
   #    env:
   #      - YARA_FEATURES=vendored,bindgen
   allow_failures:
