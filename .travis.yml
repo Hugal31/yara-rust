@@ -9,8 +9,9 @@ env:
     - MAKEFLAGS="-j 2"
   jobs:
     - YARA_VERSION=4.0.5
-    #- YARA_FEATURES=vendored,bindgen
-    #- YARA_FEATURES=vendored,bundled-3_11
+    - YARA_FEATURES=bindgen
+    - YARA_FEATURES=bundled-4_0
+    #- YARA_FEATURES=vendored
 before_install:
   - |
     if [ -n "$YARA_VERSION" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then
@@ -24,8 +25,8 @@ before_install:
       cd ..
     fi
 script:
-  - cargo build --verbose --features "$YARA_FEATURES"
-  - cargo test --verbose --features "$YARA_FEATURES"
+  - cargo build --verbose --no-default-features --features "$YARA_FEATURES"
+  - cargo test --verbose --no-default-features --features "$YARA_FEATURES"
 jobs:
   #include:
   #  - os: windows

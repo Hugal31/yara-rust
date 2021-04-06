@@ -13,6 +13,7 @@ edition = "2018"
 
 [features]
 default = ["bindgen"]
+bundled-4_0 = []
 # TODO Update yara-src
 # vendored = ["yara-src"]
 
@@ -23,4 +24,4 @@ bindgen = { version = "0.58", optional = true }
 
 [package.metadata.docs.rs]
 no-default-features = true
-# features = ["bundled-3_11"]
+features = ["bundled-4_0"]

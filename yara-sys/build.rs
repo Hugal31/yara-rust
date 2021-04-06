@@ -40,17 +40,13 @@ fn lib_mode(lib: &str) -> &'static str {
     }
 }
 
-#[cfg(any(feature = "bundled-3_8", feature = "bundled-3_11"))]
+#[cfg(feature = "bundled-4_0")]
 mod build {
     use std::env;
     use std::fs;
     use std::path::PathBuf;
 
-    #[cfg(feature = "bundled-3_8")]
-    const BINDING_FILE: &'static str = "yara-3.8.rs";
-
-    #[cfg(feature = "bundled-3_11")]
-    const BINDING_FILE: &'static str = "yara-3.11.rs";
+    const BINDING_FILE: &'static str = "yara-4.0.rs";
 
     pub fn add_bindings() {
         let out_dir = env::var("OUT_DIR").expect("$OUT_DIR should be defined");
@@ -60,7 +56,7 @@ mod build {
     }
 }
 
-#[cfg(not(any(feature = "bundled-3_8", feature = "bundled-3_11")))]
+#[cfg(not(feature = "bundled-4_0"))]
 mod build {
     extern crate bindgen;
 

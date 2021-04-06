@@ -13,8 +13,8 @@ edition = "2018"
 [features]
 default = ["bindgen"]
 bindgen = ["yara-sys/bindgen"]
+bundled-4_0 = ["yara-sys/bundled-4_0"]
 # TODO
-#bundled-4_0 = ["yara-sys/bundled-3_8"]
 # vendored = ["yara-sys/vendored"]
 
 [dependencies]
@@ -32,5 +32,4 @@ default-features = false
 
 [package.metadata.docs.rs]
 no-default-features = true
-# TODO
-# features = ["bundled-4_0"]
+features = ["bundled-4_0"]
