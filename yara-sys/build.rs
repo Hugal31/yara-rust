@@ -47,17 +47,23 @@ mod build {
     use std::fs;
     use std::path::PathBuf;
 
-    #[cfg(feature = "bundled-3_8")]
-    const BINDING_FILE: &'static str = "yara-3.8.rs";
-
-    #[cfg(feature = "bundled-3_11")]
-    const BINDING_FILE: &'static str = "yara-3.11.rs";
-
     pub fn add_bindings() {
+    #[cfg(feature = "bundled-3_11")]
+    let binding_file = match env::var("CARGO_CFG_TARGET_FAMILY").unwrap().as_ref() {
+        "windows" => "yara-3.11-windows.rs",
+        "unix"    => "yara-3.11-unix.rs",
+        f => panic!("no bundled bindings for family {}", f),
+    };
+    #[cfg(feature = "bundled-3_8")]
+    let binding_file = match env::var("CARGO_CFG_TARGET_FAMILY").unwrap().as_ref() {
+        "windows" => "yara-3.8-windows.rs",
+        "unix"    => "yara-3.8-unix.rs",
+        f => panic!("no bundled bindings for family {}", f),
+    };
 	let out_dir = env::var("OUT_DIR")
 	    .expect("$OUT_DIR should be defined");
 	let out_path = PathBuf::from(out_dir).join("bindings.rs");
-	fs::copy(PathBuf::from("bindings").join(BINDING_FILE), out_path)
+	fs::copy(PathBuf::from("bindings").join(binding_file), out_path)
 	    .expect("Could not copy bindings to output directory");
     }
 }
