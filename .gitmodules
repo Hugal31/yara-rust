@@ -1,0 +1,3 @@
+[submodule "yara-sys/yara"]
+	path = yara-sys/yara
+	url = https://github.com/VirusTotal/yara/
