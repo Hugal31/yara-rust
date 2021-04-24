@@ -65,7 +65,9 @@ mod build {
             .file(basedir.join("libyara/modules/dotnet.c"))
 
             .define("MACHO_MODULE", "")
-            .file(basedir.join("libyara/modules/macho.c"));
+            .file(basedir.join("libyara/modules/macho.c"))
+
+            .define("NDEBUG", "1");
 
         // Use correct proc functions
         match std::env::var("CARGO_CFG_TARGET_OS").ok().unwrap().as_str() {
@@ -83,11 +85,8 @@ mod build {
                      .define("USE_NO_PROC", ""),
         };
 
-        match std::env::var("CARGO_CFG_TARGET_FAMILY").ok().unwrap().as_str() {
-            "windows"
-                => cc.define("NDEBUG", "1"),
-            _
-                => cc.define("POSIX", ""),
+        if std::env::var("CARGO_CFG_TARGET_FAMILY").ok().unwrap().as_str() != "windows" {
+            cc.define("POSIX", "");
         };
 
         // Unfortunately, YARA compilation produces lots of warnings
