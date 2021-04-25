@@ -15,8 +15,10 @@ also use the following features to use pre-built bindings file for different
 version of Yara. Just make sure the version you specify is the same that the
 version on your system!
 
-- `bindgen`: this is the default feature, to use generated bindings.
-- `bundled-4_0`: use pre-generated bindings for Yara 4.0.2 **on Linux**.
+- `bindgen`: **recommended**: this is the default feature, to use generated bindings.
+- `bundled-4_0`: use pre-generated bindings for Yara 4.0.2. Useful if you do not
+  want to install LLVM to run bindgen. However, you'll have to make sure you use
+  a version of Yara with the same major and minor version number.
 
 You can specify the location of Yara:
 
