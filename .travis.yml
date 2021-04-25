@@ -1,10 +1,17 @@
 language: rust
 dist: xenial
 os: linux
-rust: stable
+rust:
+  - stable
+  - nightly
 env:
   global:
     - MAKEFLAGS="-j 2"
+  jobs:
+    - YARA_VERSION=4.0.1  YARA_FEATURES=bindgen
+    - YARA_VERSION=4.0.1  YARA_FEATURES=bundled-4_0
+    -                     YARA_FEATURES=vendored,bindgen
+    -                     YARA_FEATURES=vendored,bundled-4_0
 before_install:
   - |
     if [ -n "$YARA_VERSION" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then
@@ -19,31 +26,16 @@ before_install:
     fi
 script:
   - cargo build --verbose --no-default-features --features "$YARA_FEATURES"
-  - cargo test --verbose --no-default-features --features "$YARA_FEATURES"
+  - cargo test --verbose --no-default-features --features "$YARA_FEATURES";
 jobs:
   include:
-    - env:
-        - YARA_VERSION=4.0.5
-        - YARA_FEATURES=bindgen
-    - rust: nightly
-      env:
-        - YARA_VERSION=4.0.5
-        - YARA_FEATURES=bindgen
-    - env:
-        - YARA_VERSION=4.0.5
-        - YARA_FEATURES=bundled-4_0
-    - rust: nightly
-      env:
-        - YARA_VERSION=4.0.5
-        - YARA_FEATURES=bundled-4_0
-  #  - env:
-  #      - YARA_FEATURES=vendored,bindgen
-  #  - rust: nightly
-  #    env:
-  #      - YARA_FEATURES=vendored,bindgen
-  #  - os: windows
-  #    env:
-  #      - YARA_FEATURES=vendored,bindgen
+    - os: windows
+      rust: stable
+      env: YARA_FEATURES=vendored,bindgen
+    #- os: windows
+    #  rust: stable
+    #  env: YARA_FEATURES=vendored,bundled-4_0
+
   allow_failures:
     - rust: nightly
   fast_finish: true

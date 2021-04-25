@@ -14,8 +14,7 @@ edition = "2018"
 default = ["bindgen"]
 bindgen = ["yara-sys/bindgen"]
 bundled-4_0 = ["yara-sys/bundled-4_0"]
-# TODO
-# vendored = ["yara-sys/vendored"]
+vendored = ["yara-sys/vendored"]
 
 [dependencies]
 thiserror = "1.0"
