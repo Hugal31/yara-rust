@@ -1,3 +1,7 @@
+addons:
+  artifacts:
+    paths:
+      - ./out
 language: rust
 dist: xenial
 os: linux
@@ -9,9 +13,9 @@ env:
     - MAKEFLAGS="-j 2"
   jobs:
     - YARA_VERSION=4.0.1  YARA_FEATURES=bindgen
-    - YARA_VERSION=4.0.1  YARA_FEATURES=bundled-4_0
+#    - YARA_VERSION=4.0.1  YARA_FEATURES=bundled-4_0
     -                     YARA_FEATURES=vendored,bindgen
-    -                     YARA_FEATURES=vendored,bundled-4_0
+#    -                     YARA_FEATURES=vendored,bundled-4_0
 before_install:
   - |
     if [ -n "$YARA_VERSION" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then
@@ -26,7 +30,11 @@ before_install:
     fi
 script:
   - cargo build --verbose --no-default-features --features "$YARA_FEATURES"
-  - cargo test --verbose --no-default-features --features "$YARA_FEATURES";
+  - cargo test --verbose --no-default-features --features "$YARA_FEATURES"
+  - mkdir out
+  - find -name 'bindings.rs'
+  - ln $(find -name 'bindings.rs') "./out/bindings-$TRAVIS_BUILD_NUMBER-$TRAVIS_JOB_NUMBER.rs"
+  - ls out
 jobs:
   include:
     - os: windows
