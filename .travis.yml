@@ -32,9 +32,9 @@ jobs:
     - os: windows
       rust: stable
       env: YARA_FEATURES=vendored,bindgen
-    #- os: windows
-    #  rust: stable
-    #  env: YARA_FEATURES=vendored,bundled-4_0
+    - os: windows
+      rust: stable
+      env: YARA_FEATURES=vendored,bundled-4_0
 
   allow_failures:
     - rust: nightly

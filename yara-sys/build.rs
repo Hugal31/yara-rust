@@ -140,6 +140,7 @@ mod bindings {
     pub fn add_bindings() {
         let binding_file = match env::var("CARGO_CFG_TARGET_FAMILY").unwrap().as_ref() {
             "unix"    => "yara-4.0-unix.rs",
+            "windows"    => "yara-4.0-windows.rs",
             f => panic!("no bundled bindings for family {}", f),
         };
 	let out_dir = env::var("OUT_DIR")
