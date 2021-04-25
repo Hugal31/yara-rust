@@ -1,14 +1,15 @@
+use std::ffi::{CStr, CString};
 use std::fs::File;
 use std::os::raw::c_void;
 #[cfg(unix)]
 use std::os::unix::io::AsRawFd;
 #[cfg(windows)]
 use std::os::windows::io::AsRawHandle;
-use yara_sys::YR_SCANNER;
-use std::ffi::{CStr, CString};
+use yara_sys::{YR_SCANNER, YR_SCAN_CONTEXT};
 
 use crate::errors::*;
 use crate::Rule;
+use std::convert::TryInto;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum CallbackMsg {
@@ -69,7 +70,7 @@ pub fn rules_scan_mem<'a>(
         yara_sys::yr_rules_scan_mem(
             rules,
             mem.as_ptr(),
-            mem.len(),
+            mem.len().try_into().unwrap(),
             flags,
             Some(scan_callback),
             &mut results as *mut Vec<_> as *mut c_void,
@@ -95,12 +96,9 @@ pub fn scanner_scan_mem<'a>(
         yara_sys::yr_scanner_set_callback(
             scanner,
             Some(scan_callback),
-            &mut results as *mut Vec<_> as *mut c_void);
-        yara_sys::yr_scanner_scan_mem(
-            scanner,
-            mem.as_ptr(),
-            mem.len(),
-        )
+            &mut results as *mut Vec<_> as *mut c_void,
+        );
+        yara_sys::yr_scanner_scan_mem(scanner, mem.as_ptr(), mem.len().try_into().unwrap())
     };
 
     yara_sys::Error::from_code(result)
@@ -195,11 +193,9 @@ pub fn scanner_scan_raw<'a>(
         yara_sys::yr_scanner_set_callback(
             scanner,
             Some(scan_callback),
-            results as *mut Vec<_> as *mut c_void);
-        yara_sys::yr_scanner_scan_fd(
-            scanner,
-            fd
-        )
+            results as *mut Vec<_> as *mut c_void,
+        );
+        yara_sys::yr_scanner_scan_fd(scanner, fd)
     }
 }
 
@@ -218,15 +214,14 @@ pub fn scanner_scan_raw<'a>(
         yara_sys::yr_scanner_set_callback(
             scanner,
             Some(scan_callback),
-            results as *mut Vec<_> as *mut c_void);
-        yara_sys::yr_scanner_scan_fd(
-            scanner,
-            handle
-        )
+            results as *mut Vec<_> as *mut c_void,
+        );
+        yara_sys::yr_scanner_scan_fd(scanner, handle)
     }
 }
 
 extern "C" fn scan_callback(
+    context: *mut YR_SCAN_CONTEXT,
     message: i32,
     message_data: *mut c_void,
     user_data: *mut c_void,
@@ -236,7 +231,8 @@ extern "C" fn scan_callback(
 
     if message == CallbackMsg::RuleMatching {
         let rule = unsafe { &*(message_data as *mut yara_sys::YR_RULE) };
-        rules.push(Rule::from(rule));
+        let context = unsafe { &*context };
+        rules.push(Rule::from((context, rule)));
     }
 
     CallbackReturn::Continue.to_yara()
@@ -244,10 +240,7 @@ extern "C" fn scan_callback(
 
 /// Setting the flags modifies the Scanner with no locks preventing data races,
 /// so it should only be called from a &mut Scanner.
-pub fn scanner_set_flags<'a>(
-    scanner: *mut yara_sys::YR_SCANNER,
-    flags: i32,
-) {
+pub fn scanner_set_flags<'a>(scanner: *mut yara_sys::YR_SCANNER, flags: i32) {
     unsafe {
         yara_sys::yr_scanner_set_flags(scanner, flags);
     }
@@ -255,10 +248,7 @@ pub fn scanner_set_flags<'a>(
 
 /// Setting the timeout modifies the Scanner with no locks preventing data races,
 /// so it should only be called from a &mut Scanner.
-pub fn scanner_set_timeout<'a>(
-    scanner: *mut yara_sys::YR_SCANNER,
-    seconds: i32,
-) {
+pub fn scanner_set_timeout<'a>(scanner: *mut yara_sys::YR_SCANNER, seconds: i32) {
     unsafe {
         yara_sys::yr_scanner_set_timeout(scanner, seconds);
     }
@@ -295,9 +285,8 @@ pub fn scanner_define_float_variable(
     value: f64,
 ) -> Result<(), YaraError> {
     let identifier = CString::new(identifier).unwrap();
-    let result = unsafe {
-        yara_sys::yr_scanner_define_float_variable(scanner, identifier.as_ptr(), value)
-    };
+    let result =
+        unsafe { yara_sys::yr_scanner_define_float_variable(scanner, identifier.as_ptr(), value) };
     yara_sys::Error::from_code(result).map_err(Into::into)
 }
 

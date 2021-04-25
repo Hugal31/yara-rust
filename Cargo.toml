@@ -1,6 +1,6 @@
 [package]
 name = "yara"
-version = "0.5.0"
+version = "0.6.0"
 authors = ["Hugo Laloge <hugo.laloge@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "Rust bindings for VirusTotal/yara"
@@ -13,8 +13,7 @@ edition = "2018"
 [features]
 default = ["bindgen"]
 bindgen = ["yara-sys/bindgen"]
-bundled-3_8 = ["yara-sys/bundled-3_8"]
-bundled-3_11 = ["yara-sys/bundled-3_11"]
+bundled-4_0 = ["yara-sys/bundled-4_0"]
 vendored = ["yara-sys/vendored"]
 
 [dependencies]
@@ -27,9 +26,9 @@ tempfile = "3.2.0"
 
 [dependencies.yara-sys]
 path = "yara-sys"
-version = "0.5.0"
+version = "0.6.0"
 default-features = false
 
 [package.metadata.docs.rs]
 no-default-features = true
-features = ["bundled-3_11"]
+features = ["bundled-4_0"]

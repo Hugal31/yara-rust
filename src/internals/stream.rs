@@ -56,21 +56,21 @@ impl<'w> WriteStream<'w> {
 
 unsafe extern "C" fn stream_read_func(
     ptr: *mut ::std::os::raw::c_void,
-    size: usize,
-    count: usize,
+    size: u64,
+    count: u64,
     user_data: *mut ::std::os::raw::c_void,
-) -> usize {
+) -> u64 {
     let this: &mut ReadStream = &mut *(user_data as *mut ReadStream);
     if this.result.is_err() {
         return 0;
     }
 
-    let buffer = std::slice::from_raw_parts_mut(ptr as *mut u8, size * count);
+    let buffer = std::slice::from_raw_parts_mut(ptr as *mut u8, (size * count) as usize);
     let result = this.reader.read(buffer);
 
     match result {
         // FIXME: what if read_size is not a multiple of size ?
-        Ok(read_size) => read_size / size,
+        Ok(read_size) => read_size as u64 / size,
         Err(e) => {
             this.result = Err(e);
             0
@@ -80,16 +80,16 @@ unsafe extern "C" fn stream_read_func(
 
 unsafe extern "C" fn stream_write_func(
     ptr: *const ::std::os::raw::c_void,
-    size: usize,
-    count: usize,
+    size: u64,
+    count: u64,
     user_data: *mut ::std::os::raw::c_void,
-) -> usize {
+) -> u64 {
     let this: &mut WriteStream = &mut *(user_data as *mut WriteStream);
     if this.result.is_err() {
         return 0;
     }
 
-    let buffer = std::slice::from_raw_parts(ptr as *const u8, size * count);
+    let buffer = std::slice::from_raw_parts(ptr as *const u8, (size * count) as usize);
     let result = this.writer.write_all(buffer);
 
     match result {

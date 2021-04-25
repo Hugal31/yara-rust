@@ -21,6 +21,7 @@ mod build {
             .file(basedir.join("libyara/ahocorasick.c"))
             .file(basedir.join("libyara/arena.c"))
             .file(basedir.join("libyara/atoms.c"))
+            .file(basedir.join("libyara/base64.c"))
             .file(basedir.join("libyara/bitmask.c"))
             .file(basedir.join("libyara/compiler.c"))
             .file(basedir.join("libyara/endian.c"))
@@ -34,6 +35,7 @@ mod build {
             .file(basedir.join("libyara/lexer.c"))
             .file(basedir.join("libyara/libyara.c"))
             .file(basedir.join("libyara/mem.c"))
+            .file(basedir.join("libyara/notebook.c"))
             .file(basedir.join("libyara/object.c"))
             .file(basedir.join("libyara/parser.c"))
             .file(basedir.join("libyara/proc.c"))
@@ -51,21 +53,21 @@ mod build {
             .file(basedir.join("libyara/threading.c"))
 
             .file(basedir.join("libyara/modules.c"))
-            .file(basedir.join("libyara/modules/elf.c"))
-            .file(basedir.join("libyara/modules/math.c"))
-            .file(basedir.join("libyara/modules/pe.c"))
-            .file(basedir.join("libyara/modules/pe_utils.c"))
-            .file(basedir.join("libyara/modules/tests.c"))
-            .file(basedir.join("libyara/modules/time.c"))
+            .file(basedir.join("libyara/modules/elf/elf.c"))
+            .file(basedir.join("libyara/modules/math/math.c"))
+            .file(basedir.join("libyara/modules/pe/pe.c"))
+            .file(basedir.join("libyara/modules/pe/pe_utils.c"))
+            .file(basedir.join("libyara/modules/tests/tests.c"))
+            .file(basedir.join("libyara/modules/time/time.c"))
 
             .define("DEX_MODULE", "")
-            .file(basedir.join("libyara/modules/dex.c"))
+            .file(basedir.join("libyara/modules/dex/dex.c"))
 
             .define("DOTNET_MODULE", "")
-            .file(basedir.join("libyara/modules/dotnet.c"))
+            .file(basedir.join("libyara/modules/dotnet/dotnet.c"))
 
             .define("MACHO_MODULE", "")
-            .file(basedir.join("libyara/modules/macho.c"))
+            .file(basedir.join("libyara/modules/macho/macho.c"))
 
             .define("NDEBUG", "1");
 
@@ -129,26 +131,18 @@ mod build {
     }
 }
 
-#[cfg(any(feature = "bundled-3_8",
-	  feature = "bundled-3_11"))]
+#[cfg(feature = "bundled-4_0")]
 mod bindings {
     use std::env;
     use std::fs;
     use std::path::PathBuf;
 
     pub fn add_bindings() {
-    #[cfg(feature = "bundled-3_11")]
-    let binding_file = match env::var("CARGO_CFG_TARGET_FAMILY").unwrap().as_ref() {
-        "windows" => "yara-3.11-windows.rs",
-        "unix"    => "yara-3.11-unix.rs",
-        f => panic!("no bundled bindings for family {}", f),
-    };
-    #[cfg(feature = "bundled-3_8")]
-    let binding_file = match env::var("CARGO_CFG_TARGET_FAMILY").unwrap().as_ref() {
-        "windows" => "yara-3.8-windows.rs",
-        "unix"    => "yara-3.8-unix.rs",
-        f => panic!("no bundled bindings for family {}", f),
-    };
+        let binding_file = match env::var("CARGO_CFG_TARGET_FAMILY").unwrap().as_ref() {
+            "unix"    => "yara-4.0-unix.rs",
+            "windows"    => "yara-4.0-windows.rs",
+            f => panic!("no bundled bindings for family {}", f),
+        };
 	let out_dir = env::var("OUT_DIR")
 	    .expect("$OUT_DIR should be defined");
 	let out_path = PathBuf::from(out_dir).join("bindings.rs");
@@ -157,8 +151,7 @@ mod bindings {
     }
 }
 
-#[cfg(not(any(feature = "bundled-3_8",
-	      feature = "bundled-3_11")))]
+#[cfg(not(feature = "bundled-4_0"))]
 mod bindings {
     extern crate bindgen;
 
@@ -168,38 +161,36 @@ mod bindings {
     pub fn add_bindings() {
         let mut builder = bindgen::Builder::default()
             .header("wrapper.h")
-            .whitelist_var("CALLBACK_.*")
-            .whitelist_var("ERROR_.*")
-            .whitelist_var("META_TYPE_.*")
-            .whitelist_var("STRING_GFLAGS_NULL")
-            .whitelist_var("YARA_ERROR_LEVEL_.*")
-            .whitelist_var("SCAN_FLAGS_.*")
-            .whitelist_function("yr_initialize")
-            .whitelist_function("yr_finalize")
-            .whitelist_function("yr_finalize_thread")
-            .whitelist_function("yr_compiler_.*")
-            .whitelist_function("yr_rule_.*")
-            .whitelist_function("yr_rules_.*")
-            .whitelist_function("yr_scanner_.*")
-            .whitelist_function("yr_get_tidx")
-            .whitelist_type("YR_EXTERNAL_VARIABLE")
-	    .whitelist_type("YR_MATCH")
+            .allowlist_var("CALLBACK_.*")
+            .allowlist_var("ERROR_.*")
+            .allowlist_var("META_TYPE_.*")
+            .allowlist_var("META_FLAGS_LAST_IN_RULE")
+            .allowlist_var("STRING_FLAGS_LAST_IN_RULE")
+            .allowlist_var("YARA_ERROR_LEVEL_.*")
+            .allowlist_var("SCAN_FLAGS_.*")
+            .allowlist_function("yr_initialize")
+            .allowlist_function("yr_finalize")
+            .allowlist_function("yr_finalize_thread")
+            .allowlist_function("yr_compiler_.*")
+            .allowlist_function("yr_rule_.*")
+            .allowlist_function("yr_rules_.*")
+            .allowlist_function("yr_scanner_.*")
+            .allowlist_type("YR_ARENA")
+            .allowlist_type("YR_EXTERNAL_VARIABLE")
+            .allowlist_type("YR_MATCH")
             .opaque_type("YR_COMPILER")
-            .opaque_type("YR_ARENA")
             .opaque_type("YR_AC_MATCH_TABLE")
             .opaque_type("YR_AC_TRANSITION_TABLE")
             .opaque_type("_YR_EXTERNAL_VARIABLE");
 
-	if let Some(yara_include_dir) = env::var("YARA_INCLUDE_DIR")
-	    .ok()
-	    .filter(|dir| !dir.is_empty())
-	{
-	    builder = builder.clang_arg(format!("-I{}", yara_include_dir))
-	}
+        if let Some(yara_include_dir) = env::var("YARA_INCLUDE_DIR")
+            .ok()
+            .filter(|dir| !dir.is_empty())
+        {
+            builder = builder.clang_arg(format!("-I{}", yara_include_dir))
+        }
 
-	let bindings = builder
-            .generate()
-            .expect("Unable to generate bindings");
+        let bindings = builder.generate().expect("Unable to generate bindings");
 
         // Write the bindings to the $OUT_DIR/bindings.rs file.
         let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());

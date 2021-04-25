@@ -48,8 +48,3 @@ pub fn finalize() -> Result<(), YaraError> {
 
     yara_sys::Error::from_code(result).map_err(Into::into)
 }
-
-/// Get the Yara thread id.
-pub fn get_tidx() -> i32 {
-    unsafe { yara_sys::yr_get_tidx() }
-}

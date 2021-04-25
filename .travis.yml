@@ -8,14 +8,10 @@ env:
   global:
     - MAKEFLAGS="-j 2"
   jobs:
-    - YARA_VERSION=3.8.1  YARA_FEATURES=bindgen
-    - YARA_VERSION=3.8.1  YARA_FEATURES=bundled-3_8
-    - YARA_VERSION=3.9.0  YARA_FEATURES=bindgen
-    - YARA_VERSION=3.10.0 YARA_FEATURES=bindgen
-    - YARA_VERSION=3.11.0 YARA_FEATURES=bindgen
-    - YARA_VERSION=3.11.0 YARA_FEATURES=bundled-3_11
+    - YARA_VERSION=4.0.1  YARA_FEATURES=bindgen
+    - YARA_VERSION=4.0.1  YARA_FEATURES=bundled-4_0
     -                     YARA_FEATURES=vendored,bindgen
-    -                     YARA_FEATURES=vendored,bundled-3_11
+    -                     YARA_FEATURES=vendored,bundled-4_0
 before_install:
   - |
     if [ -n "$YARA_VERSION" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then
@@ -38,7 +34,7 @@ jobs:
       env: YARA_FEATURES=vendored,bindgen
     - os: windows
       rust: stable
-      env: YARA_FEATURES=vendored,bundled-3_11
+      env: YARA_FEATURES=vendored,bundled-4_0
 
   allow_failures:
     - rust: nightly

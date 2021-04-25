@@ -15,15 +15,12 @@ pub fn rules_destroy(rules: *mut yara_sys::YR_RULES) {
     }
 }
 
-pub fn scanner_create(rules: *mut yara_sys::YR_RULES) -> Result<*mut yara_sys::YR_SCANNER, YaraError> {
+pub fn scanner_create(
+    rules: *mut yara_sys::YR_RULES,
+) -> Result<*mut yara_sys::YR_SCANNER, YaraError> {
     let mut new_scanner: *mut yara_sys::YR_SCANNER = std::ptr::null_mut();
 
-    let result = unsafe {
-        yara_sys::yr_scanner_create(
-            rules,
-            &mut new_scanner,
-        )
-    };
+    let result = unsafe { yara_sys::yr_scanner_create(rules, &mut new_scanner) };
 
     yara_sys::Error::from_code(result)
         .map_err(|e| e.into())
@@ -91,8 +88,8 @@ where
         })
 }
 
-impl<'a> From<&'a yara_sys::YR_RULE> for Rule<'a> {
-    fn from(rule: &'a yara_sys::YR_RULE) -> Self {
+impl<'a> From<(&'a yara_sys::YR_SCAN_CONTEXT, &'a yara_sys::YR_RULE)> for Rule<'a> {
+    fn from((context, rule): (&'a yara_sys::YR_SCAN_CONTEXT, &'a yara_sys::YR_RULE)) -> Self {
         let identifier = unsafe { CStr::from_ptr(rule.get_identifier()) }
             .to_str()
             .unwrap();
@@ -103,7 +100,9 @@ impl<'a> From<&'a yara_sys::YR_RULE> for Rule<'a> {
         let tags = TagIterator::from(rule)
             .map(|c| c.to_str().unwrap())
             .collect();
-        let strings = YrStringIterator::from(rule).map(YrString::from).collect();
+        let strings = YrStringIterator::from(rule)
+            .map(|s| YrString::from((context, s)))
+            .collect();
 
         Rule {
             identifier,

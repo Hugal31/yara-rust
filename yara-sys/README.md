@@ -4,9 +4,9 @@
 [![Documentation](https://docs.rs/yara-sys/badge.svg)](https://docs.rs/yara-sys)
 
 Native bindings for the [Yara library from VirusTotal](https://github.com/VirusTotal/yara).
-Only works with Yara v3.8 to v3.11 for now.
+Only works with Yara v4.
 
-More documentation can be found on [the Yara's documentation](https://yara.readthedocs.io/en/v3.11.0/index.html).
+More documentation can be found on [the Yara's documentation](https://yara.readthedocs.io/en/stable/index.html).
 
 ## Features
 
@@ -15,11 +15,10 @@ also use the following features to use pre-built bindings file for different
 version of Yara. Just make sure the version you specify is the same that the
 version on your system!
 
-- `bindgen`: this is the default feature, to use generated bindings.
-- `bundled-3_8`: use pre-generated bindings for Yara 3.8.1.
-- `bundled-3_11` use pre-generated bindings for Yara 3.11.0.
-- `vendored`: build and link Yara 3.11.0 (uses `yara-src` crate).
-                Can be used together with `bindgen`/`bundled-3_11` to control bindings generation method.
+- `bindgen`: **recommended**: this is the default feature, to use generated bindings.
+- `bundled-4_0`: use pre-generated bindings for Yara 4.0.2. Useful if you do not
+  want to install LLVM to run bindgen. However, you'll have to make sure you use
+  a version of Yara with the same major and minor version number.
 
 You can specify the location of Yara:
 

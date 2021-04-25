@@ -6,7 +6,7 @@
 
 Bindings for the [Yara library from VirusTotal](https://github.com/VirusTotal/yara).
 
-More documentation can be found on [the Yara's documentation](https://yara.readthedocs.io/en/v3.7.0/index.html).
+More documentation can be found on [the Yara's documentation](https://yara.readthedocs.io/en/stable/index.html).
 
 ## Example
 
@@ -35,7 +35,7 @@ fn main() {
 
 ## Features
 
-* Support from Yara 3.8 to 3.11.0.
+* Support from Yara v4.0.
 * Compile rules from strings or files.
 * Save and load compiled rules.
 * Scan byte arrays (`&[u8]`) or files.
