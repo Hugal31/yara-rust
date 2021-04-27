@@ -19,6 +19,7 @@ version on your system!
 - `bundled-4_1_0`: use pre-generated bindings for Yara 4.1.0. Useful if you do not
   want to install LLVM to run bindgen. However, you'll have to make sure you use
   a version of Yara with the same major and minor version number.
+- `vendored`: automatically compile and link libyara v4.1.0.
 
 You can specify the location of Yara:
 
