@@ -220,6 +220,56 @@ pub fn scanner_scan_raw<'a>(
     }
 }
 
+/// Attach a process, pause it, and scan its memory.
+pub fn rules_scan_proc<'a>(
+    rules: *mut yara_sys::YR_RULES,
+    pid: u32,
+    timeout: i32,
+    flags: i32,
+) -> Result<Vec<Rule<'a>>, YaraError> {
+    let mut results = Vec::<Rule<'a>>::new();
+    let result = unsafe {
+        yara_sys::yr_rules_scan_proc(
+            rules,
+            pid as i32,
+            flags,
+            Some(scan_callback),
+            &mut results as *mut Vec<_> as *mut c_void,
+            timeout
+        )
+    };
+
+    yara_sys::Error::from_code(result)
+        .map_err(|e| e.into())
+        .map(|_| results)
+}
+
+/// Attach a process, pause it, and scan its memory with the provided YR_SCANNER
+/// and its defined external vars.
+///
+/// Setting the callback function modifies the Scanner with no locks preventing
+/// data races, so it should only be called from a &mut Scanner.
+pub fn scanner_scan_proc<'a>(
+    scanner: *mut yara_sys::YR_SCANNER,
+    pid: u32,
+) -> Result<Vec<Rule<'a>>, YaraError> {
+    let mut results = Vec::<Rule<'a>>::new();
+    let result = unsafe {
+        yara_sys::yr_scanner_set_callback(
+            scanner,
+            Some(scan_callback),
+            &mut results as *mut Vec<_> as *mut c_void);
+        yara_sys::yr_scanner_scan_proc(
+            scanner,
+            pid as i32,
+        )
+    };
+
+    yara_sys::Error::from_code(result)
+        .map_err(|e| e.into())
+        .map(|_| results)
+}
+
 extern "C" fn scan_callback(
     context: *mut YR_SCAN_CONTEXT,
     message: i32,

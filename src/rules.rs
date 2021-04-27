@@ -121,6 +121,21 @@ impl Rules {
             })
     }
 
+    /// Attach a process, pause it, and scan its memory.
+    ///
+    /// Return a `Vec` of matching rules.
+    ///
+    /// # Permissions
+    ///
+    /// You need to be able to attach to process `pid`.
+    pub fn scan_process<'r>(
+        &self,
+        pid: u32,
+        timeout: u16
+    ) -> Result<Vec<Rule<'r>>, YaraError> {
+        internals::rules_scan_proc(self.inner, pid, i32::from(timeout), self.flags as i32)
+    }
+
     /// Save the rules to a file.
     ///
     /// Note: this method is mut because Yara modifies the Rule arena during serialization.
@@ -202,4 +217,75 @@ pub enum MetadataValue<'r> {
     Integer(i64),
     String(&'r str),
     Boolean(bool),
+}
+
+#[cfg(test)]
+mod test {
+    use std::process::{Command, Stdio};
+
+    use crate::Compiler;
+
+    /// A random uuid that should be present in the process memory for the rule
+    /// to match.
+    static UUID_MATCH:    &str = "401d67bf-ff9c-4632-992e-46afed0bbcff";
+    /// A random uuid that is unlikely to be present in the process' memory.
+    static UUID_NO_MATCH: &str = "db4f9dab-a622-4fc9-b71f-38398baf308b";
+
+    static RULES_PROC: &str = r#"rule found_uuid {
+        strings:
+            $target = "401d67bf-ff9c-4632-992e-46afed0bbcff"
+        condition:
+            $target
+        }
+    "#;
+
+    #[test]
+    fn rules_scan_proc() {
+        let mut compiler = Compiler::new().unwrap();
+        compiler.add_rules_str(RULES_PROC).unwrap();
+        let rules = compiler.compile_rules().unwrap();
+        let mut scanner = rules.scanner().unwrap();
+        scanner.set_timeout(10);
+
+        // spawn two process, one which should match and one that should not
+        #[cfg(unix)]
+        let process_match = Command::new("sh")
+            .arg("-c")
+            .arg(format!("sleep 5; echo {}", UUID_MATCH))
+            .stdout(Stdio::null())
+            .spawn().unwrap();
+        #[cfg(unix)]
+        let process_no_match = Command::new("sh")
+            .arg("-c")
+            .arg(format!("sleep 5; echo {}", UUID_NO_MATCH))
+            .stdout(Stdio::null())
+            .spawn().unwrap();
+        #[cfg(windows)]
+        let process_match = Command::new("cmd")
+            .arg("/C")
+            .arg(format!("ping 127.0.0.1 -n 6 > nul & echo {}", UUID_MATCH))
+            .stdout(Stdio::null())
+            .spawn().unwrap();
+        #[cfg(windows)]
+        let process_no_match = Command::new("cmd")
+            .arg("/C")
+            .arg(format!("ping 127.0.0.1 -n 6 > nul & echo {}", UUID_NO_MATCH))
+            .stdout(Stdio::null())
+            .spawn().unwrap();
+
+        let results1 = scanner.scan_process(process_match.id()).unwrap();
+        let results2 = scanner.scan_process(process_no_match.id()).unwrap();
+        assert_eq!(1, results1.len());
+        assert_eq!(0, results2.len());
+
+        let found_uuid = &results1[0];
+        assert_eq!("found_uuid", found_uuid.identifier);
+        assert_eq!(1, found_uuid.strings.len());
+
+        let string = &found_uuid.strings[0];
+        assert_eq!("$target", string.identifier);
+
+        let m = &string.matches[0];
+        assert_eq!(UUID_MATCH.as_bytes(), m.data.as_slice());
+    }
 }
