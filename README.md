@@ -61,3 +61,12 @@ Licensed under either of
  * MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
 at your option.
+
+## Contributing
+
+Please follow the [conventional commit][Conventional commit] rules when
+committing to this repository.
+
+If you add any new feature, add the corresponding unit/doc tests.
+
+[Conventional commit]: https://www.conventionalcommits.org/en/v1.0.0/
