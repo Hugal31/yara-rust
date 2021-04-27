@@ -68,19 +68,21 @@ pub const ERROR_INVALID_MODULE_DATA: u32 = 57;
 pub const ERROR_WRITING_FILE: u32 = 58;
 pub const ERROR_INVALID_MODIFIER: u32 = 59;
 pub const ERROR_DUPLICATED_MODIFIER: u32 = 60;
-pub const SCAN_FLAGS_FAST_MODE: u32 = 1;
-pub const SCAN_FLAGS_PROCESS_MEMORY: u32 = 2;
-pub const SCAN_FLAGS_NO_TRYCATCH: u32 = 4;
-pub const SCAN_FLAGS_REPORT_RULES_MATCHING: u32 = 8;
-pub const SCAN_FLAGS_REPORT_RULES_NOT_MATCHING: u32 = 16;
+pub const ERROR_BLOCK_NOT_READY: u32 = 61;
 pub const CALLBACK_MSG_RULE_MATCHING: u32 = 1;
 pub const CALLBACK_MSG_RULE_NOT_MATCHING: u32 = 2;
 pub const CALLBACK_MSG_SCAN_FINISHED: u32 = 3;
 pub const CALLBACK_MSG_IMPORT_MODULE: u32 = 4;
 pub const CALLBACK_MSG_MODULE_IMPORTED: u32 = 5;
+pub const CALLBACK_MSG_TOO_MANY_MATCHES: u32 = 6;
 pub const CALLBACK_CONTINUE: u32 = 0;
 pub const CALLBACK_ABORT: u32 = 1;
 pub const CALLBACK_ERROR: u32 = 2;
+pub const SCAN_FLAGS_FAST_MODE: u32 = 1;
+pub const SCAN_FLAGS_PROCESS_MEMORY: u32 = 2;
+pub const SCAN_FLAGS_NO_TRYCATCH: u32 = 4;
+pub const SCAN_FLAGS_REPORT_RULES_MATCHING: u32 = 8;
+pub const SCAN_FLAGS_REPORT_RULES_NOT_MATCHING: u32 = 16;
 pub type size_t = ::std::os::raw::c_ulong;
 pub type __uint8_t = ::std::os::raw::c_uchar;
 pub type __uint16_t = ::std::os::raw::c_ushort;
@@ -93,84 +95,6 @@ pub type __off64_t = ::std::os::raw::c_long;
 pub type __time_t = ::std::os::raw::c_long;
 pub type __suseconds_t = ::std::os::raw::c_long;
 pub type __syscall_slong_t = ::std::os::raw::c_long;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct timeval {
-    pub tv_sec: __time_t,
-    pub tv_usec: __suseconds_t,
-}
-#[test]
-fn bindgen_test_layout_timeval() {
-    assert_eq!(
-        ::std::mem::size_of::<timeval>(),
-        16usize,
-        concat!("Size of: ", stringify!(timeval))
-    );
-    assert_eq!(
-        ::std::mem::align_of::<timeval>(),
-        8usize,
-        concat!("Alignment of ", stringify!(timeval))
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<timeval>())).tv_sec as *const _ as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(timeval),
-            "::",
-            stringify!(tv_sec)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<timeval>())).tv_usec as *const _ as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(timeval),
-            "::",
-            stringify!(tv_usec)
-        )
-    );
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct timespec {
-    pub tv_sec: __time_t,
-    pub tv_nsec: __syscall_slong_t,
-}
-#[test]
-fn bindgen_test_layout_timespec() {
-    assert_eq!(
-        ::std::mem::size_of::<timespec>(),
-        16usize,
-        concat!("Size of: ", stringify!(timespec))
-    );
-    assert_eq!(
-        ::std::mem::align_of::<timespec>(),
-        8usize,
-        concat!("Alignment of ", stringify!(timespec))
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<timespec>())).tv_sec as *const _ as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(timespec),
-            "::",
-            stringify!(tv_sec)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<timespec>())).tv_nsec as *const _ as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(timespec),
-            "::",
-            stringify!(tv_nsec)
-        )
-    );
-}
 pub type FILE = _IO_FILE;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -524,6 +448,84 @@ fn bindgen_test_layout__IO_FILE() {
         )
     );
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct timeval {
+    pub tv_sec: __time_t,
+    pub tv_usec: __suseconds_t,
+}
+#[test]
+fn bindgen_test_layout_timeval() {
+    assert_eq!(
+        ::std::mem::size_of::<timeval>(),
+        16usize,
+        concat!("Size of: ", stringify!(timeval))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<timeval>(),
+        8usize,
+        concat!("Alignment of ", stringify!(timeval))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<timeval>())).tv_sec as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(timeval),
+            "::",
+            stringify!(tv_sec)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<timeval>())).tv_usec as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(timeval),
+            "::",
+            stringify!(tv_usec)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct timespec {
+    pub tv_sec: __time_t,
+    pub tv_nsec: __syscall_slong_t,
+}
+#[test]
+fn bindgen_test_layout_timespec() {
+    assert_eq!(
+        ::std::mem::size_of::<timespec>(),
+        16usize,
+        concat!("Size of: ", stringify!(timespec))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<timespec>(),
+        8usize,
+        concat!("Alignment of ", stringify!(timespec))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<timespec>())).tv_sec as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(timespec),
+            "::",
+            stringify!(tv_sec)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<timespec>())).tv_nsec as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(timespec),
+            "::",
+            stringify!(tv_nsec)
+        )
+    );
+}
 pub type YR_STREAM_READ_FUNC = ::std::option::Option<
     unsafe extern "C" fn(
         ptr: *mut ::std::os::raw::c_void,
@@ -596,7 +598,7 @@ pub type yr_arena_off_t = u32;
 #[derive(Debug, Copy, Clone)]
 pub struct YR_ARENA_REF {
     pub buffer_id: u32,
-    pub offset: u32,
+    pub offset: yr_arena_off_t,
 }
 #[test]
 fn bindgen_test_layout_YR_ARENA_REF() {
@@ -734,8 +736,8 @@ fn bindgen_test_layout_YR_RELOC() {
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct YR_ARENA {
-    pub xrefs: ::std::os::raw::c_int,
-    pub num_buffers: ::std::os::raw::c_int,
+    pub xrefs: u32,
+    pub num_buffers: u32,
     pub buffers: [YR_ARENA_BUFFER; 16usize],
     pub initial_buffer_size: size_t,
     pub reloc_list_head: *mut YR_RELOC,
@@ -2625,12 +2627,12 @@ fn bindgen_test_layout_YR_MATCH() {
     );
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Copy, Clone)]
 pub struct YR_RULES {
     pub arena: *mut YR_ARENA,
-    pub rules_list_head: *mut YR_RULE,
-    pub strings_list_head: *mut YR_STRING,
-    pub externals_list_head: *mut YR_EXTERNAL_VARIABLE,
+    pub __bindgen_anon_1: YR_RULES__bindgen_ty_1,
+    pub __bindgen_anon_2: YR_RULES__bindgen_ty_2,
+    pub __bindgen_anon_3: YR_RULES__bindgen_ty_3,
     pub ac_transition_table: *mut YR_AC_TRANSITION,
     pub ac_match_pool: *mut YR_AC_MATCH,
     pub ac_match_table: *mut u32,
@@ -2638,6 +2640,137 @@ pub struct YR_RULES {
     pub num_rules: u32,
     pub num_strings: u32,
     pub num_namespaces: u32,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union YR_RULES__bindgen_ty_1 {
+    pub rules_table: *mut YR_RULE,
+    pub rules_list_head: *mut YR_RULE,
+}
+#[test]
+fn bindgen_test_layout_YR_RULES__bindgen_ty_1() {
+    assert_eq!(
+        ::std::mem::size_of::<YR_RULES__bindgen_ty_1>(),
+        8usize,
+        concat!("Size of: ", stringify!(YR_RULES__bindgen_ty_1))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<YR_RULES__bindgen_ty_1>(),
+        8usize,
+        concat!("Alignment of ", stringify!(YR_RULES__bindgen_ty_1))
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<YR_RULES__bindgen_ty_1>())).rules_table as *const _ as usize
+        },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES__bindgen_ty_1),
+            "::",
+            stringify!(rules_table)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<YR_RULES__bindgen_ty_1>())).rules_list_head as *const _ as usize
+        },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES__bindgen_ty_1),
+            "::",
+            stringify!(rules_list_head)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union YR_RULES__bindgen_ty_2 {
+    pub strings_table: *mut YR_STRING,
+    pub strings_list_head: *mut YR_STRING,
+}
+#[test]
+fn bindgen_test_layout_YR_RULES__bindgen_ty_2() {
+    assert_eq!(
+        ::std::mem::size_of::<YR_RULES__bindgen_ty_2>(),
+        8usize,
+        concat!("Size of: ", stringify!(YR_RULES__bindgen_ty_2))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<YR_RULES__bindgen_ty_2>(),
+        8usize,
+        concat!("Alignment of ", stringify!(YR_RULES__bindgen_ty_2))
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<YR_RULES__bindgen_ty_2>())).strings_table as *const _ as usize
+        },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES__bindgen_ty_2),
+            "::",
+            stringify!(strings_table)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<YR_RULES__bindgen_ty_2>())).strings_list_head as *const _
+                as usize
+        },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES__bindgen_ty_2),
+            "::",
+            stringify!(strings_list_head)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union YR_RULES__bindgen_ty_3 {
+    pub ext_vars_table: *mut YR_EXTERNAL_VARIABLE,
+    pub externals_list_head: *mut YR_EXTERNAL_VARIABLE,
+}
+#[test]
+fn bindgen_test_layout_YR_RULES__bindgen_ty_3() {
+    assert_eq!(
+        ::std::mem::size_of::<YR_RULES__bindgen_ty_3>(),
+        8usize,
+        concat!("Size of: ", stringify!(YR_RULES__bindgen_ty_3))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<YR_RULES__bindgen_ty_3>(),
+        8usize,
+        concat!("Alignment of ", stringify!(YR_RULES__bindgen_ty_3))
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<YR_RULES__bindgen_ty_3>())).ext_vars_table as *const _ as usize
+        },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES__bindgen_ty_3),
+            "::",
+            stringify!(ext_vars_table)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<YR_RULES__bindgen_ty_3>())).externals_list_head as *const _
+                as usize
+        },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES__bindgen_ty_3),
+            "::",
+            stringify!(externals_list_head)
+        )
+    );
 }
 #[test]
 fn bindgen_test_layout_YR_RULES() {
@@ -2659,36 +2792,6 @@ fn bindgen_test_layout_YR_RULES() {
             stringify!(YR_RULES),
             "::",
             stringify!(arena)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<YR_RULES>())).rules_list_head as *const _ as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(YR_RULES),
-            "::",
-            stringify!(rules_list_head)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<YR_RULES>())).strings_list_head as *const _ as usize },
-        16usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(YR_RULES),
-            "::",
-            stringify!(strings_list_head)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<YR_RULES>())).externals_list_head as *const _ as usize },
-        24usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(YR_RULES),
-            "::",
-            stringify!(externals_list_head)
         )
     );
     assert_eq!(
@@ -2929,6 +3032,7 @@ fn bindgen_test_layout_YR_PROFILING_INFO() {
         )
     );
 }
+#[doc = ""]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct YR_RULE_PROFILING_INFO {
@@ -2973,6 +3077,8 @@ pub type YR_MEMORY_BLOCK_FETCH_DATA_FUNC =
 pub type YR_MEMORY_BLOCK_ITERATOR_FUNC = ::std::option::Option<
     unsafe extern "C" fn(self_: *mut YR_MEMORY_BLOCK_ITERATOR) -> *mut YR_MEMORY_BLOCK,
 >;
+pub type YR_MEMORY_BLOCK_ITERATOR_SIZE_FUNC =
+    ::std::option::Option<unsafe extern "C" fn(self_: *mut YR_MEMORY_BLOCK_ITERATOR) -> u64>;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct YR_MEMORY_BLOCK {
@@ -3034,18 +3140,21 @@ fn bindgen_test_layout_YR_MEMORY_BLOCK() {
         )
     );
 }
+#[doc = ""]
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct YR_MEMORY_BLOCK_ITERATOR {
     pub context: *mut ::std::os::raw::c_void,
     pub first: YR_MEMORY_BLOCK_ITERATOR_FUNC,
     pub next: YR_MEMORY_BLOCK_ITERATOR_FUNC,
+    pub file_size: YR_MEMORY_BLOCK_ITERATOR_SIZE_FUNC,
+    pub last_error: ::std::os::raw::c_int,
 }
 #[test]
 fn bindgen_test_layout_YR_MEMORY_BLOCK_ITERATOR() {
     assert_eq!(
         ::std::mem::size_of::<YR_MEMORY_BLOCK_ITERATOR>(),
-        24usize,
+        40usize,
         concat!("Size of: ", stringify!(YR_MEMORY_BLOCK_ITERATOR))
     );
     assert_eq!(
@@ -3083,6 +3192,30 @@ fn bindgen_test_layout_YR_MEMORY_BLOCK_ITERATOR() {
             stringify!(YR_MEMORY_BLOCK_ITERATOR),
             "::",
             stringify!(next)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<YR_MEMORY_BLOCK_ITERATOR>())).file_size as *const _ as usize
+        },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_MEMORY_BLOCK_ITERATOR),
+            "::",
+            stringify!(file_size)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<YR_MEMORY_BLOCK_ITERATOR>())).last_error as *const _ as usize
+        },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_MEMORY_BLOCK_ITERATOR),
+            "::",
+            stringify!(last_error)
         )
     );
 }
@@ -3362,7 +3495,7 @@ pub type YR_COMPILER_RE_AST_CALLBACK_FUNC = ::std::option::Option<
         user_data: *mut ::std::os::raw::c_void,
     ),
 >;
-pub type YR_COMPILER = [u64; 1297usize];
+pub type YR_COMPILER = [u64; 1298usize];
 extern "C" {
     pub fn yr_compiler_create(compiler: *mut *mut YR_COMPILER) -> ::std::os::raw::c_int;
 }
@@ -3474,6 +3607,109 @@ extern "C" {
         compiler: *mut YR_COMPILER,
         rules: *mut *mut YR_RULES,
     ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_initialize() -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_finalize() -> ::std::os::raw::c_int;
+}
+pub type YR_SCANNER = YR_SCAN_CONTEXT;
+extern "C" {
+    pub fn yr_scanner_create(
+        rules: *mut YR_RULES,
+        scanner: *mut *mut YR_SCANNER,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_scanner_destroy(scanner: *mut YR_SCANNER);
+}
+extern "C" {
+    pub fn yr_scanner_set_callback(
+        scanner: *mut YR_SCANNER,
+        callback: YR_CALLBACK_FUNC,
+        user_data: *mut ::std::os::raw::c_void,
+    );
+}
+extern "C" {
+    pub fn yr_scanner_set_timeout(scanner: *mut YR_SCANNER, timeout: ::std::os::raw::c_int);
+}
+extern "C" {
+    pub fn yr_scanner_set_flags(scanner: *mut YR_SCANNER, flags: ::std::os::raw::c_int);
+}
+extern "C" {
+    pub fn yr_scanner_define_integer_variable(
+        scanner: *mut YR_SCANNER,
+        identifier: *const ::std::os::raw::c_char,
+        value: i64,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_scanner_define_boolean_variable(
+        scanner: *mut YR_SCANNER,
+        identifier: *const ::std::os::raw::c_char,
+        value: ::std::os::raw::c_int,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_scanner_define_float_variable(
+        scanner: *mut YR_SCANNER,
+        identifier: *const ::std::os::raw::c_char,
+        value: f64,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_scanner_define_string_variable(
+        scanner: *mut YR_SCANNER,
+        identifier: *const ::std::os::raw::c_char,
+        value: *const ::std::os::raw::c_char,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_scanner_scan_mem_blocks(
+        scanner: *mut YR_SCANNER,
+        iterator: *mut YR_MEMORY_BLOCK_ITERATOR,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_scanner_scan_mem(
+        scanner: *mut YR_SCANNER,
+        buffer: *const u8,
+        buffer_size: size_t,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_scanner_scan_file(
+        scanner: *mut YR_SCANNER,
+        filename: *const ::std::os::raw::c_char,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_scanner_scan_fd(
+        scanner: *mut YR_SCANNER,
+        fd: ::std::os::raw::c_int,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_scanner_scan_proc(
+        scanner: *mut YR_SCANNER,
+        pid: ::std::os::raw::c_int,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_scanner_last_error_rule(scanner: *mut YR_SCANNER) -> *mut YR_RULE;
+}
+extern "C" {
+    pub fn yr_scanner_last_error_string(scanner: *mut YR_SCANNER) -> *mut YR_STRING;
+}
+extern "C" {
+    pub fn yr_scanner_get_profiling_info(scanner: *mut YR_SCANNER) -> *mut YR_RULE_PROFILING_INFO;
+}
+extern "C" {
+    pub fn yr_scanner_reset_profiling_info(scanner: *mut YR_SCANNER);
+}
+extern "C" {
+    pub fn yr_scanner_print_profiling_info(scanner: *mut YR_SCANNER) -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn yr_rules_scan_mem_blocks(
@@ -3598,107 +3834,4 @@ extern "C" {
         arena: *mut YR_ARENA,
         rules: *mut *mut YR_RULES,
     ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn yr_initialize() -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn yr_finalize() -> ::std::os::raw::c_int;
-}
-pub type YR_SCANNER = YR_SCAN_CONTEXT;
-extern "C" {
-    pub fn yr_scanner_create(
-        rules: *mut YR_RULES,
-        scanner: *mut *mut YR_SCANNER,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn yr_scanner_destroy(scanner: *mut YR_SCANNER);
-}
-extern "C" {
-    pub fn yr_scanner_set_callback(
-        scanner: *mut YR_SCANNER,
-        callback: YR_CALLBACK_FUNC,
-        user_data: *mut ::std::os::raw::c_void,
-    );
-}
-extern "C" {
-    pub fn yr_scanner_set_timeout(scanner: *mut YR_SCANNER, timeout: ::std::os::raw::c_int);
-}
-extern "C" {
-    pub fn yr_scanner_set_flags(scanner: *mut YR_SCANNER, flags: ::std::os::raw::c_int);
-}
-extern "C" {
-    pub fn yr_scanner_define_integer_variable(
-        scanner: *mut YR_SCANNER,
-        identifier: *const ::std::os::raw::c_char,
-        value: i64,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn yr_scanner_define_boolean_variable(
-        scanner: *mut YR_SCANNER,
-        identifier: *const ::std::os::raw::c_char,
-        value: ::std::os::raw::c_int,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn yr_scanner_define_float_variable(
-        scanner: *mut YR_SCANNER,
-        identifier: *const ::std::os::raw::c_char,
-        value: f64,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn yr_scanner_define_string_variable(
-        scanner: *mut YR_SCANNER,
-        identifier: *const ::std::os::raw::c_char,
-        value: *const ::std::os::raw::c_char,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn yr_scanner_scan_mem_blocks(
-        scanner: *mut YR_SCANNER,
-        iterator: *mut YR_MEMORY_BLOCK_ITERATOR,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn yr_scanner_scan_mem(
-        scanner: *mut YR_SCANNER,
-        buffer: *const u8,
-        buffer_size: size_t,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn yr_scanner_scan_file(
-        scanner: *mut YR_SCANNER,
-        filename: *const ::std::os::raw::c_char,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn yr_scanner_scan_fd(
-        scanner: *mut YR_SCANNER,
-        fd: ::std::os::raw::c_int,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn yr_scanner_scan_proc(
-        scanner: *mut YR_SCANNER,
-        pid: ::std::os::raw::c_int,
-    ) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn yr_scanner_last_error_rule(scanner: *mut YR_SCANNER) -> *mut YR_RULE;
-}
-extern "C" {
-    pub fn yr_scanner_last_error_string(scanner: *mut YR_SCANNER) -> *mut YR_STRING;
-}
-extern "C" {
-    pub fn yr_scanner_get_profiling_info(scanner: *mut YR_SCANNER) -> *mut YR_RULE_PROFILING_INFO;
-}
-extern "C" {
-    pub fn yr_scanner_reset_profiling_info(scanner: *mut YR_SCANNER);
-}
-extern "C" {
-    pub fn yr_scanner_print_profiling_info(scanner: *mut YR_SCANNER) -> ::std::os::raw::c_int;
 }
