@@ -35,7 +35,7 @@ fn main() {
 
 ## Features
 
-* Support from Yara v4.0.
+* Support from Yara v4.1.
 * Compile rules from strings or files.
 * Save and load compiled rules.
 * Scan byte arrays (`&[u8]`) or files.
