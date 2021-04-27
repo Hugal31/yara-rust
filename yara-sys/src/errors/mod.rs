@@ -128,14 +128,13 @@ mod tests {
 
     #[test]
     fn test_to_string() {
-        use std::error::Error as StdError;
         assert_eq!(
             "Callback returned an error",
             Error::CallbackError.to_string()
         );
         assert_eq!(
             "Callback returned an error",
-            Error::CallbackError.description()
+            Error::CallbackError.to_string()
         );
     }
 }
