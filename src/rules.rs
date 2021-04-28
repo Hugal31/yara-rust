@@ -128,11 +128,7 @@ impl Rules {
     /// # Permissions
     ///
     /// You need to be able to attach to process `pid`.
-    pub fn scan_process<'r>(
-        &self,
-        pid: u32,
-        timeout: u16
-    ) -> Result<Vec<Rule<'r>>, YaraError> {
+    pub fn scan_process<'r>(&self, pid: u32, timeout: u16) -> Result<Vec<Rule<'r>>, YaraError> {
         internals::rules_scan_proc(self.inner, pid, i32::from(timeout), self.flags as i32)
     }
 
@@ -227,7 +223,7 @@ mod test {
 
     /// A random uuid that should be present in the process memory for the rule
     /// to match.
-    static UUID_MATCH:    &str = "401d67bf-ff9c-4632-992e-46afed0bbcff";
+    static UUID_MATCH: &str = "401d67bf-ff9c-4632-992e-46afed0bbcff";
     /// A random uuid that is unlikely to be present in the process' memory.
     static UUID_NO_MATCH: &str = "db4f9dab-a622-4fc9-b71f-38398baf308b";
 
@@ -253,25 +249,32 @@ mod test {
             .arg("-c")
             .arg(format!("sleep 5; echo {}", UUID_MATCH))
             .stdout(Stdio::null())
-            .spawn().unwrap();
+            .spawn()
+            .unwrap();
         #[cfg(unix)]
         let process_no_match = Command::new("sh")
             .arg("-c")
             .arg(format!("sleep 5; echo {}", UUID_NO_MATCH))
             .stdout(Stdio::null())
-            .spawn().unwrap();
+            .spawn()
+            .unwrap();
         #[cfg(windows)]
         let process_match = Command::new("cmd")
             .arg("/C")
             .arg(format!("ping 127.0.0.1 -n 6 > nul & echo {}", UUID_MATCH))
             .stdout(Stdio::null())
-            .spawn().unwrap();
+            .spawn()
+            .unwrap();
         #[cfg(windows)]
         let process_no_match = Command::new("cmd")
             .arg("/C")
-            .arg(format!("ping 127.0.0.1 -n 6 > nul & echo {}", UUID_NO_MATCH))
+            .arg(format!(
+                "ping 127.0.0.1 -n 6 > nul & echo {}",
+                UUID_NO_MATCH
+            ))
             .stdout(Stdio::null())
-            .spawn().unwrap();
+            .spawn()
+            .unwrap();
 
         let results1 = scanner.scan_process(process_match.id()).unwrap();
         let results2 = scanner.scan_process(process_no_match.id()).unwrap();

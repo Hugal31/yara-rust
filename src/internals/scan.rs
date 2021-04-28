@@ -235,7 +235,7 @@ pub fn rules_scan_proc<'a>(
             flags,
             Some(scan_callback),
             &mut results as *mut Vec<_> as *mut c_void,
-            timeout
+            timeout,
         )
     };
 
@@ -258,11 +258,9 @@ pub fn scanner_scan_proc<'a>(
         yara_sys::yr_scanner_set_callback(
             scanner,
             Some(scan_callback),
-            &mut results as *mut Vec<_> as *mut c_void);
-        yara_sys::yr_scanner_scan_proc(
-            scanner,
-            pid as i32,
-        )
+            &mut results as *mut Vec<_> as *mut c_void,
+        );
+        yara_sys::yr_scanner_scan_proc(scanner, pid as i32)
     };
 
     yara_sys::Error::from_code(result)

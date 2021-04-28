@@ -50,8 +50,8 @@ mod initialize;
 mod internals;
 mod matches;
 mod rules;
-mod string;
 mod scanner;
+mod string;
 
 pub mod errors;
 
@@ -61,8 +61,8 @@ pub use crate::compiler::Compiler;
 pub use crate::errors::*;
 pub use crate::matches::Match;
 pub use crate::rules::*;
-pub use crate::string::YrString;
 pub use crate::scanner::Scanner;
+pub use crate::string::YrString;
 
 /// Yara initialization token.
 ///

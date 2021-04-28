@@ -1,9 +1,9 @@
-use std::{marker::PhantomData};
 use std::fs::File;
+use std::marker::PhantomData;
 use std::path::Path;
 pub use yara_sys::scan_flags::*;
 
-use crate::{Rule, compiler::CompilerVariableValue, errors::*, internals, rules::Rules};
+use crate::{compiler::CompilerVariableValue, errors::*, internals, rules::Rules, Rule};
 
 /// A wrapper around compiled [Rules], with its own set of external variables, flags and timeout.
 ///
@@ -105,7 +105,11 @@ impl<'rules> Scanner<'rules> {
     ///
     /// Note that the variable must have already been declared with the proper type
     /// with [define_variable](crate::Compiler::define_variable) when compiling the rules.
-    pub fn define_variable<V: CompilerVariableValue>(&mut self, identifier: &str, value: V) -> Result<(), YaraError> {
+    pub fn define_variable<V: CompilerVariableValue>(
+        &mut self,
+        identifier: &str,
+        value: V,
+    ) -> Result<(), YaraError> {
         value.assign_in_scanner(self.inner, identifier)
     }
 
@@ -131,16 +135,10 @@ impl<'rules> Scanner<'rules> {
     ///
     /// This function takes the Scanner as `&mut` because it modifies the
     /// `scanner->callback` and `scanner->user_data`, which are not behind a Mutex.
-    pub fn scan_file<'r, P: AsRef<Path>>(
-        &self,
-        path: P,
-    ) -> Result<Vec<Rule<'r>>, Error> {
+    pub fn scan_file<'r, P: AsRef<Path>>(&self, path: P) -> Result<Vec<Rule<'r>>, Error> {
         File::open(path)
             .map_err(|e| IoError::new(e, IoErrorKind::OpenScanFile).into())
-            .and_then(|file| {
-                internals::scanner_scan_file(self.inner, &file)
-                    .map_err(|e| e.into())
-            })
+            .and_then(|file| internals::scanner_scan_file(self.inner, &file).map_err(|e| e.into()))
     }
 
     /// Attach a process, pause it, and scan its memory.
@@ -155,10 +153,7 @@ impl<'rules> Scanner<'rules> {
     ///
     /// This function takes the Scanner as `&mut` because it modifies the
     /// `scanner->callback` and `scanner->user_data`, which are not behind a Mutex.
-    pub fn scan_process<'r>(
-        &mut self,
-        pid: u32,
-    ) -> Result<Vec<Rule<'r>>, YaraError> {
+    pub fn scan_process<'r>(&mut self, pid: u32) -> Result<Vec<Rule<'r>>, YaraError> {
         internals::scanner_scan_proc(self.inner, pid)
     }
 
@@ -176,7 +171,10 @@ impl<'rules> Scanner<'rules> {
 
 #[cfg(test)]
 mod test {
-    use std::{io::Write, process::{Command, Stdio}};
+    use std::{
+        io::Write,
+        process::{Command, Stdio},
+    };
 
     use crate::Compiler;
 
@@ -214,9 +212,22 @@ mod test {
         scanner2.set_timeout(10);
 
         let mut file = tempfile::NamedTempFile::new().expect("temp file creation to succeed");
-        file.write_all("I love Rust!".as_bytes()).expect("write to tempfile to succeed");
-        let results1 = scanner1.scan_file(file.path().to_str().expect("tempfile path to be valid utf-8")).unwrap();
-        let results2 = scanner2.scan_file(file.path().to_str().expect("tempfile path to be valid utf-8")).unwrap();
+        file.write_all("I love Rust!".as_bytes())
+            .expect("write to tempfile to succeed");
+        let results1 = scanner1
+            .scan_file(
+                file.path()
+                    .to_str()
+                    .expect("tempfile path to be valid utf-8"),
+            )
+            .unwrap();
+        let results2 = scanner2
+            .scan_file(
+                file.path()
+                    .to_str()
+                    .expect("tempfile path to be valid utf-8"),
+            )
+            .unwrap();
         assert_eq!(1, results1.len());
         assert_eq!(0, results2.len());
 
@@ -235,7 +246,7 @@ mod test {
 
     /// A random uuid that should be present in the process memory for the rule
     /// to match.
-    static UUID_MATCH:    &str = "401d67bf-ff9c-4632-992e-46afed0bbcff";
+    static UUID_MATCH: &str = "401d67bf-ff9c-4632-992e-46afed0bbcff";
     /// A random uuid that is unlikely to be present in the process' memory.
     static UUID_NO_MATCH: &str = "db4f9dab-a622-4fc9-b71f-38398baf308b";
 
@@ -246,7 +257,6 @@ mod test {
             $target
         }
     "#;
-
 
     #[test]
     fn scanner_scan_proc() {
@@ -262,25 +272,32 @@ mod test {
             .arg("-c")
             .arg(format!("sleep 5; echo {}", UUID_MATCH))
             .stdout(Stdio::null())
-            .spawn().unwrap();
+            .spawn()
+            .unwrap();
         #[cfg(unix)]
         let process_no_match = Command::new("sh")
             .arg("-c")
             .arg(format!("sleep 5; echo {}", UUID_NO_MATCH))
             .stdout(Stdio::null())
-            .spawn().unwrap();
+            .spawn()
+            .unwrap();
         #[cfg(windows)]
         let process_match = Command::new("cmd")
             .arg("/C")
             .arg(format!("ping 127.0.0.1 -n 6 > nul & echo {}", UUID_MATCH))
             .stdout(Stdio::null())
-            .spawn().unwrap();
+            .spawn()
+            .unwrap();
         #[cfg(windows)]
         let process_no_match = Command::new("cmd")
             .arg("/C")
-            .arg(format!("ping 127.0.0.1 -n 6 > nul & echo {}", UUID_NO_MATCH))
+            .arg(format!(
+                "ping 127.0.0.1 -n 6 > nul & echo {}",
+                UUID_NO_MATCH
+            ))
             .stdout(Stdio::null())
-            .spawn().unwrap();
+            .spawn()
+            .unwrap();
 
         let results1 = scanner.scan_process(process_match.id()).unwrap();
         let results2 = scanner.scan_process(process_no_match.id()).unwrap();

@@ -10,9 +10,9 @@ use std::os::raw::c_char;
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 pub mod scan_flags {
-    pub use super::{SCAN_FLAGS_FAST_MODE, SCAN_FLAGS_PROCESS_MEMORY, SCAN_FLAGS_NO_TRYCATCH};
+    pub use super::{SCAN_FLAGS_FAST_MODE, SCAN_FLAGS_NO_TRYCATCH, SCAN_FLAGS_PROCESS_MEMORY};
 
-    pub use super::{META_TYPE_INTEGER};
+    pub use super::META_TYPE_INTEGER;
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -36,12 +36,12 @@ impl MetaType {
 }
 
 impl YR_MATCHES {
-    #[deprecated="Useless now"]
+    #[deprecated = "Useless now"]
     pub fn get_head(&self) -> *const YR_MATCH {
         self.head
     }
 
-    #[deprecated="Useless now"]
+    #[deprecated = "Useless now"]
     pub fn get_tail(&self) -> *const YR_MATCH {
         self.tail
     }
