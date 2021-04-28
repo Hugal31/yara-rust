@@ -19,6 +19,7 @@ const RULES: &str = r#"
         $rust = "rust" nocase
       condition:
         $rust
+    }
 "#;
 
 fn main() {
