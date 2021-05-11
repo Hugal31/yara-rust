@@ -90,7 +90,14 @@ mod build {
         };
 
         // Unfortunately, YARA compilation produces lots of warnings
-        cc.warnings(false);
+        // Ignore some of them.
+        cc.flag_if_supported("-Wno-deprecated-declarations")
+          .flag_if_supported("-Wno-unused-parameter")
+          .flag_if_supported("-Wno-unused-function")
+          .flag_if_supported("-Wno-cast-function-type")
+          .flag_if_supported("-Wno-type-limits")
+          .flag_if_supported("-Wno-tautological-constant-out-of-range-compare")
+          .flag_if_supported("-Wno-sign-compare"); // maybe this one shouldn't be silenced.
 
         cc.compile("yara");
 
