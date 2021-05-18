@@ -3,6 +3,7 @@ use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
 pub use yara_sys::scan_flags::*;
+use serde::{Serialize, Deserialize};
 
 use crate::{errors::*, initialize::InitializationToken, internals, YrString};
 
@@ -186,7 +187,8 @@ impl Drop for Rules {
 }
 
 /// A rule that matched during a scan.
-#[derive(Debug)]
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Rule<'r> {
     /// Name of the rule.
     pub identifier: &'r str,
@@ -201,14 +203,14 @@ pub struct Rule<'r> {
 }
 
 /// Metadata specified in a rule.
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Metadata<'r> {
     pub identifier: &'r str,
     pub value: MetadataValue<'r>,
 }
 
 /// Type of the value in [MetaData](struct.Metadata.html)
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub enum MetadataValue<'r> {
     Integer(i64),
     String(&'r str),

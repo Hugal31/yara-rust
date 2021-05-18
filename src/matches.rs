@@ -1,5 +1,6 @@
 /// A match within a scan.
-#[derive(Debug)]
+use serde::{Serialize, Deserialize};
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Match {
     /// Offset of the match within the scanning area.
     pub offset: usize,
