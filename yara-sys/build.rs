@@ -136,7 +136,7 @@ mod build {
     }
 }
 
-#[cfg(feature = "bundled-4_1_0")]
+#[cfg(feature = "bundled-4_1_1")]
 mod bindings {
     use std::env;
     use std::fs;
@@ -144,8 +144,8 @@ mod bindings {
 
     pub fn add_bindings() {
         let binding_file = match env::var("CARGO_CFG_TARGET_FAMILY").unwrap().as_ref() {
-            "unix" => "yara-4.1.0-unix.rs",
-            "windows" => "yara-4.1.0-windows.rs",
+            "unix" => "yara-4.1.1-unix.rs",
+            "windows" => "yara-4.1.1-windows.rs",
             f => panic!("no bundled bindings for family {}", f),
         };
         let out_dir = env::var("OUT_DIR").expect("$OUT_DIR should be defined");
@@ -155,7 +155,7 @@ mod bindings {
     }
 }
 
-#[cfg(not(feature = "bundled-4_1_0"))]
+#[cfg(not(feature = "bundled-4_1_1"))]
 mod bindings {
     extern crate bindgen;
 
