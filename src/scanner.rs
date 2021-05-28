@@ -250,9 +250,18 @@ mod test {
     /// A random uuid that is unlikely to be present in the process' memory.
     static UUID_NO_MATCH: &str = "db4f9dab-a622-4fc9-b71f-38398baf308b";
 
+    #[cfg(not(windows))]
     static RULES_PROC: &str = r#"rule found_uuid {
         strings:
             $target = "401d67bf-ff9c-4632-992e-46afed0bbcff"
+        condition:
+            $target
+        }
+    "#;
+    #[cfg(windows)]
+    static RULES_PROC: &str = r#"rule found_uuid {
+        strings:
+            $target = "401d67bf-ff9c-4632-992e-46afed0bbcff" wide
         condition:
             $target
         }
@@ -284,7 +293,7 @@ mod test {
         #[cfg(windows)]
         let process_match = Command::new("cmd")
             .arg("/C")
-            .arg(format!("ping 127.0.0.1 -n 6 > nul & echo {}", UUID_MATCH))
+            .arg(format!("ping 127.0.0.1 -n 60 > nul & echo {}", UUID_MATCH))
             .stdout(Stdio::null())
             .spawn()
             .unwrap();
@@ -292,7 +301,7 @@ mod test {
         let process_no_match = Command::new("cmd")
             .arg("/C")
             .arg(format!(
-                "ping 127.0.0.1 -n 6 > nul & echo {}",
+                "ping 127.0.0.1 -n 60 > nul & echo {}",
                 UUID_NO_MATCH
             ))
             .stdout(Stdio::null())
@@ -308,10 +317,16 @@ mod test {
         assert_eq!("found_uuid", found_uuid.identifier);
         assert_eq!(1, found_uuid.strings.len());
 
-        let string = &found_uuid.strings[0];
-        assert_eq!("$target", string.identifier);
+        for string in &found_uuid.strings {
+            assert_eq!("$target", string.identifier);
 
-        let m = &string.matches[0];
-        assert_eq!(UUID_MATCH.as_bytes(), m.data.as_slice());
+            let bytes = if cfg!(windows) {
+                // the string is in utf-16 format, filter out the zeroes.
+                string.matches[0].data.clone().into_iter().filter(|v| *v != 0).collect()
+            } else {
+                string.matches[0].data.clone()
+            };
+            assert_eq!(UUID_MATCH.as_bytes(), bytes);
+        }
     }
 }
