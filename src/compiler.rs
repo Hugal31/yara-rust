@@ -1,4 +1,4 @@
-use std::convert::TryFrom as _;
+use std::convert::{Into, TryFrom as _};
 use std::ffi::CStr;
 use std::fs::File;
 use std::path::Path;
@@ -74,7 +74,7 @@ impl Compiler {
     /// }")?;
     /// # Ok::<(), yara::Error>(())
     /// ```
-    pub fn add_rules_str(&mut self, rule: &str) -> Result<(), Error> {
+    pub fn add_rules_str<T: Into<Vec<u8>>>(&mut self, rule: T) -> Result<(), Error> {
         internals::compiler_add_string(self.inner, rule, None)
     }
 

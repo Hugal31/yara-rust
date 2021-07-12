@@ -1,3 +1,4 @@
+use std::convert::Into;
 use std::ffi::{CStr, CString};
 use std::fs::File;
 use std::os::raw::{c_char, c_int, c_void};
@@ -27,12 +28,12 @@ pub fn compiler_destroy(compiler_ptr: *mut YR_COMPILER) {
     }
 }
 
-pub fn compiler_add_string(
+pub fn compiler_add_string<T: Into<Vec<u8>>>(
     compiler: *mut YR_COMPILER,
-    string: &str,
+    rule: T,
     namespace: Option<&str>,
 ) -> Result<(), Error> {
-    let string = CString::new(string).unwrap();
+    let rule = CString::new(rule).unwrap();
     let namespace = namespace.map(|n| CString::new(n).unwrap());
     let mut errors = Vec::<CompileError>::new();
     unsafe {
@@ -45,7 +46,7 @@ pub fn compiler_add_string(
     let result = unsafe {
         yara_sys::yr_compiler_add_string(
             compiler,
-            string.as_ptr(),
+            rule.as_ptr(),
             namespace.as_ref().map_or(ptr::null(), |s| s.as_ptr()),
         )
     };
