@@ -1,6 +1,6 @@
 # yara-rust
 
-[![Build Status](https://travis-ci.org/Hugal31/yara-rust.svg?branch=master)](https://travis-ci.org/Hugal31/yara-rust)
+[![Build Status](https://travis-ci.com/Hugal31/yara-rust.svg?branch=master)](https://travis-ci.org/Hugal31/yara-rust)
 [![Crates.io](https://img.shields.io/crates/v/yara.svg)](https://crates.io/crates/yara)
 [![Documentation](https://docs.rs/yara/badge.svg)](https://docs.rs/yara)
 
