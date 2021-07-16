@@ -27,6 +27,15 @@ You can specify the location of Yara:
   variable.
 - The path of the Yara headers by setting the `YARA_INCLUDE_DIR` environment
   variable, if you use the `bindgen` feature.
+  
+You can specify compile options for libyara v4.1.1 if choice `vendored`:
+- YARA_ENABLE_PROFILING - enable rules profiling support
+- YARA_ENABLE_MAGIC - enable [magic](https://yara.readthedocs.io/en/stable/modules/magic.html) module (depends on libmagic)
+- YARA_ENABLE_CUCKOO - enable [cuckoo](https://yara.readthedocs.io/en/stable/modules/cuckoo.html) module (depends on [Jansson](https://digip.org/jansson/) for parsing JSON)
+- YARA_ENABLE_DOTNET - enable [dotnet](https://yara.readthedocs.io/en/stable/modules/dotnet.html) module
+- YARA_ENABLE_DEX - enable dex module
+- YARA_ENABLE_DEX_DEBUG - enable dex module debugging
+- YARA_ENABLE_MACHO - enable macho module
 
 ## License
 

@@ -8,61 +8,65 @@ fn main() {
 #[cfg(feature = "vendored")]
 mod build {
     use std::path::PathBuf;
+    use walkdir::WalkDir;
 
     pub fn build_and_link() {
         let basedir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("yara");
 
         let mut cc = cc::Build::new();
-
         cc.include(basedir.join("libyara"))
-            .include(basedir.join("libyara/include"))
-            .file(basedir.join("libyara/ahocorasick.c"))
-            .file(basedir.join("libyara/arena.c"))
-            .file(basedir.join("libyara/atoms.c"))
-            .file(basedir.join("libyara/base64.c"))
-            .file(basedir.join("libyara/bitmask.c"))
-            .file(basedir.join("libyara/compiler.c"))
-            .file(basedir.join("libyara/endian.c"))
-            .file(basedir.join("libyara/exec.c"))
-            .file(basedir.join("libyara/exefiles.c"))
-            .file(basedir.join("libyara/filemap.c"))
-            .file(basedir.join("libyara/grammar.c"))
-            .file(basedir.join("libyara/hash.c"))
-            .file(basedir.join("libyara/hex_grammar.c"))
-            .file(basedir.join("libyara/hex_lexer.c"))
-            .file(basedir.join("libyara/lexer.c"))
-            .file(basedir.join("libyara/libyara.c"))
-            .file(basedir.join("libyara/mem.c"))
-            .file(basedir.join("libyara/notebook.c"))
-            .file(basedir.join("libyara/object.c"))
-            .file(basedir.join("libyara/parser.c"))
-            .file(basedir.join("libyara/proc.c"))
-            .file(basedir.join("libyara/re.c"))
-            .file(basedir.join("libyara/re_grammar.c"))
-            .file(basedir.join("libyara/re_lexer.c"))
-            .file(basedir.join("libyara/rules.c"))
-            .file(basedir.join("libyara/scan.c"))
-            .file(basedir.join("libyara/scanner.c"))
-            .file(basedir.join("libyara/sizedstr.c"))
-            .file(basedir.join("libyara/stack.c"))
-            .file(basedir.join("libyara/stopwatch.c"))
-            .file(basedir.join("libyara/stream.c"))
-            .file(basedir.join("libyara/strutils.c"))
-            .file(basedir.join("libyara/threading.c"))
-            .file(basedir.join("libyara/modules.c"))
-            .file(basedir.join("libyara/modules/elf/elf.c"))
-            .file(basedir.join("libyara/modules/math/math.c"))
-            .file(basedir.join("libyara/modules/pe/pe.c"))
-            .file(basedir.join("libyara/modules/pe/pe_utils.c"))
-            .file(basedir.join("libyara/modules/tests/tests.c"))
-            .file(basedir.join("libyara/modules/time/time.c"))
-            .define("DEX_MODULE", "")
-            .file(basedir.join("libyara/modules/dex/dex.c"))
-            .define("DOTNET_MODULE", "")
-            .file(basedir.join("libyara/modules/dotnet/dotnet.c"))
-            .define("MACHO_MODULE", "")
-            .file(basedir.join("libyara/modules/macho/macho.c"))
-            .define("NDEBUG", "1");
+            .include(basedir.join("libyara/include"));
+
+        let mut exclude: Vec<PathBuf> = vec![
+            basedir.join("libyara/modules/pb_tests/pb_tests.c"),
+            basedir.join("libyara/modules/pb_tests/pb_tests.pb-c.c")
+        ];
+
+        if std::env::var_os("YARA_ENABLE_PROFILING").is_some() {
+            cc.define("YR_PROFILING_ENABLED", "1");
+        }
+        if std::env::var_os("YARA_ENABLE_MAGIC").is_some() {
+            cc.define("MAGIC_MODULE", "1").flag("-lmagic");
+        }
+        else {
+            exclude.push(basedir.join("libyara/modules/magic/magic.c"));
+        }
+        if std::env::var_os("YARA_ENABLE_CUCKOO").is_some() {
+            cc.define("CUCKOO_MODULE", "1").flag("-ljansson");
+        }
+        else {
+            exclude.push(basedir.join("libyara/modules/cuckoo/cuckoo.c"));
+        }
+        if std::env::var_os("YARA_ENABLE_DOTNET").is_some() {
+            cc.define("DOTNET", "1");
+        }
+        else {
+            exclude.push(basedir.join("libyara/modules/dotnet/dotnet.c"));
+        }
+        if std::env::var_os("YARA_ENABLE_DEX").is_some() {
+            cc.define("DEX_MODULE", "1");
+            if std::env::var_os("YARA_ENABLE_DEX_DEBUG").is_some() {
+               cc.define("DEBUG_DEX_MODULE", "1");
+            }
+        }
+        else {
+            exclude.push(basedir.join("libyara/modules/dex/dex.c"));
+        }
+        if std::env::var_os("YARA_ENABLE_MACHO").is_some() {
+            cc.define("MACHO_MODULE", "1");
+        }
+        else {
+            exclude.push(basedir.join("libyara/modules/macho/macho.c"));
+        }
+
+        let walker = WalkDir::new(basedir.join("libyara"))
+            .into_iter()
+            .filter_entry(|e| {
+                e.file_type().is_file() && !exclude.contains(&e.path().to_path_buf())
+            });
+        for entry in walker {
+            cc.file(entry.unwrap().path());
+        }
 
         // Use correct proc functions
         match std::env::var("CARGO_CFG_TARGET_OS").ok().unwrap().as_str() {
