@@ -44,9 +44,7 @@ impl<'r> CallbackMsg<'r> {
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum CallbackReturn {
     Continue,
-    #[allow(dead_code)]
     Abort,
-    #[allow(dead_code)]
     Error,
 }
 

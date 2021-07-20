@@ -1,6 +1,10 @@
 extern crate yara;
 
-use yara::{CompileErrorLevel, Compiler, ConfigName, Error, Metadata, MetadataValue, Rules, Yara};
+use yara::{
+    CallbackMsg, CallbackReturn, ConfigName, CompileErrorLevel, Compiler, Error, Metadata, MetadataValue,
+    Rules, Yara,
+};
+use yara_sys;
 
 const RULES: &str = r#"
 rule is_awesome {
@@ -17,7 +21,16 @@ rule is_ok {
 
   condition:
     $go
-}"#;
+}
+
+rule re_is_ok {
+  strings:
+    $go = /[Oo]k/
+
+  condition:
+    $go
+}
+"#;
 
 fn compile(rule: &str) -> Rules {
     let mut compiler = Compiler::new().expect("Should create compiler");
@@ -93,6 +106,31 @@ fn test_scan_mem() {
     assert_eq!(1, rule.strings[0].matches.len());
     assert_eq!(7, rule.strings[0].matches[0].offset);
     assert_eq!(b"Rust", rule.strings[0].matches[0].data.as_slice());
+}
+
+#[test]
+fn test_scan_mem_callback_abort<'r>() {
+    let rules = get_default_rules();
+    let mut results = Vec::new();
+    let callback = |message: CallbackMsg<'r>| {
+        if let CallbackMsg::RuleMatching(rule) = message {
+            results.push(rule);
+        }
+        CallbackReturn::Abort
+    };
+
+    let result = rules.scan_mem_callback("rust ok".as_bytes(), 10, callback);
+    assert!(result.is_ok());
+    assert_eq!(1, results.len());
+}
+
+#[test]
+fn test_scan_mem_callback_error<'r>() {
+    let rules = get_default_rules();
+    let callback = |_| CallbackReturn::Error;
+    let result = rules.scan_mem_callback("rust ok".as_bytes(), 10, callback);
+    let error = result.err().expect("Should be Err");
+    assert_eq!(yara_sys::Error::CallbackError, error.kind);
 }
 
 #[test]
