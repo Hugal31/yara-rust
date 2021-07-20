@@ -11,6 +11,14 @@ mod build {
 
     use globwalk;
 
+    fn is_enable(env_var: &str, default: bool) -> bool {
+         match std::env::var(env_var).ok().as_deref() {
+             Some("0") => false,
+             Some(_) => true,
+             None => default
+         }
+    }
+
     pub fn build_and_link() {
         let basedir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("yara");
 
@@ -49,32 +57,32 @@ mod build {
             cc.define("POSIX", "");
         };
 
-        if std::env::var_os("YARA_ENABLE_HASH").is_some() {
+        if is_enable("YARA_ENABLE_HASH", false) {
             cc.define("HASH_MODULE", "1")
                 .define("HAVE_LIBCRYPTO", "1")
                 .flag("-lcrypto");
         } else {
             exclude.push(basedir.join("libyara/modules/hash/hash.c"));
         }
-        if std::env::var_os("YARA_ENABLE_PROFILING").is_some() {
+        if is_enable("YARA_ENABLE_PROFILING", false) {
             cc.define("YR_PROFILING_ENABLED", "1");
         }
-        if std::env::var_os("YARA_ENABLE_MAGIC").is_some() {
+        if is_enable("YARA_ENABLE_MAGIC", false) {
             cc.define("MAGIC_MODULE", "1").flag("-lmagic");
         } else {
             exclude.push(basedir.join("libyara/modules/magic/magic.c"));
         }
-        if std::env::var_os("YARA_ENABLE_CUCKOO").is_some() {
+        if is_enable("YARA_ENABLE_CUCKOO", false) {
             cc.define("CUCKOO_MODULE", "1").flag("-ljansson");
         } else {
             exclude.push(basedir.join("libyara/modules/cuckoo/cuckoo.c"));
         }
-        if std::env::var_os("YARA_ENABLE_DOTNET").is_some() {
+        if is_enable("YARA_ENABLE_DOTNET", true) {
             cc.define("DOTNET", "1");
         } else {
             exclude.push(basedir.join("libyara/modules/dotnet/dotnet.c"));
         }
-        if std::env::var_os("YARA_ENABLE_DEX").is_some() {
+        if is_enable("YARA_ENABLE_DEX", true) {
             cc.define("DEX_MODULE", "1");
             if std::env::var_os("YARA_ENABLE_DEX_DEBUG").is_some() {
                 cc.define("DEBUG_DEX_MODULE", "1");
@@ -82,10 +90,13 @@ mod build {
         } else {
             exclude.push(basedir.join("libyara/modules/dex/dex.c"));
         }
-        if std::env::var_os("YARA_ENABLE_MACHO").is_some() {
+        if is_enable("YARA_ENABLE_MACHO", true) {
             cc.define("MACHO_MODULE", "1");
         } else {
             exclude.push(basedir.join("libyara/modules/macho/macho.c"));
+        }
+        if is_enable("YARA_ENABLE_NDEBUG", true) {
+            cc.define("NDEBUG", "1");
         }
 
         let walker = globwalk::GlobWalkerBuilder::from_patterns(
