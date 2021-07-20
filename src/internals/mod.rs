@@ -1,21 +1,24 @@
+use std::sync::Mutex;
+
+use lazy_static::lazy_static;
+pub use yara_sys;
+
+use crate::errors::*;
+
+pub use self::compiler::*;
+pub use self::configuration::*;
+pub use self::rules::*;
+pub use self::scan::*;
+
 pub mod matches;
 pub mod meta;
 pub mod string;
 
 mod compiler;
+mod configuration;
 mod rules;
 mod scan;
 mod stream;
-
-pub use self::compiler::*;
-pub use self::rules::*;
-pub use self::scan::*;
-
-use std::sync::Mutex;
-
-use lazy_static::lazy_static;
-
-use crate::errors::*;
 
 lazy_static! {
     static ref INIT_MUTEX: Mutex<()> = Mutex::new(());

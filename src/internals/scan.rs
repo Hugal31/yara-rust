@@ -1,3 +1,4 @@
+use std::convert::TryInto;
 use std::ffi::{CStr, CString};
 use std::fs::File;
 use std::os::raw::c_void;
@@ -5,11 +6,11 @@ use std::os::raw::c_void;
 use std::os::unix::io::AsRawFd;
 #[cfg(windows)]
 use std::os::windows::io::AsRawHandle;
+
 use yara_sys::{YR_SCANNER, YR_SCAN_CONTEXT};
 
 use crate::errors::*;
 use crate::Rule;
-use std::convert::TryInto;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum CallbackMsg {

@@ -9,60 +9,28 @@ fn main() {
 mod build {
     use std::path::PathBuf;
 
+    use globwalk;
+
+    fn is_enable(env_var: &str, default: bool) -> bool {
+         match std::env::var(env_var).ok().as_deref() {
+             Some("0") => false,
+             Some(_) => true,
+             None => default
+         }
+    }
+
     pub fn build_and_link() {
         let basedir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("yara");
 
         let mut cc = cc::Build::new();
-
         cc.include(basedir.join("libyara"))
-            .include(basedir.join("libyara/include"))
-            .file(basedir.join("libyara/ahocorasick.c"))
-            .file(basedir.join("libyara/arena.c"))
-            .file(basedir.join("libyara/atoms.c"))
-            .file(basedir.join("libyara/base64.c"))
-            .file(basedir.join("libyara/bitmask.c"))
-            .file(basedir.join("libyara/compiler.c"))
-            .file(basedir.join("libyara/endian.c"))
-            .file(basedir.join("libyara/exec.c"))
-            .file(basedir.join("libyara/exefiles.c"))
-            .file(basedir.join("libyara/filemap.c"))
-            .file(basedir.join("libyara/grammar.c"))
-            .file(basedir.join("libyara/hash.c"))
-            .file(basedir.join("libyara/hex_grammar.c"))
-            .file(basedir.join("libyara/hex_lexer.c"))
-            .file(basedir.join("libyara/lexer.c"))
-            .file(basedir.join("libyara/libyara.c"))
-            .file(basedir.join("libyara/mem.c"))
-            .file(basedir.join("libyara/notebook.c"))
-            .file(basedir.join("libyara/object.c"))
-            .file(basedir.join("libyara/parser.c"))
-            .file(basedir.join("libyara/proc.c"))
-            .file(basedir.join("libyara/re.c"))
-            .file(basedir.join("libyara/re_grammar.c"))
-            .file(basedir.join("libyara/re_lexer.c"))
-            .file(basedir.join("libyara/rules.c"))
-            .file(basedir.join("libyara/scan.c"))
-            .file(basedir.join("libyara/scanner.c"))
-            .file(basedir.join("libyara/sizedstr.c"))
-            .file(basedir.join("libyara/stack.c"))
-            .file(basedir.join("libyara/stopwatch.c"))
-            .file(basedir.join("libyara/stream.c"))
-            .file(basedir.join("libyara/strutils.c"))
-            .file(basedir.join("libyara/threading.c"))
-            .file(basedir.join("libyara/modules.c"))
-            .file(basedir.join("libyara/modules/elf/elf.c"))
-            .file(basedir.join("libyara/modules/math/math.c"))
-            .file(basedir.join("libyara/modules/pe/pe.c"))
-            .file(basedir.join("libyara/modules/pe/pe_utils.c"))
-            .file(basedir.join("libyara/modules/tests/tests.c"))
-            .file(basedir.join("libyara/modules/time/time.c"))
-            .define("DEX_MODULE", "")
-            .file(basedir.join("libyara/modules/dex/dex.c"))
-            .define("DOTNET_MODULE", "")
-            .file(basedir.join("libyara/modules/dotnet/dotnet.c"))
-            .define("MACHO_MODULE", "")
-            .file(basedir.join("libyara/modules/macho/macho.c"))
-            .define("NDEBUG", "1");
+            .include(basedir.join("libyara/include"));
+
+        let mut exclude: Vec<PathBuf> = vec![
+            basedir.join("libyara/modules/pb_tests/pb_tests.c"),
+            basedir.join("libyara/modules/pb_tests/pb_tests.pb-c.c"),
+            basedir.join("libyara/modules/demo/demo.c"),
+        ];
 
         // Use correct proc functions
         match std::env::var("CARGO_CFG_TARGET_OS").ok().unwrap().as_str() {
@@ -89,15 +57,70 @@ mod build {
             cc.define("POSIX", "");
         };
 
+        if is_enable("YARA_ENABLE_HASH", false) {
+            cc.define("HASH_MODULE", "1")
+                .define("HAVE_LIBCRYPTO", "1")
+                .flag("-lcrypto");
+        } else {
+            exclude.push(basedir.join("libyara/modules/hash/hash.c"));
+        }
+        if is_enable("YARA_ENABLE_PROFILING", false) {
+            cc.define("YR_PROFILING_ENABLED", "1");
+        }
+        if is_enable("YARA_ENABLE_MAGIC", false) {
+            cc.define("MAGIC_MODULE", "1").flag("-lmagic");
+        } else {
+            exclude.push(basedir.join("libyara/modules/magic/magic.c"));
+        }
+        if is_enable("YARA_ENABLE_CUCKOO", false) {
+            cc.define("CUCKOO_MODULE", "1").flag("-ljansson");
+        } else {
+            exclude.push(basedir.join("libyara/modules/cuckoo/cuckoo.c"));
+        }
+        if is_enable("YARA_ENABLE_DOTNET", true) {
+            cc.define("DOTNET", "1");
+        } else {
+            exclude.push(basedir.join("libyara/modules/dotnet/dotnet.c"));
+        }
+        if is_enable("YARA_ENABLE_DEX", true) {
+            cc.define("DEX_MODULE", "1");
+            if is_enable("YARA_ENABLE_DEX_DEBUG", false) {
+                cc.define("DEBUG_DEX_MODULE", "1");
+            }
+        } else {
+            exclude.push(basedir.join("libyara/modules/dex/dex.c"));
+        }
+        if is_enable("YARA_ENABLE_MACHO", true) {
+            cc.define("MACHO_MODULE", "1");
+        } else {
+            exclude.push(basedir.join("libyara/modules/macho/macho.c"));
+        }
+        if is_enable("YARA_ENABLE_NDEBUG", true) {
+            cc.define("NDEBUG", "1");
+        }
+
+        let walker = globwalk::GlobWalkerBuilder::from_patterns(
+            basedir.join("libyara"),
+            &["**/*.c", "!proc/*"],
+        )
+        .build()
+        .unwrap()
+        .into_iter()
+        .filter_map(Result::ok)
+        .filter(|e| !exclude.contains(&e.path().to_path_buf()));
+        for entry in walker {
+            cc.file(entry.path());
+        }
+
         // Unfortunately, YARA compilation produces lots of warnings
         // Ignore some of them.
         cc.flag_if_supported("-Wno-deprecated-declarations")
-          .flag_if_supported("-Wno-unused-parameter")
-          .flag_if_supported("-Wno-unused-function")
-          .flag_if_supported("-Wno-cast-function-type")
-          .flag_if_supported("-Wno-type-limits")
-          .flag_if_supported("-Wno-tautological-constant-out-of-range-compare")
-          .flag_if_supported("-Wno-sign-compare"); // maybe this one shouldn't be silenced.
+            .flag_if_supported("-Wno-unused-parameter")
+            .flag_if_supported("-Wno-unused-function")
+            .flag_if_supported("-Wno-cast-function-type")
+            .flag_if_supported("-Wno-type-limits")
+            .flag_if_supported("-Wno-tautological-constant-out-of-range-compare")
+            .flag_if_supported("-Wno-sign-compare"); // maybe this one shouldn't be silenced.
 
         cc.compile("yara");
 
@@ -172,6 +195,9 @@ mod bindings {
             .allowlist_var("STRING_FLAGS_LAST_IN_RULE")
             .allowlist_var("YARA_ERROR_LEVEL_.*")
             .allowlist_var("SCAN_FLAGS_.*")
+            .allowlist_var("YR_CONFIG_.*")
+            .allowlist_function("yr_set_configuration")
+            .allowlist_function("yr_get_configuration")
             .allowlist_function("yr_initialize")
             .allowlist_function("yr_finalize")
             .allowlist_function("yr_finalize_thread")
