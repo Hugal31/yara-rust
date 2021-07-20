@@ -8,7 +8,8 @@ fn main() {
 #[cfg(feature = "vendored")]
 mod build {
     use std::path::PathBuf;
-    use walkdir::WalkDir;
+
+    use globwalk;
 
     pub fn build_and_link() {
         let basedir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("yara");
@@ -19,54 +20,9 @@ mod build {
 
         let mut exclude: Vec<PathBuf> = vec![
             basedir.join("libyara/modules/pb_tests/pb_tests.c"),
-            basedir.join("libyara/modules/pb_tests/pb_tests.pb-c.c")
+            basedir.join("libyara/modules/pb_tests/pb_tests.pb-c.c"),
+            basedir.join("libyara/modules/demo/demo.c"),
         ];
-
-        if std::env::var_os("YARA_ENABLE_PROFILING").is_some() {
-            cc.define("YR_PROFILING_ENABLED", "1");
-        }
-        if std::env::var_os("YARA_ENABLE_MAGIC").is_some() {
-            cc.define("MAGIC_MODULE", "1").flag("-lmagic");
-        }
-        else {
-            exclude.push(basedir.join("libyara/modules/magic/magic.c"));
-        }
-        if std::env::var_os("YARA_ENABLE_CUCKOO").is_some() {
-            cc.define("CUCKOO_MODULE", "1").flag("-ljansson");
-        }
-        else {
-            exclude.push(basedir.join("libyara/modules/cuckoo/cuckoo.c"));
-        }
-        if std::env::var_os("YARA_ENABLE_DOTNET").is_some() {
-            cc.define("DOTNET", "1");
-        }
-        else {
-            exclude.push(basedir.join("libyara/modules/dotnet/dotnet.c"));
-        }
-        if std::env::var_os("YARA_ENABLE_DEX").is_some() {
-            cc.define("DEX_MODULE", "1");
-            if std::env::var_os("YARA_ENABLE_DEX_DEBUG").is_some() {
-               cc.define("DEBUG_DEX_MODULE", "1");
-            }
-        }
-        else {
-            exclude.push(basedir.join("libyara/modules/dex/dex.c"));
-        }
-        if std::env::var_os("YARA_ENABLE_MACHO").is_some() {
-            cc.define("MACHO_MODULE", "1");
-        }
-        else {
-            exclude.push(basedir.join("libyara/modules/macho/macho.c"));
-        }
-
-        let walker = WalkDir::new(basedir.join("libyara"))
-            .into_iter()
-            .filter_entry(|e| {
-                e.file_type().is_file() && !exclude.contains(&e.path().to_path_buf())
-            });
-        for entry in walker {
-            cc.file(entry.unwrap().path());
-        }
 
         // Use correct proc functions
         match std::env::var("CARGO_CFG_TARGET_OS").ok().unwrap().as_str() {
@@ -93,15 +49,67 @@ mod build {
             cc.define("POSIX", "");
         };
 
+        if std::env::var_os("YARA_ENABLE_HASH").is_some() {
+            cc.define("HASH_MODULE", "1")
+                .define("HAVE_LIBCRYPTO", "1")
+                .flag("-lcrypto");
+        } else {
+            exclude.push(basedir.join("libyara/modules/hash/hash.c"));
+        }
+        if std::env::var_os("YARA_ENABLE_PROFILING").is_some() {
+            cc.define("YR_PROFILING_ENABLED", "1");
+        }
+        if std::env::var_os("YARA_ENABLE_MAGIC").is_some() {
+            cc.define("MAGIC_MODULE", "1").flag("-lmagic");
+        } else {
+            exclude.push(basedir.join("libyara/modules/magic/magic.c"));
+        }
+        if std::env::var_os("YARA_ENABLE_CUCKOO").is_some() {
+            cc.define("CUCKOO_MODULE", "1").flag("-ljansson");
+        } else {
+            exclude.push(basedir.join("libyara/modules/cuckoo/cuckoo.c"));
+        }
+        if std::env::var_os("YARA_ENABLE_DOTNET").is_some() {
+            cc.define("DOTNET", "1");
+        } else {
+            exclude.push(basedir.join("libyara/modules/dotnet/dotnet.c"));
+        }
+        if std::env::var_os("YARA_ENABLE_DEX").is_some() {
+            cc.define("DEX_MODULE", "1");
+            if std::env::var_os("YARA_ENABLE_DEX_DEBUG").is_some() {
+                cc.define("DEBUG_DEX_MODULE", "1");
+            }
+        } else {
+            exclude.push(basedir.join("libyara/modules/dex/dex.c"));
+        }
+        if std::env::var_os("YARA_ENABLE_MACHO").is_some() {
+            cc.define("MACHO_MODULE", "1");
+        } else {
+            exclude.push(basedir.join("libyara/modules/macho/macho.c"));
+        }
+
+        let walker = globwalk::GlobWalkerBuilder::from_patterns(
+            basedir.join("libyara"),
+            &["**/*.c", "!proc/*"],
+        )
+        .build()
+        .unwrap()
+        .into_iter()
+        .filter_map(Result::ok)
+        .filter(|e| !exclude.contains(&e.path().to_path_buf()));
+        for entry in walker {
+            cc.file(entry.path());
+        }
+
         // Unfortunately, YARA compilation produces lots of warnings
         // Ignore some of them.
         cc.flag_if_supported("-Wno-deprecated-declarations")
-          .flag_if_supported("-Wno-unused-parameter")
-          .flag_if_supported("-Wno-unused-function")
-          .flag_if_supported("-Wno-cast-function-type")
-          .flag_if_supported("-Wno-type-limits")
-          .flag_if_supported("-Wno-tautological-constant-out-of-range-compare")
-          .flag_if_supported("-Wno-sign-compare"); // maybe this one shouldn't be silenced.
+            .flag_if_supported("-Wno-unused-parameter")
+            .flag_if_supported("-Wno-unused-function")
+            .flag_if_supported("-Wno-cast-function-type")
+            .flag_if_supported("-Wno-type-limits")
+            .flag_if_supported("-Wno-tautological-constant-out-of-range-compare")
+            .flag_if_supported("-Wno-sign-compare"); // maybe this one shouldn't be silenced.
 
         cc.compile("yara");
 
