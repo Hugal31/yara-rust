@@ -45,6 +45,16 @@
 //! [Yara-doc]: https://yara.readthedocs.io/en/stable/gettingstarted.html
 //! [polydet]: https://github.com/Polydet/polydet/
 
+pub use internals::{get_configuration, set_configuration, ConfigName};
+
+pub use crate::compiler::Compiler;
+pub use crate::errors::*;
+use crate::initialize::InitializationToken;
+pub use crate::matches::Match;
+pub use crate::rules::*;
+pub use crate::scanner::Scanner;
+pub use crate::string::YrString;
+
 mod compiler;
 mod initialize;
 mod internals;
@@ -54,15 +64,6 @@ mod scanner;
 mod string;
 
 pub mod errors;
-
-use crate::initialize::InitializationToken;
-
-pub use crate::compiler::Compiler;
-pub use crate::errors::*;
-pub use crate::matches::Match;
-pub use crate::rules::*;
-pub use crate::scanner::Scanner;
-pub use crate::string::YrString;
 
 /// Yara initialization token.
 ///
