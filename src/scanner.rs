@@ -124,7 +124,14 @@ impl<'rules> Scanner<'rules> {
     /// This funciton takes the Scanner as `&mut` because it modifies the
     /// `scanner->callback` and `scanner->user_data`, which are not behind a Mutex.
     pub fn scan_mem(&mut self, mem: &[u8]) -> Result<Vec<Rule<'rules>>, YaraError> {
-        internals::scanner_scan_mem(self.inner, mem)
+        let mut results: Vec<Rule> = Vec::new();
+        let callback = |message| {
+            if let internals::CallbackMsg::RuleMatching(rule) = message {
+                results.push(rule)
+            }
+            internals::CallbackReturn::Continue
+        };
+        internals::scanner_scan_mem(self.inner, mem, callback).map(|_| results)
     }
 
     /// Scan a file.
@@ -138,7 +145,18 @@ impl<'rules> Scanner<'rules> {
     pub fn scan_file<'r, P: AsRef<Path>>(&self, path: P) -> Result<Vec<Rule<'r>>, Error> {
         File::open(path)
             .map_err(|e| IoError::new(e, IoErrorKind::OpenScanFile).into())
-            .and_then(|file| internals::scanner_scan_file(self.inner, &file).map_err(|e| e.into()))
+            .and_then(|file| {
+                let mut results: Vec<Rule> = Vec::new();
+                let callback = |message| {
+                    if let internals::CallbackMsg::RuleMatching(rule) = message {
+                        results.push(rule)
+                    }
+                    internals::CallbackReturn::Continue
+                };
+                internals::scanner_scan_file(self.inner, &file, callback)
+                    .map_err(|e| e.into())
+                    .map(|_| results)
+            })
     }
 
     /// Attach a process, pause it, and scan its memory.
@@ -154,7 +172,14 @@ impl<'rules> Scanner<'rules> {
     /// This function takes the Scanner as `&mut` because it modifies the
     /// `scanner->callback` and `scanner->user_data`, which are not behind a Mutex.
     pub fn scan_process<'r>(&mut self, pid: u32) -> Result<Vec<Rule<'r>>, YaraError> {
-        internals::scanner_scan_proc(self.inner, pid)
+        let mut results: Vec<Rule> = Vec::new();
+        let callback = |message| {
+            if let internals::CallbackMsg::RuleMatching(rule) = message {
+                results.push(rule)
+            }
+            internals::CallbackReturn::Continue
+        };
+        internals::scanner_scan_proc(self.inner, pid, callback).map(|_| results)
     }
 
     /// Set the maximum number of seconds that the scanner will spend in any call

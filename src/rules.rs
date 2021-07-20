@@ -7,6 +7,7 @@ use std::path::Path;
 use serde::{Deserialize, Serialize};
 pub use yara_sys::scan_flags::*;
 
+pub use crate::internals::{CallbackMsg, CallbackReturn};
 use crate::{errors::*, initialize::InitializationToken, internals, YrString};
 
 /// A set of compiled rules.
@@ -104,23 +105,86 @@ impl Rules {
     /// assert_eq!(b"Rust", m.data.as_slice());
     /// # Ok::<(), yara::Error>(())
     /// ```
-    pub fn scan_mem(&self, mem: &[u8], timeout: u16) -> Result<Vec<Rule>, YaraError> {
-        internals::rules_scan_mem(self.inner, mem, i32::from(timeout), self.flags as i32)
+    pub fn scan_mem<'r>(&self, mem: &[u8], timeout: u16) -> Result<Vec<Rule<'r>>, YaraError> {
+        let mut results: Vec<Rule<'r>> = Vec::new();
+        let callback = |message: CallbackMsg<'r>| {
+            if let CallbackMsg::RuleMatching(rule) = message {
+                results.push(rule)
+            }
+            CallbackReturn::Continue
+        };
+        self.scan_mem_callback(mem, timeout, callback)
+            .map(|_| results)
+    }
+
+    /// Scan memory with custom callback
+    ///
+    /// Returns
+    ///
+    /// * `mem` - Slice to scan
+    /// * `timeout` - the timeout is in seconds
+    /// * `callback` - YARA callback mor read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    pub fn scan_mem_callback<'r>(
+        &self,
+        mem: &[u8],
+        timeout: u16,
+        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+    ) -> Result<(), YaraError> {
+        internals::rules_scan_mem(
+            self.inner,
+            mem,
+            i32::from(timeout),
+            self.flags as i32,
+            callback,
+        )
     }
 
     /// Scan a file.
     ///
     /// Return a `Vec` of matching rules.
+    ///
+    /// * `path` - Path to file
+    /// * `timeout` - the timeout is in seconds
     pub fn scan_file<'r, P: AsRef<Path>>(
         &self,
         path: P,
         timeout: u16,
     ) -> Result<Vec<Rule<'r>>, Error> {
+        let mut results: Vec<Rule> = Vec::new();
+        let callback = |message: CallbackMsg<'r>| {
+            if let CallbackMsg::RuleMatching(rule) = message {
+                results.push(rule)
+            }
+            CallbackReturn::Continue
+        };
+        self.scan_file_callback(path, timeout, callback)
+            .map(|_| results)
+    }
+
+    /// Scan file with custom callback
+    ///
+    /// Returns
+    ///
+    /// * `path` - Path to file
+    /// * `timeout` - the timeout is in seconds
+    /// * `callback` - YARA callback mor read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    pub fn scan_file_callback<'r, P: AsRef<Path>>(
+        &self,
+        path: P,
+        timeout: u16,
+        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+    ) -> Result<(), Error> {
         File::open(path)
             .map_err(|e| IoError::new(e, IoErrorKind::OpenScanFile).into())
             .and_then(|file| {
-                internals::rules_scan_file(self.inner, &file, i32::from(timeout), self.flags as i32)
-                    .map_err(|e| e.into())
+                internals::rules_scan_file(
+                    self.inner,
+                    &file,
+                    i32::from(timeout),
+                    self.flags as i32,
+                    callback,
+                )
+                .map_err(|e| e.into())
             })
     }
 
@@ -128,11 +192,48 @@ impl Rules {
     ///
     /// Return a `Vec` of matching rules.
     ///
+    /// * `pid` - Process id
+    /// * `timeout` - the timeout is in seconds
+    ///
     /// # Permissions
     ///
     /// You need to be able to attach to process `pid`.
     pub fn scan_process<'r>(&self, pid: u32, timeout: u16) -> Result<Vec<Rule<'r>>, YaraError> {
-        internals::rules_scan_proc(self.inner, pid, i32::from(timeout), self.flags as i32)
+        let mut results: Vec<Rule> = Vec::new();
+        let callback = |message| {
+            if let internals::CallbackMsg::RuleMatching(rule) = message {
+                results.push(rule)
+            }
+            internals::CallbackReturn::Continue
+        };
+        self.scan_process_callback(pid, timeout, callback)
+            .map(|_| results)
+    }
+
+    /// Attach a process, pause it, and scan its memory.
+    ///
+    /// Returns
+    ///
+    /// * `pid` - Process id
+    /// * `timeout` - the timeout is in seconds
+    /// * `callback` - YARA callback mor read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    ///
+    /// # Permissions
+    ///
+    /// You need to be able to attach to process `pid`.
+    pub fn scan_process_callback<'r>(
+        &self,
+        pid: u32,
+        timeout: u16,
+        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+    ) -> Result<(), YaraError> {
+        internals::rules_scan_proc(
+            self.inner,
+            pid,
+            i32::from(timeout),
+            self.flags as i32,
+            callback,
+        )
     }
 
     /// Save the rules to a file.
