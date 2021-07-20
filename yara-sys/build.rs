@@ -84,7 +84,7 @@ mod build {
         }
         if is_enable("YARA_ENABLE_DEX", true) {
             cc.define("DEX_MODULE", "1");
-            if std::env::var_os("YARA_ENABLE_DEX_DEBUG").is_some() {
+            if is_enable("YARA_ENABLE_DEX_DEBUG", false) {
                 cc.define("DEBUG_DEX_MODULE", "1");
             }
         } else {
