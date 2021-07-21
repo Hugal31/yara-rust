@@ -16,27 +16,20 @@ pub enum ConfigName {
     MaxMatchData,
 }
 
-impl ConfigName {
-    #[cfg(unix)]
-    pub fn to_yara(&self) -> u32 {
-        use self::ConfigName::*;
-        let res = match self {
-            StackSize => yara_sys::_YR_CONFIG_NAME_YR_CONFIG_STACK_SIZE,
-            MaxStringsPerRule => yara_sys::_YR_CONFIG_NAME_YR_CONFIG_MAX_STRINGS_PER_RULE,
-            MaxMatchData => yara_sys::_YR_CONFIG_NAME_YR_CONFIG_MAX_MATCH_DATA,
-        };
-        res as u32
-    }
+#[cfg(unix)]
+type EnumType = u32;
+#[cfg(windows)]
+type EnumType = i32;
 
-    #[cfg(windows)]
-    pub fn to_yara(&self) -> i32 {
+impl ConfigName {
+    pub fn to_yara(&self) -> EnumType {
         use self::ConfigName::*;
         let res = match self {
             StackSize => yara_sys::_YR_CONFIG_NAME_YR_CONFIG_STACK_SIZE,
             MaxStringsPerRule => yara_sys::_YR_CONFIG_NAME_YR_CONFIG_MAX_STRINGS_PER_RULE,
             MaxMatchData => yara_sys::_YR_CONFIG_NAME_YR_CONFIG_MAX_MATCH_DATA,
         };
-        res as i32
+        res as EnumType
     }
 }
 
@@ -45,7 +38,7 @@ pub fn set_configuration(name: ConfigName, value: u32) -> Result<(), YaraError> 
     let result = unsafe {
         yara_sys::yr_set_configuration(
             name.to_yara(),
-            Box::into_raw(Box::new(value)) as *mut c_void,
+            &value as *const u32 as *mut c_void,
         )
     };
 
