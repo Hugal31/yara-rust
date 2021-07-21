@@ -1,9 +1,11 @@
 use std::fs::File;
 use std::marker::PhantomData;
 use std::path::Path;
+
 pub use yara_sys::scan_flags::*;
 
-use crate::{compiler::CompilerVariableValue, errors::*, internals, rules::Rules, Rule};
+use crate::{compiler::CompilerVariableValue, errors::*, internals, Rule, rules::Rules};
+pub use crate::internals::{CallbackMsg, CallbackReturn};
 
 /// A wrapper around compiled [Rules], with its own set of external variables, flags and timeout.
 ///
@@ -131,7 +133,26 @@ impl<'rules> Scanner<'rules> {
             }
             internals::CallbackReturn::Continue
         };
-        internals::scanner_scan_mem(self.inner, mem, callback).map(|_| results)
+        self.scan_mem_callback(mem, callback).map(|_| results)
+    }
+
+    /// Scan memory with custom callback
+    ///
+    /// Returns
+    ///
+    /// * `mem` - Slice to scan
+    /// * `callback` - YARA callback mor read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    ///
+    /// # Ownership
+    ///
+    /// This funciton takes the Scanner as `&mut` because it modifies the
+    /// `scanner->callback` and `scanner->user_data`, which are not behind a Mutex.
+    pub fn scan_mem_callback<'r>(
+        &mut self,
+        mem: &[u8],
+        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+    ) -> Result<(), YaraError> {
+        internals::scanner_scan_mem(self.inner, mem, callback)
     }
 
     /// Scan a file.
@@ -142,20 +163,38 @@ impl<'rules> Scanner<'rules> {
     ///
     /// This function takes the Scanner as `&mut` because it modifies the
     /// `scanner->callback` and `scanner->user_data`, which are not behind a Mutex.
-    pub fn scan_file<'r, P: AsRef<Path>>(&self, path: P) -> Result<Vec<Rule<'r>>, Error> {
+    pub fn scan_file<'r, P: AsRef<Path>>(&mut self, path: P) -> Result<Vec<Rule<'r>>, Error> {
+        let mut results: Vec<Rule> = Vec::new();
+        let callback = |message| {
+            if let internals::CallbackMsg::RuleMatching(rule) = message {
+                results.push(rule)
+            }
+            internals::CallbackReturn::Continue
+        };
+
+        self.scan_file_callback(path, callback).map(|_| results)
+    }
+
+    /// Scan file with custom callback
+    ///
+    /// Returns
+    ///
+    /// * `path` - Path to file
+    /// * `callback` - YARA callback mor read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    ///
+    /// # Ownership
+    ///
+    /// This function takes the Scanner as `&mut` because it modifies the
+    /// `scanner->callback` and `scanner->user_data`, which are not behind a Mutex.
+    pub fn scan_file_callback<'r, P: AsRef<Path>>(
+        &mut self,
+        path: P,
+        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+    ) -> Result<(), Error> {
         File::open(path)
             .map_err(|e| IoError::new(e, IoErrorKind::OpenScanFile).into())
             .and_then(|file| {
-                let mut results: Vec<Rule> = Vec::new();
-                let callback = |message| {
-                    if let internals::CallbackMsg::RuleMatching(rule) = message {
-                        results.push(rule)
-                    }
-                    internals::CallbackReturn::Continue
-                };
-                internals::scanner_scan_file(self.inner, &file, callback)
-                    .map_err(|e| e.into())
-                    .map(|_| results)
+                internals::scanner_scan_file(self.inner, &file, callback).map_err(|e| e.into())
             })
     }
 
@@ -179,7 +218,30 @@ impl<'rules> Scanner<'rules> {
             }
             internals::CallbackReturn::Continue
         };
-        internals::scanner_scan_proc(self.inner, pid, callback).map(|_| results)
+        self.scan_process_callback(pid, callback).map(|_| results)
+    }
+
+    /// Attach a process, pause it, and scan its memory.
+    ///
+    /// Returns
+    ///
+    /// * `pid` - Process id
+    /// * `callback` - YARA callback mor read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    ///
+    /// # Permissions
+    ///
+    /// You need to be able to attach to process `pid`.
+    ///
+    /// # Ownership
+    ///
+    /// This function takes the Scanner as `&mut` because it modifies the
+    /// `scanner->callback` and `scanner->user_data`, which are not behind a Mutex.
+    pub fn scan_process_callback<'r>(
+        &mut self,
+        pid: u32,
+        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+    ) -> Result<(), YaraError> {
+        internals::scanner_scan_proc(self.inner, pid, callback)
     }
 
     /// Set the maximum number of seconds that the scanner will spend in any call
