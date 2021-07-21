@@ -17,13 +17,26 @@ pub enum ConfigName {
 }
 
 impl ConfigName {
+    #[cfg(unix)]
     pub fn to_yara(&self) -> u32 {
         use self::ConfigName::*;
-        match self {
+        let res = match self {
             StackSize => yara_sys::_YR_CONFIG_NAME_YR_CONFIG_STACK_SIZE,
             MaxStringsPerRule => yara_sys::_YR_CONFIG_NAME_YR_CONFIG_MAX_STRINGS_PER_RULE,
             MaxMatchData => yara_sys::_YR_CONFIG_NAME_YR_CONFIG_MAX_MATCH_DATA,
-        }
+        };
+        res as u32
+    }
+
+    #[cfg(windows)]
+    pub fn to_yara(&self) -> i32 {
+        use self::ConfigName::*;
+        let res = match self {
+            StackSize => yara_sys::_YR_CONFIG_NAME_YR_CONFIG_STACK_SIZE,
+            MaxStringsPerRule => yara_sys::_YR_CONFIG_NAME_YR_CONFIG_MAX_STRINGS_PER_RULE,
+            MaxMatchData => yara_sys::_YR_CONFIG_NAME_YR_CONFIG_MAX_MATCH_DATA,
+        };
+        res as i32
     }
 }
 

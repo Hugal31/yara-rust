@@ -3404,7 +3404,7 @@ pub const _YR_CONFIG_NAME_YR_CONFIG_STACK_SIZE: _YR_CONFIG_NAME = 0;
 pub const _YR_CONFIG_NAME_YR_CONFIG_MAX_STRINGS_PER_RULE: _YR_CONFIG_NAME = 1;
 pub const _YR_CONFIG_NAME_YR_CONFIG_MAX_MATCH_DATA: _YR_CONFIG_NAME = 2;
 pub const _YR_CONFIG_NAME_YR_CONFIG_LAST: _YR_CONFIG_NAME = 3;
-pub type _YR_CONFIG_NAME = ::std::os::raw::c_uint;
+pub type _YR_CONFIG_NAME = ::std::os::raw::c_int;
 pub use self::_YR_CONFIG_NAME as YR_CONFIG_NAME;
 extern "C" {
     pub fn yr_initialize() -> ::std::os::raw::c_int;
