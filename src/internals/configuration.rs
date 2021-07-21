@@ -1,4 +1,3 @@
-use std::alloc::{alloc, Layout};
 use std::ffi::c_void;
 
 use yara_sys;
@@ -42,13 +41,12 @@ pub fn set_configuration(name: ConfigName, value: u32) -> Result<(), YaraError> 
 }
 
 pub fn get_configuration(name: ConfigName) -> Result<u32, YaraError> {
-    let value = unsafe {
-        let layout = Layout::new::<u32>();
-        alloc(layout) as *mut u32
+    let value: u32 = 0;
+    let result = unsafe {
+        yara_sys::yr_get_configuration(name.to_yara(), &value as *const u32 as *mut c_void)
     };
-    let result = unsafe { yara_sys::yr_get_configuration(name.to_yara(), value as *mut c_void) };
 
     yara_sys::Error::from_code(result)
         .map_err(Into::into)
-        .map(|_| unsafe { *value })
+        .map(|_| value)
 }
