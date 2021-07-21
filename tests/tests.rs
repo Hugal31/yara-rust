@@ -1,9 +1,6 @@
 extern crate yara;
 
-use yara::{
-    get_configuration, set_configuration, CompileErrorLevel, Compiler, ConfigName, Error, Metadata,
-    MetadataValue, Rules, Yara,
-};
+use yara::{CompileErrorLevel, Compiler, ConfigName, Error, Metadata, MetadataValue, Rules, Yara};
 
 const RULES: &str = r#"
 rule is_awesome {
@@ -47,8 +44,9 @@ fn test_initialize() {
 
 #[test]
 fn test_configuration() {
-    assert_eq!(Ok(()), set_configuration(ConfigName::StackSize, 100));
-    assert_eq!(Ok(100), get_configuration(ConfigName::StackSize));
+    let yara = Yara::new().expect("Should be Ok");
+    assert_eq!(Ok(()), yara.set_configuration(ConfigName::StackSize, 100));
+    assert_eq!(Ok(100), yara.get_configuration(ConfigName::StackSize));
 }
 
 #[test]

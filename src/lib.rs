@@ -45,7 +45,8 @@
 //! [Yara-doc]: https://yara.readthedocs.io/en/stable/gettingstarted.html
 //! [polydet]: https://github.com/Polydet/polydet/
 
-pub use internals::{get_configuration, set_configuration, ConfigName};
+pub use internals::ConfigName;
+use internals::{get_configuration, set_configuration};
 
 pub use crate::compiler::Compiler;
 pub use crate::errors::*;
@@ -133,6 +134,16 @@ impl Yara {
     /// Create and initialize the library.
     pub fn new() -> Result<Yara, YaraError> {
         InitializationToken::new().map(|token| Yara { _token: token })
+    }
+
+    /// Set the configuration variable
+    pub fn set_configuration(&self, name: ConfigName, value: u32) -> Result<(), YaraError> {
+        set_configuration(name, value)
+    }
+
+    /// Get the configuration variable
+    pub fn get_configuration(&self, name: ConfigName) -> Result<u32, YaraError> {
+        get_configuration(name)
     }
 
     /// Create and initialize the library.

@@ -33,19 +33,14 @@ impl ConfigName {
     }
 }
 
-/// Set the configuration variable
 pub fn set_configuration(name: ConfigName, value: u32) -> Result<(), YaraError> {
     let result = unsafe {
-        yara_sys::yr_set_configuration(
-            name.to_yara(),
-            &value as *const u32 as *mut c_void,
-        )
+        yara_sys::yr_set_configuration(name.to_yara(), &value as *const u32 as *mut c_void)
     };
 
     yara_sys::Error::from_code(result).map_err(Into::into)
 }
 
-/// Get the configuration variable
 pub fn get_configuration(name: ConfigName) -> Result<u32, YaraError> {
     let value = unsafe {
         let layout = Layout::new::<u32>();
