@@ -77,7 +77,7 @@ mod build {
         if is_enable("YARA_ENABLE_HASH", false) {
             cc.define("HASH_MODULE", "1");
         } else {
-            exclude.push(basedir.join("libyara/module/hash/hash.c"));
+            exclude.push(basedir.join("libyara/modules/hash/hash.c"));
         }
         if is_enable("YARA_ENABLE_PROFILING", false) {
             cc.define("YR_PROFILING_ENABLED", "1");
