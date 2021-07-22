@@ -2732,13 +2732,20 @@ pub type size_t = ::std::os::raw::c_ulonglong;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _iobuf {
-    pub _Placeholder: *mut ::std::os::raw::c_void,
+    pub _ptr: *mut ::std::os::raw::c_char,
+    pub _cnt: ::std::os::raw::c_int,
+    pub _base: *mut ::std::os::raw::c_char,
+    pub _flag: ::std::os::raw::c_int,
+    pub _file: ::std::os::raw::c_int,
+    pub _charbuf: ::std::os::raw::c_int,
+    pub _bufsiz: ::std::os::raw::c_int,
+    pub _tmpfname: *mut ::std::os::raw::c_char,
 }
 #[test]
 fn bindgen_test_layout__iobuf() {
     assert_eq!(
         ::std::mem::size_of::<_iobuf>(),
-        8usize,
+        48usize,
         concat!("Size of: ", stringify!(_iobuf))
     );
     assert_eq!(
@@ -2747,13 +2754,83 @@ fn bindgen_test_layout__iobuf() {
         concat!("Alignment of ", stringify!(_iobuf))
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_iobuf>()))._Placeholder as *const _ as usize },
+        unsafe { &(*(::std::ptr::null::<_iobuf>()))._ptr as *const _ as usize },
         0usize,
         concat!(
             "Offset of field: ",
             stringify!(_iobuf),
             "::",
-            stringify!(_Placeholder)
+            stringify!(_ptr)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_iobuf>()))._cnt as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_iobuf),
+            "::",
+            stringify!(_cnt)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_iobuf>()))._base as *const _ as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_iobuf),
+            "::",
+            stringify!(_base)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_iobuf>()))._flag as *const _ as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_iobuf),
+            "::",
+            stringify!(_flag)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_iobuf>()))._file as *const _ as usize },
+        28usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_iobuf),
+            "::",
+            stringify!(_file)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_iobuf>()))._charbuf as *const _ as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_iobuf),
+            "::",
+            stringify!(_charbuf)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_iobuf>()))._bufsiz as *const _ as usize },
+        36usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_iobuf),
+            "::",
+            stringify!(_bufsiz)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_iobuf>()))._tmpfname as *const _ as usize },
+        40usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_iobuf),
+            "::",
+            stringify!(_tmpfname)
         )
     );
 }
@@ -5949,11 +6026,29 @@ extern "C" {
         rules: *mut *mut YR_RULES,
     ) -> ::std::os::raw::c_int;
 }
+pub const _YR_CONFIG_NAME_YR_CONFIG_STACK_SIZE: _YR_CONFIG_NAME = 0;
+pub const _YR_CONFIG_NAME_YR_CONFIG_MAX_STRINGS_PER_RULE: _YR_CONFIG_NAME = 1;
+pub const _YR_CONFIG_NAME_YR_CONFIG_MAX_MATCH_DATA: _YR_CONFIG_NAME = 2;
+pub const _YR_CONFIG_NAME_YR_CONFIG_LAST: _YR_CONFIG_NAME = 3;
+pub type _YR_CONFIG_NAME = ::std::os::raw::c_int;
+pub use self::_YR_CONFIG_NAME as YR_CONFIG_NAME;
 extern "C" {
     pub fn yr_initialize() -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn yr_finalize() -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_set_configuration(
+        arg1: YR_CONFIG_NAME,
+        arg2: *mut ::std::os::raw::c_void,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_get_configuration(
+        arg1: YR_CONFIG_NAME,
+        arg2: *mut ::std::os::raw::c_void,
+    ) -> ::std::os::raw::c_int;
 }
 pub type YR_SCANNER = YR_SCAN_CONTEXT;
 extern "C" {

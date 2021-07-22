@@ -322,7 +322,12 @@ mod test {
 
             let bytes = if cfg!(windows) {
                 // the string is in utf-16 format, filter out the zeroes.
-                string.matches[0].data.clone().into_iter().filter(|v| *v != 0).collect()
+                string.matches[0]
+                    .data
+                    .clone()
+                    .into_iter()
+                    .filter(|v| *v != 0)
+                    .collect()
             } else {
                 string.matches[0].data.clone()
             };
