@@ -4,8 +4,8 @@ use std::path::Path;
 
 pub use yara_sys::scan_flags::*;
 
-use crate::{compiler::CompilerVariableValue, errors::*, internals, Rule, rules::Rules};
 pub use crate::internals::{CallbackMsg, CallbackReturn};
+use crate::{compiler::CompilerVariableValue, errors::*, internals, rules::Rules, Rule};
 
 /// A wrapper around compiled [Rules], with its own set of external variables, flags and timeout.
 ///

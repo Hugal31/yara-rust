@@ -1,8 +1,8 @@
 extern crate yara;
 
 use yara::{
-    CallbackMsg, CallbackReturn, ConfigName, CompileErrorLevel, Compiler, Error, Metadata, MetadataValue,
-    Rules, Yara,
+    CallbackMsg, CallbackReturn, CompileErrorLevel, Compiler, ConfigName, Error, Metadata,
+    MetadataValue, Rules, Yara,
 };
 use yara_sys;
 
