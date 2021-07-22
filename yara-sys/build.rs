@@ -3,6 +3,8 @@
 fn main() {
     build::build_and_link();
     bindings::add_bindings();
+    println!("cargo:rustc-link-lib=dylib=ssl");
+    println!("cargo:rustc-link-lib=dylib=crypto");
 }
 
 #[cfg(feature = "vendored")]
@@ -10,6 +12,10 @@ mod build {
     use std::path::PathBuf;
 
     use globwalk;
+    #[cfg(unix)]
+    use std::os::unix::fs::symlink as symlink_dir;
+    #[cfg(windows)]
+    use std::os::windows::fs::symlink_dir;
 
     fn is_enable(env_var: &str, default: bool) -> bool {
          match std::env::var(env_var).ok().as_deref() {
@@ -20,11 +26,19 @@ mod build {
     }
 
     pub fn build_and_link() {
-        let basedir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("yara");
+        let old_basedir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("yara");
+        let out_dir = std::env::var("OUT_DIR").map(PathBuf::from).unwrap();
+        let basedir = out_dir.join("yara");
+        if !basedir.exists() {
+            symlink_dir(old_basedir, &basedir).unwrap();
+        }
 
         let mut cc = cc::Build::new();
         cc.include(basedir.join("libyara"))
-            .include(basedir.join("libyara/include"));
+            .include(basedir.join("libyara/include"))
+            .include(basedir.join("libyara/modules"))
+            .flag("-lcrypto")
+            .flag("-lssl");
 
         let mut exclude: Vec<PathBuf> = vec![
             basedir.join("libyara/modules/pb_tests/pb_tests.c"),
@@ -36,16 +50,19 @@ mod build {
         match std::env::var("CARGO_CFG_TARGET_OS").ok().unwrap().as_str() {
             "windows" => cc
                 .file(basedir.join("libyara/proc/windows.c"))
-                .define("USE_WINDOWS_PROC", ""),
-            "linux" => cc
-                .file(basedir.join("libyara/proc/linux.c"))
-                .define("USE_LINUX_PROC", ""),
+                .define("USE_WINDOWS_PROC", "")
+                .define("HAVE_WINCRYPT_H", ""),
+            "linux" => cc.
+                file(basedir.join("libyara/proc/linux.c"))
+                .define("USE_LINUX_PROC", "")
+                .define("HAVE_LIBCRYPTO", "1"),
             "macos" => cc
                 .file(basedir.join("libyara/proc/mach.c"))
                 .define("USE_MACH_PROC", ""),
             _ => cc
                 .file(basedir.join("libyara/proc/none.c"))
-                .define("USE_NO_PROC", ""),
+                .define("USE_NO_PROC", "")
+                .define("HAVE_COMMONCRYPTO_COMMONCRYPTO_H", ""),
         };
 
         if std::env::var("CARGO_CFG_TARGET_FAMILY")
@@ -58,11 +75,9 @@ mod build {
         };
 
         if is_enable("YARA_ENABLE_HASH", false) {
-            cc.define("HASH_MODULE", "1")
-                .define("HAVE_LIBCRYPTO", "1")
-                .flag("-lcrypto");
+            cc.define("HASH_MODULE", "1");
         } else {
-            exclude.push(basedir.join("libyara/modules/hash/hash.c"));
+            exclude.push(basedir.join("libyara/module/hash/hash.c"));
         }
         if is_enable("YARA_ENABLE_PROFILING", false) {
             cc.define("YR_PROFILING_ENABLED", "1");
@@ -124,12 +139,14 @@ mod build {
 
         cc.compile("yara");
 
-        let include_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("yara/libyara/include");
+        let include_dir = basedir.join("libyara/include");
+        let include_modules_dir = basedir.join("libyara/modules");
         let lib_dir = std::env::var("OUT_DIR").unwrap();
 
         println!("cargo:rustc-link-search=native={}", lib_dir);
         println!("cargo:rustc-link-lib=static=yara");
         println!("cargo:include={}", include_dir.display());
+        println!("cargo:include={}", include_modules_dir.display());
         println!("cargo:lib={}", lib_dir);
 
         // tell the add_bindings phase to generate bindings from `include_dir`.

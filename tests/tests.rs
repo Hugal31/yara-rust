@@ -7,6 +7,8 @@ use yara::{
 use yara_sys;
 
 const RULES: &str = r#"
+import "pe"
+
 rule is_awesome {
   strings:
     $rust = /[Rr]ust/
