@@ -1,0 +1,50 @@
+name: tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ ubuntu-20.04 ]
+        features: [ "vendored,bundled-4_1_1" ]
+        rust: [ stable, nightly ]
+        include:
+          - os: windows-2019
+            rust: stable
+            features: "vendored,bundled-4_1_1"
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install OpenSSL
+        if: ${{ matrix.os == 'windows-2019' }}
+        run: choco install openssl
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          override: true
+      - name: Test
+        uses: actions-rs/cargo@v1
+        if: ${{ matrix.os != 'windows-2019' }}
+        env:
+          YARA_ENABLE_HASH: 1
+        with:
+          command: test
+          toolchain: ${{ matrix.rust }}
+          args: --verbose --no-default-features --features ${{ matrix.features }}
+      - name: Test
+        uses: actions-rs/cargo@v1
+        if: ${{ matrix.os == 'windows-2019' }}
+        env:
+          YARA_ENABLE_HASH: 1
+          INCLUDE: C:\Program Files\OpenSSL-Win64\include
+          LIBRARY: C:\Program Files\OpenSSL-Win64\lib
+          LIB: C:\Program Files\OpenSSL-Win64\lib
+        with:
+          command: test
+          toolchain: ${{ matrix.rust }}
+          args: --verbose --no-default-features --features ${{ matrix.features }}

@@ -3,8 +3,6 @@
 fn main() {
     build::build_and_link();
     bindings::add_bindings();
-    println!("cargo:rustc-link-lib=dylib=ssl");
-    println!("cargo:rustc-link-lib=dylib=crypto");
 }
 
 #[cfg(feature = "vendored")]
@@ -12,17 +10,29 @@ mod build {
     use std::path::PathBuf;
 
     use globwalk;
+    use libloading::Library;
+    use std::env::consts::DLL_SUFFIX;
     #[cfg(unix)]
     use std::os::unix::fs::symlink as symlink_dir;
     #[cfg(windows)]
     use std::os::windows::fs::symlink_dir;
 
     fn is_enable(env_var: &str, default: bool) -> bool {
-         match std::env::var(env_var).ok().as_deref() {
-             Some("0") => false,
-             Some(_) => true,
-             None => default
-         }
+        match std::env::var(env_var).ok().as_deref() {
+            Some("0") => false,
+            Some(_) => true,
+            None => default,
+        }
+    }
+
+    fn add_library(cc: &mut cc::Build, library: &str) {
+        let tool = cc.try_get_compiler().unwrap();
+        if tool.is_like_msvc() {
+            cc.flag(&format!("{}.dll", library));
+        }
+        else {
+            cc.flag(&format!("-l{}", library));
+        }
     }
 
     pub fn build_and_link() {
@@ -32,37 +42,35 @@ mod build {
         if !basedir.exists() {
             symlink_dir(old_basedir, &basedir).unwrap();
         }
+        let basedir = basedir.join("libyara");
 
         let mut cc = cc::Build::new();
-        cc.include(basedir.join("libyara"))
-            .include(basedir.join("libyara/include"))
-            .include(basedir.join("libyara/modules"))
-            .flag("-lcrypto")
-            .flag("-lssl");
+        cc.include(&basedir)
+            .include(basedir.join("include"))
+            .include(basedir.join("modules"));
 
         let mut exclude: Vec<PathBuf> = vec![
-            basedir.join("libyara/modules/pb_tests/pb_tests.c"),
-            basedir.join("libyara/modules/pb_tests/pb_tests.pb-c.c"),
-            basedir.join("libyara/modules/demo/demo.c"),
+            basedir.join("modules").join("pb_tests").join("pb_tests.c"),
+            basedir.join("modules").join("pb_tests").join("pb_tests.pb-c.c"),
+            basedir.join("modules").join("demo").join("demo.c"),
         ];
 
         // Use correct proc functions
         match std::env::var("CARGO_CFG_TARGET_OS").ok().unwrap().as_str() {
             "windows" => cc
-                .file(basedir.join("libyara/proc/windows.c"))
+                .file(basedir.join("proc").join("windows.c"))
                 .define("USE_WINDOWS_PROC", "")
                 .define("HAVE_WINCRYPT_H", ""),
-            "linux" => cc.
-                file(basedir.join("libyara/proc/linux.c"))
-                .define("USE_LINUX_PROC", "")
-                .define("HAVE_LIBCRYPTO", "1"),
+            "linux" => cc
+                .file(basedir.join("proc").join("linux.c"))
+                .define("USE_LINUX_PROC", ""),
             "macos" => cc
-                .file(basedir.join("libyara/proc/mach.c"))
-                .define("USE_MACH_PROC", ""),
+                .file(basedir.join("proc").join("mach.c"))
+                .define("USE_MACH_PROC", "")
+                .define("HAVE_COMMONCRYPTO_COMMONCRYPTO_H", ""),
             _ => cc
                 .file(basedir.join("libyara/proc/none.c"))
-                .define("USE_NO_PROC", "")
-                .define("HAVE_COMMONCRYPTO_COMMONCRYPTO_H", ""),
+                .define("USE_NO_PROC", ""),
         };
 
         if std::env::var("CARGO_CFG_TARGET_FAMILY")
@@ -74,28 +82,56 @@ mod build {
             cc.define("POSIX", "");
         };
 
-        if is_enable("YARA_ENABLE_HASH", false) {
+        let load_result = unsafe { Library::new(format!("libcrypto{}", DLL_SUFFIX)) };
+        if load_result.is_ok() {
+            cc.define("HAVE_LIBCRYPTO", "1");
+            let tool = cc.get_compiler();
+            if tool.is_like_msvc() {
+                cc.flag("libcrypto.dll")
+                    .flag("libssl.dll");
+                println!("cargo:rustc-link-lib=dylib=libssl");
+                println!("cargo:rustc-link-lib=dylib=libcrypto");
+            }
+            else {
+                cc.flag("-lcrypto")
+                    .flag("-lssl");
+                println!("cargo:rustc-link-lib=dylib=ssl");
+                println!("cargo:rustc-link-lib=dylib=crypto");
+            }
+        }
+
+        if is_enable("YARA_ENABLE_CRYPTO", true) {
+            if let Err(err) = load_result {
+                println!("cargo:warning={}", "Please install OpenSSL library");
+                println!("cargo:warning={:?}", err);
+                std::process::exit(1);
+            }
+        }
+
+        if is_enable("YARA_ENABLE_HASH", false) && load_result.is_ok() {
             cc.define("HASH_MODULE", "1");
         } else {
-            exclude.push(basedir.join("libyara/modules/hash/hash.c"));
+            exclude.push(basedir.join("modules").join("hash").join("hash.c"));
         }
         if is_enable("YARA_ENABLE_PROFILING", false) {
             cc.define("YR_PROFILING_ENABLED", "1");
         }
         if is_enable("YARA_ENABLE_MAGIC", false) {
-            cc.define("MAGIC_MODULE", "1").flag("-lmagic");
+            add_library(&mut cc, "magic");
+            cc.define("MAGIC_MODULE", "1");
         } else {
-            exclude.push(basedir.join("libyara/modules/magic/magic.c"));
+            exclude.push(basedir.join("modules").join("magic").join("magic.c"));
         }
         if is_enable("YARA_ENABLE_CUCKOO", false) {
-            cc.define("CUCKOO_MODULE", "1").flag("-ljansson");
+            add_library(&mut cc, "jansson");
+            cc.define("CUCKOO_MODULE", "1");
         } else {
-            exclude.push(basedir.join("libyara/modules/cuckoo/cuckoo.c"));
+            exclude.push(basedir.join("modules").join("cuckoo").join("cuckoo.c"));
         }
         if is_enable("YARA_ENABLE_DOTNET", true) {
             cc.define("DOTNET", "1");
         } else {
-            exclude.push(basedir.join("libyara/modules/dotnet/dotnet.c"));
+            exclude.push(basedir.join("modules").join("dotnet").join("dotnet.c"));
         }
         if is_enable("YARA_ENABLE_DEX", true) {
             cc.define("DEX_MODULE", "1");
@@ -103,19 +139,19 @@ mod build {
                 cc.define("DEBUG_DEX_MODULE", "1");
             }
         } else {
-            exclude.push(basedir.join("libyara/modules/dex/dex.c"));
+            exclude.push(basedir.join("modules").join("dex").join("dex.c"));
         }
         if is_enable("YARA_ENABLE_MACHO", true) {
             cc.define("MACHO_MODULE", "1");
         } else {
-            exclude.push(basedir.join("libyara/modules/macho/macho.c"));
+            exclude.push(basedir.join("modules").join("macho").join("macho.c"));
         }
         if is_enable("YARA_ENABLE_NDEBUG", true) {
             cc.define("NDEBUG", "1");
         }
 
         let walker = globwalk::GlobWalkerBuilder::from_patterns(
-            basedir.join("libyara"),
+            &basedir,
             &["**/*.c", "!proc/*"],
         )
         .build()
@@ -139,14 +175,12 @@ mod build {
 
         cc.compile("yara");
 
-        let include_dir = basedir.join("libyara/include");
-        let include_modules_dir = basedir.join("libyara/modules");
+        let include_dir = basedir.join("include");
         let lib_dir = std::env::var("OUT_DIR").unwrap();
 
         println!("cargo:rustc-link-search=native={}", lib_dir);
         println!("cargo:rustc-link-lib=static=yara");
         println!("cargo:include={}", include_dir.display());
-        println!("cargo:include={}", include_modules_dir.display());
         println!("cargo:lib={}", lib_dir);
 
         // tell the add_bindings phase to generate bindings from `include_dir`.

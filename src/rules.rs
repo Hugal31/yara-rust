@@ -123,7 +123,7 @@ impl Rules {
     ///
     /// * `mem` - Slice to scan
     /// * `timeout` - the timeout is in seconds
-    /// * `callback` - YARA callback mor read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
     pub fn scan_mem_callback<'r>(
         &self,
         mem: &[u8],
@@ -167,7 +167,7 @@ impl Rules {
     ///
     /// * `path` - Path to file
     /// * `timeout` - the timeout is in seconds
-    /// * `callback` - YARA callback mor read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
     pub fn scan_file_callback<'r, P: AsRef<Path>>(
         &self,
         path: P,
@@ -216,7 +216,7 @@ impl Rules {
     ///
     /// * `pid` - Process id
     /// * `timeout` - the timeout is in seconds
-    /// * `callback` - YARA callback mor read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
     ///
     /// # Permissions
     ///
