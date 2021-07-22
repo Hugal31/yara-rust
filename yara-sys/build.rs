@@ -10,18 +10,18 @@ mod build {
     use std::path::PathBuf;
 
     use globwalk;
+    use libloading::{library_filename, Library};
     #[cfg(unix)]
     use std::os::unix::fs::symlink as symlink_dir;
     #[cfg(windows)]
     use std::os::windows::fs::symlink_dir;
-    use libloading::{Library, library_filename};
 
     fn is_enable(env_var: &str, default: bool) -> bool {
-         match std::env::var(env_var).ok().as_deref() {
-             Some("0") => false,
-             Some(_) => true,
-             None => default
-         }
+        match std::env::var(env_var).ok().as_deref() {
+            Some("0") => false,
+            Some(_) => true,
+            None => default,
+        }
     }
 
     pub fn build_and_link() {
@@ -49,8 +49,8 @@ mod build {
                 .file(basedir.join("libyara/proc/windows.c"))
                 .define("USE_WINDOWS_PROC", "")
                 .define("HAVE_WINCRYPT_H", ""),
-            "linux" => cc.
-                file(basedir.join("libyara/proc/linux.c"))
+            "linux" => cc
+                .file(basedir.join("libyara/proc/linux.c"))
                 .define("USE_LINUX_PROC", ""),
             "macos" => cc
                 .file(basedir.join("libyara/proc/mach.c"))
@@ -70,10 +70,11 @@ mod build {
             cc.define("POSIX", "");
         };
 
-        let mut has_openssl = false;
-        if unsafe { Library::new(library_filename("crypto")).is_ok() } {
-            has_openssl = true;
-            cc.flag("-lcrypto").flag("-lssl").define("HAVE_LIBCRYPTO", "1");
+        let has_openssl = unsafe { Library::new(library_filename("crypto")).is_ok() };
+        if has_openssl {
+            cc.flag("-lcrypto")
+                .flag("-lssl")
+                .define("HAVE_LIBCRYPTO", "1");
             println!("cargo:rustc-link-lib=dylib=ssl");
             println!("cargo:rustc-link-lib=dylib=crypto");
         }
