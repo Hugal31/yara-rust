@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.8.0](https://github.com/Hugal31/yara-rust/compare/v0.7.0...v0.8.0) (2021-07-22)
+
+### Features
+
+* add compile options ([6d40365](https://github.com/Hugal31/yara-rust/commit/6d403653f6cf4551ac2530e11309b27c271c3445))
+* add set and get configuration ([967b23a](https://github.com/Hugal31/yara-rust/commit/967b23a81c61ce7c60b284feb216ab1826853be6))
+* add callback API into Rules and Scanner ([562ec2c](https://github.com/Hugal31/yara-rust/commit/562ec2caf43168d38d59b91b48dcfc8e4f5977c7))
+
 ## [0.7.0](https://github.com/Hugal31/yara-rust/compare/v0.6.1...v0.7.0) (2021-07-13)
 
 ### Features
