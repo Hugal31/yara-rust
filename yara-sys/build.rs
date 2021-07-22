@@ -3,8 +3,6 @@
 fn main() {
     build::build_and_link();
     bindings::add_bindings();
-    println!("cargo:rustc-link-lib=dylib=ssl");
-    println!("cargo:rustc-link-lib=dylib=crypto");
 }
 
 #[cfg(feature = "vendored")]
@@ -16,6 +14,7 @@ mod build {
     use std::os::unix::fs::symlink as symlink_dir;
     #[cfg(windows)]
     use std::os::windows::fs::symlink_dir;
+    use libloading::{Library, library_filename};
 
     fn is_enable(env_var: &str, default: bool) -> bool {
          match std::env::var(env_var).ok().as_deref() {
@@ -36,9 +35,7 @@ mod build {
         let mut cc = cc::Build::new();
         cc.include(basedir.join("libyara"))
             .include(basedir.join("libyara/include"))
-            .include(basedir.join("libyara/modules"))
-            .flag("-lcrypto")
-            .flag("-lssl");
+            .include(basedir.join("libyara/modules"));
 
         let mut exclude: Vec<PathBuf> = vec![
             basedir.join("libyara/modules/pb_tests/pb_tests.c"),
@@ -54,8 +51,7 @@ mod build {
                 .define("HAVE_WINCRYPT_H", ""),
             "linux" => cc.
                 file(basedir.join("libyara/proc/linux.c"))
-                .define("USE_LINUX_PROC", "")
-                .define("HAVE_LIBCRYPTO", "1"),
+                .define("USE_LINUX_PROC", ""),
             "macos" => cc
                 .file(basedir.join("libyara/proc/mach.c"))
                 .define("USE_MACH_PROC", ""),
@@ -74,7 +70,20 @@ mod build {
             cc.define("POSIX", "");
         };
 
-        if is_enable("YARA_ENABLE_HASH", false) {
+        let mut has_openssl = false;
+        if unsafe { Library::new(library_filename("crypto")).is_ok() } {
+            has_openssl = true;
+            cc.flag("-lcrypto").flag("-lssl").define("HAVE_LIBCRYPTO", "1");
+            println!("cargo:rustc-link-lib=dylib=ssl");
+            println!("cargo:rustc-link-lib=dylib=crypto");
+        }
+
+        if is_enable("YARA_ENABLE_CRYPTO", true) && !has_openssl {
+            println!("cargo:warning={}", "Please install OpenSSL library");
+            std::process::exit(1);
+        }
+
+        if is_enable("YARA_ENABLE_HASH", false) && has_openssl {
             cc.define("HASH_MODULE", "1");
         } else {
             exclude.push(basedir.join("libyara/modules/hash/hash.c"));
