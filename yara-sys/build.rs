@@ -149,13 +149,11 @@ mod build {
         cc.compile("yara");
 
         let include_dir = basedir.join("libyara/include");
-        let include_modules_dir = basedir.join("libyara/modules");
         let lib_dir = std::env::var("OUT_DIR").unwrap();
 
         println!("cargo:rustc-link-search=native={}", lib_dir);
         println!("cargo:rustc-link-lib=static=yara");
         println!("cargo:include={}", include_dir.display());
-        println!("cargo:include={}", include_modules_dir.display());
         println!("cargo:lib={}", lib_dir);
 
         // tell the add_bindings phase to generate bindings from `include_dir`.
