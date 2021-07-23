@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ ubuntu-18.04, macos-10.15]
+        os: [ ubuntu-20.04 ]
         features: [ "vendored,bindgen", "vendored,bundled-4_1_1" ]
         rust: [ stable, nightly ]
         include:
