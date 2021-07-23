@@ -14,10 +14,10 @@ jobs:
         features: [ "vendored,bindgen", "vendored,bundled-4_1_1" ]
         rust: [ stable, nightly ]
         include:
-          - os: windows-2016
+          - os: windows-2019
             rust: stable
             features: "vendored,bindgen"
-          - os: windows-2016
+          - os: windows-2019
             rust: stable
             features: "vendored,bundled-4_1_1"
 
@@ -29,11 +29,6 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
-      - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --verbose --no-default-features --features ${{ matrix.features }}
       - name: Test
         uses: actions-rs/cargo@v1
         with:
