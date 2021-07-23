@@ -1,0 +1,43 @@
+name: tests
+
+on: [push, pull_request]
+env:
+  MAKEFLAGS: "-j 2"
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ ubuntu-18.04, macos-10.15]
+        features: [ vendored,bindgen, vendored,bundled-4_1_1 ]
+        rust: [ stable, nightly ]
+        include:
+          - os: windows-2016
+            rust: stable
+            features: vendored,bindgen
+          - os: windows-2016
+            rust: stable
+            features: vendored,bundled-4_1_1
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust}
+      - name: Build
+        uses: actions-rs/cargo@v1
+        env:
+          YARA_FEATURES: ${{ matrix.env }}
+        with:
+          command: build
+          args: --verbose --no-default-features --features "$YARA_FEATURES"
+      - name: Test
+        uses: actions-rs/cargo@v1
+        env:
+          YARA_FEATURES: ${{ matrix.env }}
+        with:
+          command: test
+          args: --verbose --no-default-features --features "$YARA_FEATURES"
