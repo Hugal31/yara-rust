@@ -70,7 +70,7 @@ mod build {
             cc.define("POSIX", "");
         };
 
-        let has_openssl = unsafe { Library::new(library_filename("crypto")).is_ok() };
+        let load_result = unsafe { Library::new(library_filename("crypto")) };
         if has_openssl {
             cc.flag("-lcrypto")
                 .flag("-lssl")
@@ -79,12 +79,15 @@ mod build {
             println!("cargo:rustc-link-lib=dylib=crypto");
         }
 
-        if is_enable("YARA_ENABLE_CRYPTO", true) && !has_openssl {
-            println!("cargo:warning={}", "Please install OpenSSL library");
-            std::process::exit(1);
+        if is_enable("YARA_ENABLE_CRYPTO", true) {
+            if let Err(e) = load_result {
+                println!("cargo:warning={}", "Please install OpenSSL library");
+                println!("cargo:warning={:?}", load_result.err());
+                std::process::exit(1);
+            }
         }
 
-        if is_enable("YARA_ENABLE_HASH", false) && has_openssl {
+        if is_enable("YARA_ENABLE_HASH", false) && load_result.is_ok() {
             cc.define("HASH_MODULE", "1");
         } else {
             exclude.push(basedir.join("libyara/modules/hash/hash.c"));
