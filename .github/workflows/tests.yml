@@ -1,9 +1,6 @@
 name: tests
 
 on: [push, pull_request]
-env:
-  MAKEFLAGS: "-j 2"
-  YARA_ENABLE_HASH: 1
 
 jobs:
   tests:
@@ -14,29 +11,30 @@ jobs:
         os: [ ubuntu-20.04 ]
         features: [ "vendored,bindgen", "vendored,bundled-4_1_1" ]
         rust: [ stable, nightly ]
-        target: [ "x86_64-unknown-linux-gnu" ]
         include:
           - os: windows-2019
             rust: stable
             features: "vendored,bindgen"
-            target: "x86_64-pc-windows-gnu"
           - os: windows-2019
             rust: stable
             features: "vendored,bundled-4_1_1"
-            target: "x86_64-pc-windows-gnu"
 
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
+      - name: Install OpenSSL
+        if: ${{ matrix.os == 'windows-2019' }}
+        run: pacman -S mingw-w64-x86_64-openssl
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
-          target: x86_64-pc-windows-gnu
       - name: Test
         uses: actions-rs/cargo@v1
+        env:
+          YARA_ENABLE_HASH: 1
         with:
           command: test
           toolchain: ${{ matrix.rust }}
-          args: --verbose --no-default-features --features ${{ matrix.features }} --target ${{ matrix.target }}
+          args: --verbose --no-default-features --features ${{ matrix.features }}
