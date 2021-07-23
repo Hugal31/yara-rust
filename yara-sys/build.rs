@@ -34,7 +34,7 @@ mod build {
         }
 
         let mut cc = cc::Build::new();
-        cc.compiler("cc")
+        cc.compiler("gcc")
             .include(basedir.join("libyara"))
             .include(basedir.join("libyara/include"))
             .include(basedir.join("libyara/modules"));
