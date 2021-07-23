@@ -29,15 +29,11 @@ jobs:
           toolchain: ${{ matrix.rust }}
       - name: Build
         uses: actions-rs/cargo@v1
-        env:
-          YARA_FEATURES: ${{ matrix.env }}
         with:
           command: build
-          args: --verbose --no-default-features --features "$YARA_FEATURES"
+          args: --verbose --no-default-features --features ${{ matrix.features }}
       - name: Test
         uses: actions-rs/cargo@v1
-        env:
-          YARA_FEATURES: ${{ matrix.env }}
         with:
           command: test
-          args: --verbose --no-default-features --features "$YARA_FEATURES"
+          args: --verbose --no-default-features --features ${{ matrix.features }}
