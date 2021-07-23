@@ -25,7 +25,11 @@ jobs:
           submodules: true
       - name: Install OpenSSL
         if: ${{ matrix.os == 'windows-2019' }}
-        run: C:\msys64\pacman -S mingw-w64-x86_64-openssl
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: mingw-w64-x86_64-openssl
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
         with:
