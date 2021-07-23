@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-20.04 ]
-        features: [ "vendored,bundled-4_1_1" ]
+        features: [ "vendored,bindgen", "vendored,bundled-4_1_1" ]
         rust: [ stable, nightly ]
         include:
           - os: windows-2019

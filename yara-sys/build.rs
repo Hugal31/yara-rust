@@ -25,16 +25,6 @@ mod build {
         }
     }
 
-    fn add_library(cc: &mut cc::Build, library: &str) {
-        let tool = cc.try_get_compiler().unwrap();
-        if tool.is_like_msvc() {
-            cc.flag(&format!("{}.dll", library));
-        }
-        else {
-            cc.flag(&format!("-l{}", library));
-        }
-    }
-
     pub fn build_and_link() {
         let old_basedir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("yara");
         let out_dir = std::env::var("OUT_DIR").map(PathBuf::from).unwrap();
@@ -51,7 +41,10 @@ mod build {
 
         let mut exclude: Vec<PathBuf> = vec![
             basedir.join("modules").join("pb_tests").join("pb_tests.c"),
-            basedir.join("modules").join("pb_tests").join("pb_tests.pb-c.c"),
+            basedir
+                .join("modules")
+                .join("pb_tests")
+                .join("pb_tests.pb-c.c"),
             basedir.join("modules").join("demo").join("demo.c"),
         ];
 
@@ -87,14 +80,10 @@ mod build {
             cc.define("HAVE_LIBCRYPTO", "1");
             let tool = cc.get_compiler();
             if tool.is_like_msvc() {
-                cc.flag("libcrypto.dll")
-                    .flag("libssl.dll");
                 println!("cargo:rustc-link-lib=dylib=libssl");
                 println!("cargo:rustc-link-lib=dylib=libcrypto");
-            }
-            else {
-                cc.flag("-lcrypto")
-                    .flag("-lssl");
+            } else {
+                cc.flag("-lcrypto").flag("-lssl");
                 println!("cargo:rustc-link-lib=dylib=ssl");
                 println!("cargo:rustc-link-lib=dylib=crypto");
             }
@@ -117,14 +106,12 @@ mod build {
             cc.define("YR_PROFILING_ENABLED", "1");
         }
         if is_enable("YARA_ENABLE_MAGIC", false) {
-            add_library(&mut cc, "magic");
-            cc.define("MAGIC_MODULE", "1");
+            cc.flag("-lmagic").define("MAGIC_MODULE", "1");
         } else {
             exclude.push(basedir.join("modules").join("magic").join("magic.c"));
         }
         if is_enable("YARA_ENABLE_CUCKOO", false) {
-            add_library(&mut cc, "jansson");
-            cc.define("CUCKOO_MODULE", "1");
+            cc.flag("-ljansson").define("CUCKOO_MODULE", "1");
         } else {
             exclude.push(basedir.join("modules").join("cuckoo").join("cuckoo.c"));
         }
@@ -150,15 +137,12 @@ mod build {
             cc.define("NDEBUG", "1");
         }
 
-        let walker = globwalk::GlobWalkerBuilder::from_patterns(
-            &basedir,
-            &["**/*.c", "!proc/*"],
-        )
-        .build()
-        .unwrap()
-        .into_iter()
-        .filter_map(Result::ok)
-        .filter(|e| !exclude.contains(&e.path().to_path_buf()));
+        let walker = globwalk::GlobWalkerBuilder::from_patterns(&basedir, &["**/*.c", "!proc/*"])
+            .build()
+            .unwrap()
+            .into_iter()
+            .filter_map(Result::ok)
+            .filter(|e| !exclude.contains(&e.path().to_path_buf()));
         for entry in walker {
             cc.file(entry.path());
         }
