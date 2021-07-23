@@ -10,7 +10,8 @@ mod build {
     use std::path::PathBuf;
 
     use globwalk;
-    use libloading::{library_filename, Library};
+    use libloading::Library;
+    use std::env::consts::DLL_SUFFIX;
     #[cfg(unix)]
     use std::os::unix::fs::symlink as symlink_dir;
     #[cfg(windows)]
@@ -70,7 +71,7 @@ mod build {
             cc.define("POSIX", "");
         };
 
-        let load_result = unsafe { Library::new(library_filename("crypto")) };
+        let load_result = unsafe { Library::new(format!("libcrypto{}", DLL_SUFFIX)) };
         if load_result.is_ok() {
             cc.flag("-lcrypto")
                 .flag("-lssl")
