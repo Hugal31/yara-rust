@@ -71,7 +71,7 @@ mod build {
         };
 
         let load_result = unsafe { Library::new(library_filename("crypto")) };
-        if has_openssl {
+        if load_result.is_ok() {
             cc.flag("-lcrypto")
                 .flag("-lssl")
                 .define("HAVE_LIBCRYPTO", "1");
@@ -80,9 +80,9 @@ mod build {
         }
 
         if is_enable("YARA_ENABLE_CRYPTO", true) {
-            if let Err(e) = load_result {
+            if let Err(err) = load_result {
                 println!("cargo:warning={}", "Please install OpenSSL library");
-                println!("cargo:warning={:?}", load_result.err());
+                println!("cargo:warning={:?}", err);
                 std::process::exit(1);
             }
         }
