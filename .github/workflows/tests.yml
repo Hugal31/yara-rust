@@ -26,7 +26,7 @@ jobs:
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: ${{ matrix.rust}
+          toolchain: ${{ matrix.rust }}
       - name: Build
         uses: actions-rs/cargo@v1
         env:
