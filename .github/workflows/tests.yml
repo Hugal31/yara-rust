@@ -40,7 +40,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
         - name: Install OpenSSL
-          if: ${{ matrix.openssl == "on" }}
+          if: ${{ matrix.openssl == 'on' }}
           run: choco install openssl
         - uses: actions/checkout@v2
           with:
@@ -51,7 +51,7 @@ jobs:
             toolchain: ${{ matrix.rust }}
             override: true
         - name: Test
-          if: ${{ matrix.openssl == "on" }}
+          if: ${{ matrix.openssl == 'on' }}
           uses: actions-rs/cargo@v1
           env:
             YARA_ENABLE_HASH: 1
@@ -63,7 +63,7 @@ jobs:
             toolchain: ${{ matrix.rust }}
             args: --verbose --no-default-features --features ${{ matrix.features }}
         - name: Test
-          if: ${{ matrix.openssl == "off" }}
+          if: ${{ matrix.openssl == 'off' }}
           uses: actions-rs/cargo@v1
           with:
             command: test
