@@ -78,12 +78,15 @@ mod build {
         let load_result = unsafe { Library::new(format!("libcrypto{}", DLL_SUFFIX)) };
         if load_result.is_ok() {
             cc.define("HAVE_LIBCRYPTO", "1");
-            let tool = cc.get_compiler();
-            if tool.is_like_msvc() {
+            if std::env::var("CARGO_CFG_TARGET_FAMILY")
+                .ok()
+                .unwrap()
+                .as_str()
+                == "windows"
+            {
                 println!("cargo:rustc-link-lib=dylib=libssl");
                 println!("cargo:rustc-link-lib=dylib=libcrypto");
             } else {
-                cc.flag("-lcrypto").flag("-lssl");
                 println!("cargo:rustc-link-lib=dylib=ssl");
                 println!("cargo:rustc-link-lib=dylib=crypto");
             }
@@ -106,12 +109,14 @@ mod build {
             cc.define("YR_PROFILING_ENABLED", "1");
         }
         if is_enable("YARA_ENABLE_MAGIC", false) {
-            cc.flag("-lmagic").define("MAGIC_MODULE", "1");
+            cc.define("MAGIC_MODULE", "1");
+            println!("cargo:rustc-link-lib=dylib=magic");
         } else {
             exclude.push(basedir.join("modules").join("magic").join("magic.c"));
         }
         if is_enable("YARA_ENABLE_CUCKOO", false) {
-            cc.flag("-ljansson").define("CUCKOO_MODULE", "1");
+            cc.define("CUCKOO_MODULE", "1");
+            println!("cargo:rustc-link-lib=dylib=jansson");
         } else {
             exclude.push(basedir.join("modules").join("cuckoo").join("cuckoo.c"));
         }
