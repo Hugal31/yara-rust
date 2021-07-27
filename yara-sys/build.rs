@@ -75,32 +75,33 @@ mod build {
             cc.define("POSIX", "");
         };
 
-        let load_result = unsafe { Library::new(format!("libcrypto{}", DLL_SUFFIX)) };
-        if load_result.is_ok() {
-            cc.define("HAVE_LIBCRYPTO", "1");
-            if std::env::var("CARGO_CFG_TARGET_FAMILY")
-                .ok()
-                .unwrap()
-                .as_str()
-                == "windows"
-            {
-                println!("cargo:rustc-link-lib=dylib=libssl");
-                println!("cargo:rustc-link-lib=dylib=libcrypto");
-            } else {
-                println!("cargo:rustc-link-lib=dylib=ssl");
-                println!("cargo:rustc-link-lib=dylib=crypto");
-            }
-        }
-
+        let mut enable_crypto = false;
         if is_enable("YARA_ENABLE_CRYPTO", true) {
+            let load_result = unsafe { Library::new(format!("libcrypto{}", DLL_SUFFIX)) };
             if let Err(err) = load_result {
                 println!("cargo:warning={}", "Please install OpenSSL library");
                 println!("cargo:warning={:?}", err);
                 std::process::exit(1);
             }
+            else {
+                enable_crypto = true;
+                cc.define("HAVE_LIBCRYPTO", "1");
+                if std::env::var("CARGO_CFG_TARGET_FAMILY")
+                    .ok()
+                    .unwrap()
+                    .as_str()
+                    == "windows"
+                {
+                    println!("cargo:rustc-link-lib=dylib=libssl");
+                    println!("cargo:rustc-link-lib=dylib=libcrypto");
+                } else {
+                    println!("cargo:rustc-link-lib=dylib=ssl");
+                    println!("cargo:rustc-link-lib=dylib=crypto");
+                }
+            }
         }
 
-        if is_enable("YARA_ENABLE_HASH", false) && load_result.is_ok() {
+        if is_enable("YARA_ENABLE_HASH", false) && enable_crypto {
             cc.define("HASH_MODULE", "1");
         } else {
             exclude.push(basedir.join("modules").join("hash").join("hash.c"));
