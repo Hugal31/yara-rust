@@ -33,7 +33,7 @@ jobs:
     strategy:
       matrix:
         os: [ windows-2019 ]
-        features: [ "vendored,bindgen", "vendored,bundled-4_1_1" ]
+        features: [ "vendored,bundled-4_1_1" ]
         rust: [ stable ]
         openssl: [ "on", "off" ]
 
