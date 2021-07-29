@@ -93,6 +93,13 @@ fn test_compile_file_rules() {
 }
 
 #[test]
+fn test_compile_fd_rules() {
+    let mut compiler = Compiler::new().unwrap();
+    let file = std::fs::File::open("tests/rules.txt").unwrap();
+    assert!(compiler.add_rules_fd(&file, "tests/rules.txt").is_ok());
+}
+
+#[test]
 fn test_scan_mem() {
     let rules = get_default_rules();
     let result = rules.scan_mem("I love Rust!".as_bytes(), 10);
@@ -135,13 +142,18 @@ fn test_scan_mem_callback_error<'r>() {
 
 #[test]
 fn test_scan_file() {
-    let mut compiler = Compiler::new().unwrap();
-    compiler.add_rules_str(RULES).expect("Should be Ok");
-    let rules = compiler.compile_rules().unwrap();
-
+    let rules = get_default_rules();
     let result = rules
         .scan_file("tests/scanfile.txt", 10)
         .expect("Should have scanned file");
+    assert_eq!(1, result.len());
+}
+
+#[test]
+fn test_scan_fd() {
+    let rules = get_default_rules();
+    let file = std::fs::File::open("tests/scanfile.txt").unwrap();
+    let result = rules.scan_fd(&file, 10).expect("Should have scanned file");
     assert_eq!(1, result.len());
 }
 

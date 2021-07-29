@@ -123,7 +123,7 @@ impl Rules {
     ///
     /// * `mem` - Slice to scan
     /// * `timeout` - the timeout is in seconds
-    /// * `callback` - YARA callback mor read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
     pub fn scan_mem_callback<'r>(
         &self,
         mem: &[u8],
@@ -167,7 +167,7 @@ impl Rules {
     ///
     /// * `path` - Path to file
     /// * `timeout` - the timeout is in seconds
-    /// * `callback` - YARA callback mor read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
     pub fn scan_file_callback<'r, P: AsRef<Path>>(
         &self,
         path: P,
@@ -216,7 +216,7 @@ impl Rules {
     ///
     /// * `pid` - Process id
     /// * `timeout` - the timeout is in seconds
-    /// * `callback` - YARA callback mor read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
     ///
     /// # Permissions
     ///
@@ -234,6 +234,47 @@ impl Rules {
             self.flags as i32,
             callback,
         )
+    }
+
+    /// Scan a opened file.
+    ///
+    /// Return a `Vec` of matching rules.
+    ///
+    /// * `file` - [File](std::fs::File)
+    /// * `timeout` - the timeout is in seconds
+    pub fn scan_fd<'r>(&self, file: &File, timeout: u16) -> Result<Vec<Rule<'r>>, Error> {
+        let mut results: Vec<Rule> = Vec::new();
+        let callback = |message: CallbackMsg<'r>| {
+            if let CallbackMsg::RuleMatching(rule) = message {
+                results.push(rule)
+            }
+            CallbackReturn::Continue
+        };
+        self.scan_fd_callback(file, timeout, callback)
+            .map(|_| results)
+    }
+
+    /// Scan a opened file with custom callback
+    ///
+    /// Returns
+    ///
+    /// * `file` - [File](std::fs::File)
+    /// * `timeout` - the timeout is in seconds
+    /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    pub fn scan_fd_callback<'r>(
+        &self,
+        file: &File,
+        timeout: u16,
+        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+    ) -> Result<(), Error> {
+        internals::rules_scan_file(
+            self.inner,
+            file,
+            i32::from(timeout),
+            self.flags as i32,
+            callback,
+        )
+        .map_err(|e| e.into())
     }
 
     /// Save the rules to a file.

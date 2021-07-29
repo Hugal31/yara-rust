@@ -244,6 +244,36 @@ impl<'rules> Scanner<'rules> {
         internals::scanner_scan_proc(self.inner, pid, callback)
     }
 
+    /// Scan a opened file.
+    ///
+    /// Return a `Vec` of matching rules.
+    ///
+    /// * `file` - [File](std::fs::File)
+    pub fn scan_fd<'r>(&self, file: &File) -> Result<Vec<Rule<'r>>, Error> {
+        let mut results: Vec<Rule> = Vec::new();
+        let callback = |message: CallbackMsg<'r>| {
+            if let CallbackMsg::RuleMatching(rule) = message {
+                results.push(rule)
+            }
+            CallbackReturn::Continue
+        };
+        self.scan_fd_callback(file, callback).map(|_| results)
+    }
+
+    /// Scan a opened file with custom callback
+    ///
+    /// Returns
+    ///
+    /// * `file` - [File](std::fs::File)
+    /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    pub fn scan_fd_callback<'r>(
+        &self,
+        file: &File,
+        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+    ) -> Result<(), Error> {
+        internals::scanner_scan_file(self.inner, file, callback).map_err(|e| e.into())
+    }
+
     /// Set the maximum number of seconds that the scanner will spend in any call
     /// to scan_xxx.
     pub fn set_timeout(&mut self, seconds: u32) {
