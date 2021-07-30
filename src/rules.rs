@@ -1,6 +1,10 @@
 use std::convert::TryFrom;
 use std::fs::File;
 use std::io::{Read, Write};
+#[cfg(unix)]
+use std::os::unix::io::AsRawFd;
+#[cfg(windows)]
+use std::os::windows::io::AsRawHandle as AsRawFd;
 use std::path::Path;
 
 #[cfg(feature = "serde")]
@@ -240,9 +244,9 @@ impl Rules {
     ///
     /// Return a `Vec` of matching rules.
     ///
-    /// * `file` - [File](std::fs::File)
+    /// * `file` - the object that implements get raw file descriptor or file handle
     /// * `timeout` - the timeout is in seconds
-    pub fn scan_fd<'r>(&self, file: &File, timeout: u16) -> Result<Vec<Rule<'r>>, Error> {
+    pub fn scan_fd<'r, F: AsRawFd>(&self, fd: &F, timeout: u16) -> Result<Vec<Rule<'r>>, Error> {
         let mut results: Vec<Rule> = Vec::new();
         let callback = |message: CallbackMsg<'r>| {
             if let CallbackMsg::RuleMatching(rule) = message {
@@ -250,7 +254,7 @@ impl Rules {
             }
             CallbackReturn::Continue
         };
-        self.scan_fd_callback(file, timeout, callback)
+        self.scan_fd_callback(fd, timeout, callback)
             .map(|_| results)
     }
 
@@ -258,18 +262,18 @@ impl Rules {
     ///
     /// Returns
     ///
-    /// * `file` - [File](std::fs::File)
+    /// * `file` - the object that implements get raw file descriptor or file handle
     /// * `timeout` - the timeout is in seconds
     /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
-    pub fn scan_fd_callback<'r>(
+    pub fn scan_fd_callback<'r, F: AsRawFd>(
         &self,
-        file: &File,
+        fd: &F,
         timeout: u16,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
     ) -> Result<(), Error> {
         internals::rules_scan_file(
             self.inner,
-            file,
+            fd,
             i32::from(timeout),
             self.flags as i32,
             callback,

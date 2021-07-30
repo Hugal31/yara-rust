@@ -1,13 +1,12 @@
 use std::convert::TryInto;
 use std::ffi::{CStr, CString};
-use std::fs::File;
 use std::os::raw::c_void;
 #[cfg(unix)]
 use std::os::unix::io::AsRawFd;
 #[cfg(windows)]
 use std::os::windows::io::AsRawHandle;
 
-use yara_sys::{YR_SCANNER, YR_SCAN_CONTEXT};
+use yara_sys::{YR_SCAN_CONTEXT, YR_SCANNER};
 
 use crate::errors::*;
 use crate::Rule;
@@ -109,47 +108,18 @@ pub fn scanner_scan_mem<'a>(
         .map(|_| ())
 }
 
-pub fn rules_scan_file<'a>(
-    rules: *mut yara_sys::YR_RULES,
-    file: &File,
-    timeout: i32,
-    flags: i32,
-    callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
-) -> Result<(), YaraError> {
-    let result = rules_scan_raw(rules, file, timeout, flags, callback);
-
-    yara_sys::Error::from_code(result)
-        .map_err(|e| e.into())
-        .map(|_| ())
-}
-
-/// Scan a file with the provided YR_SCANNER and its defined external vars.
-///
-/// Setting the callback function modifies the Scanner with no locks preventing
-/// data races, so it should only be called from a &mut Scanner.
-pub fn scanner_scan_file<'a>(
-    scanner: *mut yara_sys::YR_SCANNER,
-    file: &File,
-    callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
-) -> Result<(), YaraError> {
-    let result = scanner_scan_raw(scanner, file, callback);
-
-    yara_sys::Error::from_code(result)
-        .map_err(|e| e.into())
-        .map(|_| ())
-}
-
 #[cfg(unix)]
-pub fn rules_scan_raw<'a>(
+pub fn rules_scan_file<'a, F: AsRawFd>(
     rules: *mut yara_sys::YR_RULES,
-    file: &File,
+    file: &F,
     timeout: i32,
     flags: i32,
     callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
-) -> i32 {
+) -> Result<(), YaraError> {
     let fd = file.as_raw_fd();
     let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
-    unsafe {
+
+    let result = unsafe {
         yara_sys::yr_rules_scan_fd(
             rules,
             fd,
@@ -158,13 +128,16 @@ pub fn rules_scan_raw<'a>(
             &p_callback as *const Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> as *mut _,
             timeout,
         )
-    }
+    };
+    yara_sys::Error::from_code(result)
+        .map_err(|e| e.into())
+        .map(|_| ())
 }
 
 #[cfg(windows)]
-pub fn rules_scan_raw<'a>(
+pub fn rules_scan_file<'a, F: AsRawHandle>(
     rules: *mut yara_sys::YR_RULES,
-    file: &File,
+    file: &F,
     timeout: i32,
     flags: i32,
     callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
@@ -172,7 +145,7 @@ pub fn rules_scan_raw<'a>(
     let handle = file.as_raw_handle();
     let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
 
-    unsafe {
+    let result = unsafe {
         yara_sys::yr_rules_scan_fd(
             rules,
             handle,
@@ -181,7 +154,10 @@ pub fn rules_scan_raw<'a>(
             &p_callback as *const Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> as *mut _,
             timeout,
         )
-    }
+    };
+    yara_sys::Error::from_code(result)
+        .map_err(|e| e.into())
+        .map(|_| ())
 }
 
 #[cfg(unix)]
@@ -189,21 +165,25 @@ pub fn rules_scan_raw<'a>(
 ///
 /// Setting the callback function modifies the Scanner with no locks preventing
 /// data races, so it should only be called from a &mut Scanner.
-pub fn scanner_scan_raw<'a>(
+pub fn scanner_scan_file<'a, F: AsRawFd>(
     scanner: *mut yara_sys::YR_SCANNER,
-    file: &File,
+    file: &F,
     callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
-) -> i32 {
+) -> Result<(), YaraError> {
     let fd = file.as_raw_fd();
     let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
-    unsafe {
+
+    let result = unsafe {
         yara_sys::yr_scanner_set_callback(
             scanner,
             Some(scan_callback),
             &p_callback as *const Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> as *mut _,
         );
         yara_sys::yr_scanner_scan_fd(scanner, fd)
-    }
+    };
+    yara_sys::Error::from_code(result)
+        .map_err(|e| e.into())
+        .map(|_| ())
 }
 
 #[cfg(windows)]
@@ -211,21 +191,25 @@ pub fn scanner_scan_raw<'a>(
 ///
 /// Setting the callback function modifies the Scanner with no locks preventing
 /// data races, so it should only be called from a &mut Scanner.
-pub fn scanner_scan_raw<'a>(
+pub fn scanner_scan_file<'a, F: AsRawHandle>(
     scanner: *mut yara_sys::YR_SCANNER,
-    file: &File,
+    file: &F,
     callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> i32 {
     let handle = file.as_raw_handle();
     let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
-    unsafe {
+
+    let result = unsafe {
         yara_sys::yr_scanner_set_callback(
             scanner,
             Some(scan_callback),
             &p_callback as *const Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> as *mut _,
         );
         yara_sys::yr_scanner_scan_fd(scanner, handle)
-    }
+    };
+    yara_sys::Error::from_code(result)
+        .map_err(|e| e.into())
+        .map(|_| ())
 }
 
 /// Attach a process, pause it, and scan its memory.

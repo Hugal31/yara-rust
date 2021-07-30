@@ -1,5 +1,9 @@
 use std::fs::File;
 use std::marker::PhantomData;
+#[cfg(unix)]
+use std::os::unix::io::AsRawFd;
+#[cfg(windows)]
+use std::os::windows::io::AsRawHandle as AsRawFd;
 use std::path::Path;
 
 pub use yara_sys::scan_flags::*;
@@ -248,8 +252,8 @@ impl<'rules> Scanner<'rules> {
     ///
     /// Return a `Vec` of matching rules.
     ///
-    /// * `file` - [File](std::fs::File)
-    pub fn scan_fd<'r>(&self, file: &File) -> Result<Vec<Rule<'r>>, Error> {
+    /// * `file` - the object that implements get raw file descriptor or file handle
+    pub fn scan_fd<'r, F: AsRawFd>(&self, file: &F) -> Result<Vec<Rule<'r>>, Error> {
         let mut results: Vec<Rule> = Vec::new();
         let callback = |message: CallbackMsg<'r>| {
             if let CallbackMsg::RuleMatching(rule) = message {
@@ -264,11 +268,11 @@ impl<'rules> Scanner<'rules> {
     ///
     /// Returns
     ///
-    /// * `file` - [File](std::fs::File)
+    /// * `file` - the object that implements get raw file descriptor or file handle
     /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
-    pub fn scan_fd_callback<'r>(
+    pub fn scan_fd_callback<'r, F: AsRawFd>(
         &self,
-        file: &File,
+        file: &F,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
     ) -> Result<(), Error> {
         internals::scanner_scan_file(self.inner, file, callback).map_err(|e| e.into())
