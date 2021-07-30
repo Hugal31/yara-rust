@@ -1,6 +1,10 @@
 use std::convert::TryFrom as _;
 use std::ffi::CStr;
 use std::fs::File;
+#[cfg(unix)]
+use std::os::unix::io::AsRawFd;
+#[cfg(windows)]
+use std::os::windows::io::AsRawHandle as AsRawFd;
 use std::path::Path;
 
 use crate::errors::*;
@@ -100,14 +104,14 @@ impl Compiler {
     }
 
     /// Add rules definitions from a opened file.
-    pub fn add_rules_fd<P: AsRef<Path>>(&mut self, file: &File, path: P) -> Result<(), Error> {
+    pub fn add_rules_fd<P: AsRef<Path>, F: AsRawFd>(&mut self, file: &F, path: P) -> Result<(), Error> {
         internals::compiler_add_file(self.inner, file, path, None)
     }
 
     /// Add rules definitions from a opened file with namespace.
-    pub fn add_rules_fd_with_namespace<P: AsRef<Path>>(
+    pub fn add_rules_fd_with_namespace<P: AsRef<Path>, F: AsRawFd>(
         &mut self,
-        file: &File,
+        file: &F,
         path: P,
         namespace: &str,
     ) -> Result<(), Error> {
