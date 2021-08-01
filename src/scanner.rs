@@ -1,5 +1,9 @@
 use std::fs::File;
 use std::marker::PhantomData;
+#[cfg(unix)]
+use std::os::unix::io::AsRawFd;
+#[cfg(windows)]
+use std::os::windows::io::AsRawHandle as AsRawFd;
 use std::path::Path;
 
 pub use yara_sys::scan_flags::*;
@@ -242,6 +246,36 @@ impl<'rules> Scanner<'rules> {
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
     ) -> Result<(), YaraError> {
         internals::scanner_scan_proc(self.inner, pid, callback)
+    }
+
+    /// Scan a opened file.
+    ///
+    /// Return a `Vec` of matching rules.
+    ///
+    /// * `file` - the object that implements get raw file descriptor or file handle
+    pub fn scan_fd<'r, F: AsRawFd>(&self, file: &F) -> Result<Vec<Rule<'r>>, Error> {
+        let mut results: Vec<Rule> = Vec::new();
+        let callback = |message: CallbackMsg<'r>| {
+            if let CallbackMsg::RuleMatching(rule) = message {
+                results.push(rule)
+            }
+            CallbackReturn::Continue
+        };
+        self.scan_fd_callback(file, callback).map(|_| results)
+    }
+
+    /// Scan a opened file with custom callback
+    ///
+    /// Returns
+    ///
+    /// * `file` - the object that implements get raw file descriptor or file handle
+    /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    pub fn scan_fd_callback<'r, F: AsRawFd>(
+        &self,
+        file: &F,
+        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+    ) -> Result<(), Error> {
+        internals::scanner_scan_file(self.inner, file, callback).map_err(|e| e.into())
     }
 
     /// Set the maximum number of seconds that the scanner will spend in any call
