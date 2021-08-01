@@ -14,11 +14,12 @@ edition = "2018"
 [features]
 default = ["bindgen"]
 bundled-4_1_1 = []
-vendored = ["cc", "globwalk"]
+vendored = ["cc", "globwalk", "libloading"]
 
 [build-dependencies]
 bindgen = { version = "0.58", optional = true }
 cc = { version = "1.0", optional = true }
+libloading = { version = "0.7", optional = true }
 globwalk = { version = "0.8", optional = true }
 
 [package.metadata.docs.rs]

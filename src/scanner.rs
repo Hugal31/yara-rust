@@ -145,7 +145,7 @@ impl<'rules> Scanner<'rules> {
     /// Returns
     ///
     /// * `mem` - Slice to scan
-    /// * `callback` - YARA callback mor read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
     ///
     /// # Ownership
     ///
@@ -184,7 +184,7 @@ impl<'rules> Scanner<'rules> {
     /// Returns
     ///
     /// * `path` - Path to file
-    /// * `callback` - YARA callback mor read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
     ///
     /// # Ownership
     ///
@@ -230,7 +230,7 @@ impl<'rules> Scanner<'rules> {
     /// Returns
     ///
     /// * `pid` - Process id
-    /// * `callback` - YARA callback mor read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
     ///
     /// # Permissions
     ///
