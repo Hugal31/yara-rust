@@ -94,7 +94,7 @@ pub fn compiler_add_file<P: AsRef<Path>, F: AsRawFd>(
 pub fn compiler_add_file<P: AsRef<Path>, F: AsRawHandle>(
     compiler: *mut YR_COMPILER,
     file: &F,
-    path: &P,
+    path: P,
     namespace: Option<&str>,
 ) -> Result<(), Error> {
     let path = CString::new(path.as_ref().as_os_str().to_str().unwrap()).unwrap();
