@@ -141,7 +141,7 @@ pub fn rules_scan_file<'a, F: AsRawHandle>(
     timeout: i32,
     flags: i32,
     callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
-) -> i32 {
+) -> Result<(), YaraError> {
     let handle = file.as_raw_handle();
     let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
 
@@ -195,7 +195,7 @@ pub fn scanner_scan_file<'a, F: AsRawHandle>(
     scanner: *mut yara_sys::YR_SCANNER,
     file: &F,
     callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
-) -> i32 {
+) -> Result<(), YaraError> {
     let handle = file.as_raw_handle();
     let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
 
