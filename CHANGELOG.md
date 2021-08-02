@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.9.0](https://github.com/Hugal31/yara-rust/compare/v0.8.0...v0.9.0) (2021-08-02)
+
+### Features
+
+* build with ssl ([eff2ddf](https://github.com/Hugal31/yara-rust/commit/eff2ddfdcbd8e1bdb5e23b057a1c551e69cea2c7)), closes [#37](https://github.com/Hugal31/yara-rust/pull/37)
+* allow to use already opened files to add rules and scan ([acf7c19](https://github.com/Hugal31/yara-rust/commit/acf7c19d30e1408abd05c289dbe02f1132988b5e)), closes [#39](https://github.com/Hugal31/yara-rust/pull/39)
+
 ## [0.8.0](https://github.com/Hugal31/yara-rust/compare/v0.7.0...v0.8.0) (2021-07-22)
 
 ### Features
