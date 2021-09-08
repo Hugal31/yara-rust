@@ -122,7 +122,7 @@ mod build {
             exclude.push(basedir.join("modules").join("cuckoo").join("cuckoo.c"));
         }
         if is_enable("YARA_ENABLE_DOTNET", true) {
-            cc.define("DOTNET", "1");
+            cc.define("DOTNET_MODULE", "1");
         } else {
             exclude.push(basedir.join("modules").join("dotnet").join("dotnet.c"));
         }
