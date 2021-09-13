@@ -13,7 +13,7 @@ edition = "2018"
 
 [features]
 default = ["bindgen"]
-bundled-4_1_1 = []
+bundled-4_1_2 = []
 vendored = ["cc", "globwalk", "libloading"]
 
 [build-dependencies]
@@ -24,4 +24,4 @@ globwalk = { version = "0.8", optional = true }
 
 [package.metadata.docs.rs]
 no-default-features = true
-features = ["bundled-4_1_1"]
+features = ["bundled-4_1_2"]
