@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.9.1](https://github.com/Hugal31/yara-rust/compare/v0.9.0...v0.9.1) (2021-09-13)
+
+
+### Bug Fixes
+
+* correctly enable the DOTNET module ([338935e](https://github.com/Hugal31/yara-rust/commit/338935e01ad9c046854b547feb6861dc77d017e0))
+
 ## [0.9.0](https://github.com/Hugal31/yara-rust/compare/v0.8.0...v0.9.0) (2021-08-02)
 
 ### Features
