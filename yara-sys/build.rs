@@ -77,9 +77,17 @@ mod build {
 
         let mut enable_crypto = false;
         if is_enable("YARA_ENABLE_CRYPTO", true) {
-            let load_result = unsafe { Library::new(format!("libcrypto{}", DLL_SUFFIX)) };
+            let mut libcrypto = format!("libcrypto{}", DLL_SUFFIX);
+            if let Ok(openssl_lib_dir) = std::env::var("OPENSSL_LIB_DIR") {
+                let mut buffer = PathBuf::from(openssl_lib_dir);
+                println!("cargo:rustc-link-search=native={}", buffer.display());
+                buffer.push(libcrypto);
+                libcrypto = buffer.to_str().unwrap().to_string();
+            }
+
+            let load_result = unsafe { Library::new(libcrypto) };
             if let Err(err) = load_result {
-                println!("cargo:warning={}", "Please install OpenSSL library");
+                println!("cargo:warning=Please install OpenSSL library");
                 println!("cargo:warning={:?}", err);
                 std::process::exit(1);
             }
@@ -94,6 +102,8 @@ mod build {
                 {
                     println!("cargo:rustc-link-lib=dylib=libssl");
                     println!("cargo:rustc-link-lib=dylib=libcrypto");
+                    println!("cargo:rustc-link-lib=dylib=Crypt32");
+                    println!("cargo:rustc-link-lib=dylib=Ws2_32")
                 } else {
                     println!("cargo:rustc-link-lib=dylib=ssl");
                     println!("cargo:rustc-link-lib=dylib=crypto");
