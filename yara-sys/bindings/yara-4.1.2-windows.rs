@@ -5664,6 +5664,7 @@ pub struct YR_SCAN_CONTEXT {
     pub re_fiber_pool: RE_FIBER_POOL,
     pub rule_matches_flags: *mut ::std::os::raw::c_ulong,
     pub ns_unsatisfied_flags: *mut ::std::os::raw::c_ulong,
+    pub strings_temp_disabled: *mut ::std::os::raw::c_ulong,
     pub matches: *mut YR_MATCHES,
     pub unconfirmed_matches: *mut YR_MATCHES,
     pub profiling_info: *mut YR_PROFILING_INFO,
@@ -5672,7 +5673,7 @@ pub struct YR_SCAN_CONTEXT {
 fn bindgen_test_layout_YR_SCAN_CONTEXT() {
     assert_eq!(
         ::std::mem::size_of::<YR_SCAN_CONTEXT>(),
-        168usize,
+        176usize,
         concat!("Size of: ", stringify!(YR_SCAN_CONTEXT))
     );
     assert_eq!(
@@ -5849,8 +5850,20 @@ fn bindgen_test_layout_YR_SCAN_CONTEXT() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<YR_SCAN_CONTEXT>())).matches as *const _ as usize },
+        unsafe {
+            &(*(::std::ptr::null::<YR_SCAN_CONTEXT>())).strings_temp_disabled as *const _ as usize
+        },
         144usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(strings_temp_disabled)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<YR_SCAN_CONTEXT>())).matches as *const _ as usize },
+        152usize,
         concat!(
             "Offset of field: ",
             stringify!(YR_SCAN_CONTEXT),
@@ -5862,7 +5875,7 @@ fn bindgen_test_layout_YR_SCAN_CONTEXT() {
         unsafe {
             &(*(::std::ptr::null::<YR_SCAN_CONTEXT>())).unconfirmed_matches as *const _ as usize
         },
-        152usize,
+        160usize,
         concat!(
             "Offset of field: ",
             stringify!(YR_SCAN_CONTEXT),
@@ -5872,7 +5885,7 @@ fn bindgen_test_layout_YR_SCAN_CONTEXT() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<YR_SCAN_CONTEXT>())).profiling_info as *const _ as usize },
-        160usize,
+        168usize,
         concat!(
             "Offset of field: ",
             stringify!(YR_SCAN_CONTEXT),
