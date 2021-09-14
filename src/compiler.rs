@@ -104,7 +104,11 @@ impl Compiler {
     }
 
     /// Add rules definitions from a opened file.
-    pub fn add_rules_fd<P: AsRef<Path>, F: AsRawFd>(&mut self, file: &F, path: P) -> Result<(), Error> {
+    pub fn add_rules_fd<P: AsRef<Path>, F: AsRawFd>(
+        &mut self,
+        file: &F,
+        path: P,
+    ) -> Result<(), Error> {
         internals::compiler_add_file(self.inner, file, path, None)
     }
 

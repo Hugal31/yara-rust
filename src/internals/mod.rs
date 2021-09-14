@@ -7,6 +7,7 @@ use crate::errors::*;
 
 pub use self::compiler::*;
 pub use self::configuration::*;
+pub use self::iterator::*;
 pub use self::rules::*;
 pub use self::scan::*;
 
@@ -16,6 +17,7 @@ pub mod string;
 
 mod compiler;
 mod configuration;
+mod iterator;
 mod rules;
 mod scan;
 mod stream;

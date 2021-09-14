@@ -6,9 +6,7 @@ use std::os::unix::io::AsRawFd;
 #[cfg(windows)]
 use std::os::windows::io::AsRawHandle;
 
-use yara_sys::{YR_SCAN_CONTEXT, YR_SCANNER};
-
-use crate::errors::*;
+use crate::internals::*;
 use crate::Rule;
 
 #[derive(Debug)]
@@ -22,7 +20,11 @@ pub enum CallbackMsg<'r> {
 }
 
 impl<'r> CallbackMsg<'r> {
-    fn from_yara(context: *mut YR_SCAN_CONTEXT, message: i32, message_data: *mut c_void) -> Self {
+    fn from_yara(
+        context: *mut yara_sys::YR_SCAN_CONTEXT,
+        message: i32,
+        message_data: *mut c_void,
+    ) -> Self {
         use self::CallbackMsg::*;
 
         match message as u32 {
@@ -247,23 +249,59 @@ pub fn scanner_scan_proc<'a>(
     pid: u32,
     callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
-    let p_callback: Box<Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn>> =
-        Box::new(Box::new(callback));
-    let user_data = Box::into_raw(p_callback) as *mut c_void;
+    let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
     let result = unsafe {
-        yara_sys::yr_scanner_set_callback(scanner, Some(scan_callback), user_data);
+        yara_sys::yr_scanner_set_callback(
+            scanner,
+            Some(scan_callback),
+            &p_callback as *const Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> as *mut _,
+        );
         yara_sys::yr_scanner_scan_proc(scanner, pid as i32)
     };
-    let _: Box<Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn>> =
-        unsafe { Box::from_raw(user_data as *mut _) };
+    yara_sys::Error::from_code(result)
+        .map_err(|e| e.into())
+        .map(|_| ())
+}
 
+pub fn scanner_scan_mem_blocks<'a>(
+    scanner: *mut yara_sys::YR_SCANNER,
+    iter: impl MemBlockIterator,
+    callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
+) -> Result<(), YaraError> {
+    let iter = WrapperMemBlockIterator::new(iter).as_yara();
+    scanner_scan_mem_blocks_inner(scanner, iter, callback)
+}
+
+pub fn scanner_scan_mem_blocks_sized<'a>(
+    scanner: *mut yara_sys::YR_SCANNER,
+    iter: impl MemBlockIteratorSized,
+    callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
+) -> Result<(), YaraError> {
+    let iter = WrapperMemBlockIterator::new(iter).as_yara_sized();
+    scanner_scan_mem_blocks_inner(scanner, iter, callback)
+}
+
+fn scanner_scan_mem_blocks_inner<'a>(
+    scanner: *mut yara_sys::YR_SCANNER,
+    mut iter: yara_sys::YR_MEMORY_BLOCK_ITERATOR,
+    callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
+) -> Result<(), YaraError> {
+    let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
+    let result = unsafe {
+        yara_sys::yr_scanner_set_callback(
+            scanner,
+            Some(scan_callback),
+            &p_callback as *const Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> as *mut _,
+        );
+        yara_sys::yr_scanner_scan_mem_blocks(scanner, &mut iter as *mut _)
+    };
     yara_sys::Error::from_code(result)
         .map_err(|e| e.into())
         .map(|_| ())
 }
 
 extern "C" fn scan_callback(
-    context: *mut YR_SCAN_CONTEXT,
+    context: *mut yara_sys::YR_SCAN_CONTEXT,
     message: i32,
     message_data: *mut c_void,
     user_data: *mut c_void,
@@ -291,7 +329,7 @@ pub fn scanner_set_timeout<'a>(scanner: *mut yara_sys::YR_SCANNER, seconds: i32)
 }
 
 pub fn scanner_define_integer_variable(
-    scanner: *mut YR_SCANNER,
+    scanner: *mut yara_sys::YR_SCANNER,
     identifier: &str,
     value: i64,
 ) -> Result<(), YaraError> {
@@ -303,7 +341,7 @@ pub fn scanner_define_integer_variable(
 }
 
 pub fn scanner_define_boolean_variable(
-    scanner: *mut YR_SCANNER,
+    scanner: *mut yara_sys::YR_SCANNER,
     identifier: &str,
     value: bool,
 ) -> Result<(), YaraError> {
@@ -316,7 +354,7 @@ pub fn scanner_define_boolean_variable(
 }
 
 pub fn scanner_define_float_variable(
-    scanner: *mut YR_SCANNER,
+    scanner: *mut yara_sys::YR_SCANNER,
     identifier: &str,
     value: f64,
 ) -> Result<(), YaraError> {
@@ -327,7 +365,7 @@ pub fn scanner_define_float_variable(
 }
 
 pub fn scanner_define_str_variable(
-    scanner: *mut YR_SCANNER,
+    scanner: *mut yara_sys::YR_SCANNER,
     identifier: &str,
     value: &str,
 ) -> Result<(), YaraError> {
@@ -340,7 +378,7 @@ pub fn scanner_define_str_variable(
 }
 
 pub fn scanner_define_cstr_variable(
-    scanner: *mut YR_SCANNER,
+    scanner: *mut yara_sys::YR_SCANNER,
     identifier: &str,
     value: &CStr,
 ) -> Result<(), YaraError> {

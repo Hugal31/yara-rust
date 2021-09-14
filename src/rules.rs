@@ -9,9 +9,8 @@ use std::path::Path;
 
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
-pub use yara_sys::scan_flags::*;
 
-pub use crate::internals::{CallbackMsg, CallbackReturn};
+use crate::internals::{CallbackMsg, CallbackReturn};
 use crate::{errors::*, initialize::InitializationToken, internals, YrString};
 
 /// A set of compiled rules.

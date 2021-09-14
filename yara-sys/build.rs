@@ -153,6 +153,9 @@ mod build {
             cc.define("NDEBUG", "1");
         }
 
+        let verbosity = std::env::var("YARA_DEBUG_VERBOSITY").unwrap_or("0".to_string());
+        cc.define("YR_DEBUG_VERBOSITY", verbosity.as_str());
+
         let walker = globwalk::GlobWalkerBuilder::from_patterns(&basedir, &["**/*.c", "!proc/*"])
             .build()
             .unwrap()
