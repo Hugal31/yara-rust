@@ -6,7 +6,9 @@ use std::os::unix::io::AsRawFd;
 use std::os::windows::io::AsRawHandle as AsRawFd;
 use std::path::Path;
 
-use crate::internals::{CallbackMsg, CallbackReturn, MemBlockIterator, MemBlockIteratorSized};
+use crate::internals::{
+    CallbackMsg, CallbackReturn, MemoryBlocksIterator, MemoryBlocksIteratorSized,
+};
 use crate::{compiler::CompilerVariableValue, errors::*, internals, rules::Rules, Rule};
 
 /// A wrapper around compiled [Rules], with its own set of external variables, flags and timeout.
@@ -277,9 +279,13 @@ impl<'rules> Scanner<'rules> {
     }
 
     /// Scan a series of memory blocks
+    ///
+    /// Return a `Vec` of matching rules.
+    ///
+    /// * `iter` -
     pub fn scan_mem_blocks<'r>(
         &self,
-        iterator: impl MemBlockIterator,
+        iter: impl MemoryBlocksIterator,
     ) -> Result<Vec<Rule<'r>>, Error> {
         let mut results: Vec<Rule> = Vec::new();
         let callback = |message: CallbackMsg<'r>| {
@@ -288,23 +294,32 @@ impl<'rules> Scanner<'rules> {
             }
             CallbackReturn::Continue
         };
-        self.scan_mem_blocks_callback(iterator, callback)
+        self.scan_mem_blocks_callback(iter, callback)
             .map(|_| results)
     }
 
     /// Scan a series of memory blocks
+    ///
+    /// Returns
+    ///
+    /// * `iter` -
+    /// * `callback` -
     pub fn scan_mem_blocks_callback<'r>(
         &self,
-        iterator: impl MemBlockIterator,
+        iter: impl MemoryBlocksIterator,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
     ) -> Result<(), Error> {
-        internals::scanner_scan_mem_blocks(self.inner, iterator, callback).map_err(|e| e.into())
+        internals::scanner_scan_mem_blocks(self.inner, iter, callback).map_err(|e| e.into())
     }
 
-    /// Scan a series of memory blocks
+    /// Scan a series of memory blocks with size
+    ///
+    /// Return a `Vec` of matching rules.
+    ///
+    /// * `iter` -
     pub fn scan_mem_blocks_sized<'r>(
         &self,
-        iterator: impl MemBlockIteratorSized,
+        iter: impl MemoryBlocksIteratorSized,
     ) -> Result<Vec<Rule<'r>>, Error> {
         let mut results: Vec<Rule> = Vec::new();
         let callback = |message: CallbackMsg<'r>| {
@@ -313,18 +328,22 @@ impl<'rules> Scanner<'rules> {
             }
             CallbackReturn::Continue
         };
-        self.scan_mem_blocks_sized_callback(iterator, callback)
+        self.scan_mem_blocks_sized_callback(iter, callback)
             .map(|_| results)
     }
 
-    /// Scan a series of memory blocks
+    /// Scan a series of memory blocks with size
+    ///
+    /// Returns
+    ///
+    /// * `iter` -
+    /// * `callback` -
     pub fn scan_mem_blocks_sized_callback<'r>(
         &self,
-        iterator: impl MemBlockIteratorSized,
+        iter: impl MemoryBlocksIteratorSized,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
     ) -> Result<(), Error> {
-        internals::scanner_scan_mem_blocks_sized(self.inner, iterator, callback)
-            .map_err(|e| e.into())
+        internals::scanner_scan_mem_blocks_sized(self.inner, iter, callback).map_err(|e| e.into())
     }
 
     /// Set the maximum number of seconds that the scanner will spend in any call

@@ -1,8 +1,8 @@
 extern crate yara;
 
 use yara::{
-    CallbackMsg, CallbackReturn, CompileErrorLevel, Compiler, ConfigName, Error, MemBlock,
-    MemBlockIterator, MemBlockIteratorSized, Metadata, MetadataValue, Rules, Yara,
+    CallbackMsg, CallbackReturn, CompileErrorLevel, Compiler, ConfigName, Error, MemoryBlock,
+    MemoryBlocksIterator, MemoryBlocksIteratorSized, Metadata, MetadataValue, Rules, Yara,
 };
 use yara_sys;
 
@@ -167,12 +167,12 @@ fn test_scan_mem_blocks() {
         data: &'a [&'a [u8]],
     }
 
-    impl<'a> MemBlockIterator for TestIter<'a> {
-        fn first(&mut self) -> Option<MemBlock> {
+    impl<'a> MemoryBlocksIterator for TestIter<'a> {
+        fn first(&mut self) -> Option<MemoryBlock> {
             self.next()
         }
 
-        fn next(&mut self) -> Option<MemBlock> {
+        fn next(&mut self) -> Option<MemoryBlock> {
             if self.current == self.data.len() {
                 return None;
             }
@@ -180,7 +180,7 @@ fn test_scan_mem_blocks() {
             let old_base = self.base;
             self.base += data.len() as u64;
             self.current += 1;
-            Some(MemBlock::new(old_base, data.len() as u64, data))
+            Some(MemoryBlock::new(old_base, data.len() as u64, data))
         }
     }
 
@@ -203,12 +203,12 @@ fn test_scan_mem_blocks_sized() {
         data: &'a [&'a [u8]],
     }
 
-    impl<'a> MemBlockIterator for TestIter<'a> {
-        fn first(&mut self) -> Option<MemBlock> {
+    impl<'a> MemoryBlocksIterator for TestIter<'a> {
+        fn first(&mut self) -> Option<MemoryBlock> {
             self.next()
         }
 
-        fn next(&mut self) -> Option<MemBlock> {
+        fn next(&mut self) -> Option<MemoryBlock> {
             if self.current >= self.data.len() {
                 return None;
             }
@@ -216,11 +216,11 @@ fn test_scan_mem_blocks_sized() {
             let old_base = self.base;
             self.base += data.len() as u64;
             self.current += 1;
-            Some(MemBlock::new(old_base, data.len() as u64, data))
+            Some(MemoryBlock::new(old_base, data.len() as u64, data))
         }
     }
 
-    impl<'a> MemBlockIteratorSized for TestIter<'a> {
+    impl<'a> MemoryBlocksIteratorSized for TestIter<'a> {
         fn file_size(&mut self) -> u64 {
             self.data.iter().map(|&d| d.len()).sum::<usize>() as u64
         }
