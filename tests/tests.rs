@@ -2,7 +2,7 @@ extern crate yara;
 
 use yara::{
     CallbackMsg, CallbackReturn, CompileErrorLevel, Compiler, ConfigName, Error, MemoryBlock,
-    MemoryBlocksIterator, MemoryBlocksIteratorSized, Metadata, MetadataValue, Rules, Yara,
+    MemoryBlockIterator, MemoryBlockIteratorSized, Metadata, MetadataValue, Rules, Yara,
 };
 use yara_sys;
 
@@ -167,7 +167,7 @@ fn test_scan_mem_blocks() {
         data: &'a [&'a [u8]],
     }
 
-    impl<'a> MemoryBlocksIterator for TestIter<'a> {
+    impl<'a> MemoryBlockIterator for TestIter<'a> {
         fn first(&mut self) -> Option<MemoryBlock> {
             self.next()
         }
@@ -203,7 +203,7 @@ fn test_scan_mem_blocks_sized() {
         data: &'a [&'a [u8]],
     }
 
-    impl<'a> MemoryBlocksIterator for TestIter<'a> {
+    impl<'a> MemoryBlockIterator for TestIter<'a> {
         fn first(&mut self) -> Option<MemoryBlock> {
             self.next()
         }
@@ -220,7 +220,7 @@ fn test_scan_mem_blocks_sized() {
         }
     }
 
-    impl<'a> MemoryBlocksIteratorSized for TestIter<'a> {
+    impl<'a> MemoryBlockIteratorSized for TestIter<'a> {
         fn file_size(&mut self) -> u64 {
             self.data.iter().map(|&d| d.len()).sum::<usize>() as u64
         }

@@ -265,19 +265,19 @@ pub fn scanner_scan_proc<'a>(
 
 pub fn scanner_scan_mem_blocks<'a>(
     scanner: *mut yara_sys::YR_SCANNER,
-    iter: impl MemoryBlocksIterator,
+    iter: impl MemoryBlockIterator,
     callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
-    let iter = WrapperMemoryBlocksIterator::new(iter).as_yara();
+    let iter = WrapperMemoryBlockIterator::new(iter).as_yara();
     scanner_scan_mem_blocks_inner(scanner, iter, callback)
 }
 
 pub fn scanner_scan_mem_blocks_sized<'a>(
     scanner: *mut yara_sys::YR_SCANNER,
-    iter: impl MemoryBlocksIteratorSized,
+    iter: impl MemoryBlockIteratorSized,
     callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
-    let iter = WrapperMemoryBlocksIterator::new(iter).as_yara_sized();
+    let iter = WrapperMemoryBlockIterator::new(iter).as_yara_sized();
     scanner_scan_mem_blocks_inner(scanner, iter, callback)
 }
 

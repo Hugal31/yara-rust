@@ -32,22 +32,22 @@ impl<'a> MemoryBlock<'a> {
     }
 }
 
-pub trait MemoryBlocksIterator {
+pub trait MemoryBlockIterator {
     fn first(&mut self) -> Option<MemoryBlock>;
     fn next(&mut self) -> Option<MemoryBlock>;
 }
 
-pub trait MemoryBlocksIteratorSized: MemoryBlocksIterator {
+pub trait MemoryBlockIteratorSized: MemoryBlockIterator {
     fn file_size(&mut self) -> u64;
 }
 
 #[derive(Debug)]
-pub struct WrapperMemoryBlocksIterator<T> {
+pub struct WrapperMemoryBlockIterator<T> {
     iter: T,
     mem_block: std::mem::MaybeUninit<YR_MEMORY_BLOCK>,
 }
 
-impl<T> WrapperMemoryBlocksIterator<T> {
+impl<T> WrapperMemoryBlockIterator<T> {
     pub fn new(iter: T) -> Self {
         Self {
             iter,
@@ -56,10 +56,10 @@ impl<T> WrapperMemoryBlocksIterator<T> {
     }
 }
 
-impl<T: MemoryBlocksIterator> WrapperMemoryBlocksIterator<T> {
+impl<T: MemoryBlockIterator> WrapperMemoryBlockIterator<T> {
     pub fn as_yara(&mut self) -> YR_MEMORY_BLOCK_ITERATOR {
         YR_MEMORY_BLOCK_ITERATOR {
-            context: self as *mut WrapperMemoryBlocksIterator<T> as *mut std::os::raw::c_void,
+            context: self as *mut WrapperMemoryBlockIterator<T> as *mut std::os::raw::c_void,
             first: Some(mem_block_iterator_first::<T>),
             next: Some(mem_block_iterator_next::<T>),
             file_size: None,
@@ -68,10 +68,10 @@ impl<T: MemoryBlocksIterator> WrapperMemoryBlocksIterator<T> {
     }
 }
 
-impl<T: MemoryBlocksIteratorSized> WrapperMemoryBlocksIterator<T> {
+impl<T: MemoryBlockIteratorSized> WrapperMemoryBlockIterator<T> {
     pub fn as_yara_sized(&mut self) -> YR_MEMORY_BLOCK_ITERATOR {
         YR_MEMORY_BLOCK_ITERATOR {
-            context: self as *mut WrapperMemoryBlocksIterator<T> as *mut std::os::raw::c_void,
+            context: self as *mut WrapperMemoryBlockIterator<T> as *mut std::os::raw::c_void,
             first: Some(mem_block_iterator_first::<T>),
             next: Some(mem_block_iterator_next::<T>),
             file_size: Some(mem_block_iterator_file_size::<T>),
@@ -80,10 +80,10 @@ impl<T: MemoryBlocksIteratorSized> WrapperMemoryBlocksIterator<T> {
     }
 }
 
-unsafe extern "C" fn mem_block_iterator_first<T: MemoryBlocksIterator>(
+unsafe extern "C" fn mem_block_iterator_first<T: MemoryBlockIterator>(
     iter: *mut YR_MEMORY_BLOCK_ITERATOR,
 ) -> *mut YR_MEMORY_BLOCK {
-    let context = &mut *((*iter).context as *mut WrapperMemoryBlocksIterator<T>);
+    let context = &mut *((*iter).context as *mut WrapperMemoryBlockIterator<T>);
     let mut mem_block = context.iter.first();
     match mem_block.as_mut() {
         Some(mem_block) => {
@@ -94,10 +94,10 @@ unsafe extern "C" fn mem_block_iterator_first<T: MemoryBlocksIterator>(
     }
 }
 
-unsafe extern "C" fn mem_block_iterator_next<T: MemoryBlocksIterator>(
+unsafe extern "C" fn mem_block_iterator_next<T: MemoryBlockIterator>(
     iter: *mut YR_MEMORY_BLOCK_ITERATOR,
 ) -> *mut YR_MEMORY_BLOCK {
-    let context = &mut *((*iter).context as *mut WrapperMemoryBlocksIterator<T>);
+    let context = &mut *((*iter).context as *mut WrapperMemoryBlockIterator<T>);
     let _ = context.mem_block.assume_init();
     let mut mem_block = context.iter.next();
     match mem_block.as_mut() {
@@ -109,10 +109,10 @@ unsafe extern "C" fn mem_block_iterator_next<T: MemoryBlocksIterator>(
     }
 }
 
-unsafe extern "C" fn mem_block_iterator_file_size<T: MemoryBlocksIteratorSized>(
+unsafe extern "C" fn mem_block_iterator_file_size<T: MemoryBlockIteratorSized>(
     iter: *mut YR_MEMORY_BLOCK_ITERATOR,
 ) -> u64 {
-    let context = &mut *((*iter).context as *mut WrapperMemoryBlocksIterator<T>);
+    let context = &mut *((*iter).context as *mut WrapperMemoryBlockIterator<T>);
     context.iter.file_size()
 }
 

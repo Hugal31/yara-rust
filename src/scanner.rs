@@ -7,7 +7,7 @@ use std::os::windows::io::AsRawHandle as AsRawFd;
 use std::path::Path;
 
 use crate::internals::{
-    CallbackMsg, CallbackReturn, MemoryBlocksIterator, MemoryBlocksIteratorSized,
+    CallbackMsg, CallbackReturn, MemoryBlockIterator, MemoryBlockIteratorSized,
 };
 use crate::{compiler::CompilerVariableValue, errors::*, internals, rules::Rules, Rule};
 
@@ -282,10 +282,10 @@ impl<'rules> Scanner<'rules> {
     ///
     /// Return a `Vec` of matching rules.
     ///
-    /// * `iter` -
+    /// * `iter` - the iterator over [MemoryBlock](internals::MemoryBlock)
     pub fn scan_mem_blocks<'r>(
         &self,
-        iter: impl MemoryBlocksIterator,
+        iter: impl MemoryBlockIterator,
     ) -> Result<Vec<Rule<'r>>, Error> {
         let mut results: Vec<Rule> = Vec::new();
         let callback = |message: CallbackMsg<'r>| {
@@ -302,11 +302,11 @@ impl<'rules> Scanner<'rules> {
     ///
     /// Returns
     ///
-    /// * `iter` -
-    /// * `callback` -
+    /// * `iter` - the iterator over [MemoryBlock](internals::MemoryBlock)
+    /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
     pub fn scan_mem_blocks_callback<'r>(
         &self,
-        iter: impl MemoryBlocksIterator,
+        iter: impl MemoryBlockIterator,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
     ) -> Result<(), Error> {
         internals::scanner_scan_mem_blocks(self.inner, iter, callback).map_err(|e| e.into())
@@ -316,10 +316,10 @@ impl<'rules> Scanner<'rules> {
     ///
     /// Return a `Vec` of matching rules.
     ///
-    /// * `iter` -
+    /// * `iter` - the iterator over [MemoryBlock](internals::MemoryBlock) with size
     pub fn scan_mem_blocks_sized<'r>(
         &self,
-        iter: impl MemoryBlocksIteratorSized,
+        iter: impl MemoryBlockIteratorSized,
     ) -> Result<Vec<Rule<'r>>, Error> {
         let mut results: Vec<Rule> = Vec::new();
         let callback = |message: CallbackMsg<'r>| {
@@ -336,11 +336,11 @@ impl<'rules> Scanner<'rules> {
     ///
     /// Returns
     ///
-    /// * `iter` -
-    /// * `callback` -
+    /// * `iter` - the iterator over [MemoryBlock](internals::MemoryBlock) with size
+    /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
     pub fn scan_mem_blocks_sized_callback<'r>(
         &self,
-        iter: impl MemoryBlocksIteratorSized,
+        iter: impl MemoryBlockIteratorSized,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
     ) -> Result<(), Error> {
         internals::scanner_scan_mem_blocks_sized(self.inner, iter, callback).map_err(|e| e.into())

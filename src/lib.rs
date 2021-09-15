@@ -56,7 +56,7 @@ pub use crate::rules::{Metadata, MetadataValue, Rule, Rules};
 pub use crate::scanner::Scanner;
 pub use crate::string::YrString;
 pub use internals::{
-    CallbackMsg, CallbackReturn, MemoryBlock, MemoryBlocksIterator, MemoryBlocksIteratorSized,
+    CallbackMsg, CallbackReturn, MemoryBlock, MemoryBlockIterator, MemoryBlockIteratorSized,
 };
 pub use yara_sys::scan_flags::*;
 
