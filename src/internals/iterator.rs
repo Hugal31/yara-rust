@@ -1,18 +1,18 @@
 use std::ptr;
-use yara_sys::{YR_MEMORY_BLOCK, YR_MEMORY_BLOCK_ITERATOR};
+use yara_sys::{size_t, YR_MEMORY_BLOCK, YR_MEMORY_BLOCK_ITERATOR};
 
 #[derive(Debug)]
 pub struct MemoryBlock<'a> {
     /// base contains the base address of the current block
     base: u64,
     /// size contains the size of the current block
-    size: u64,
+    size: size_t,
     /// data is used to read size bytes into a byte slice
     data: &'a [u8],
 }
 
 impl<'a> MemoryBlock<'a> {
-    pub fn new(base: u64, size: u64, data: &'a [u8]) -> Self {
+    pub fn new(base: u64, size: size_t, data: &'a [u8]) -> Self {
         Self { base, size, data }
     }
 
