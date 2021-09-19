@@ -1,8 +1,8 @@
 extern crate yara;
 
 use yara::{
-    CallbackMsg, CallbackReturn, CompileErrorLevel, Compiler, ConfigName, Error, Metadata,
-    MetadataValue, Rules, Yara,
+    CallbackMsg, CallbackReturn, CompileErrorLevel, Compiler, ConfigName, Error, MemoryBlock,
+    MemoryBlockIterator, MemoryBlockIteratorSized, Metadata, MetadataValue, Rules, Yara,
 };
 use yara_sys;
 
@@ -156,6 +156,84 @@ fn test_scan_fd() {
     let rules = get_default_rules();
     let file = std::fs::File::open("tests/scanfile.txt").unwrap();
     let result = rules.scan_fd(&file, 10).expect("Should have scanned file");
+    assert_eq!(1, result.len());
+}
+
+#[test]
+fn test_scan_mem_blocks() {
+    struct TestIter<'a> {
+        base: u64,
+        current: usize,
+        data: &'a [&'a [u8]],
+    }
+
+    impl<'a> MemoryBlockIterator for TestIter<'a> {
+        fn first(&mut self) -> Option<MemoryBlock> {
+            self.next()
+        }
+
+        fn next(&mut self) -> Option<MemoryBlock> {
+            if self.current == self.data.len() {
+                return None;
+            }
+            let data = self.data[self.current];
+            let old_base = self.base;
+            self.base += data.len() as u64;
+            self.current += 1;
+            Some(MemoryBlock::new(old_base, data.len() as u64, data))
+        }
+    }
+
+    let rules = get_default_rules();
+    let scanner = rules.scanner().expect("Should be ok");
+    let iter = TestIter {
+        base: 0,
+        current: 0,
+        data: &[b"go", b"bbb"],
+    };
+    let result = scanner.scan_mem_blocks(iter).expect("Should be ok");
+    assert_eq!(1, result.len());
+}
+
+#[test]
+fn test_scan_mem_blocks_sized() {
+    struct TestIter<'a> {
+        base: u64,
+        current: usize,
+        data: &'a [&'a [u8]],
+    }
+
+    impl<'a> MemoryBlockIterator for TestIter<'a> {
+        fn first(&mut self) -> Option<MemoryBlock> {
+            self.next()
+        }
+
+        fn next(&mut self) -> Option<MemoryBlock> {
+            if self.current >= self.data.len() {
+                return None;
+            }
+            let data = self.data[self.current];
+            let old_base = self.base;
+            self.base += data.len() as u64;
+            self.current += 1;
+            Some(MemoryBlock::new(old_base, data.len() as u64, data))
+        }
+    }
+
+    impl<'a> MemoryBlockIteratorSized for TestIter<'a> {
+        fn file_size(&mut self) -> u64 {
+            self.data.iter().map(|&d| d.len()).sum::<usize>() as u64
+        }
+    }
+
+    let rules = get_default_rules();
+    let scanner = rules.scanner().expect("Should be ok");
+    let iter = TestIter {
+        base: 0,
+        current: 0,
+        data: &[b"Rust!", b"bbb", b"bcc"],
+    };
+    let result = scanner.scan_mem_blocks_sized(iter).expect("Should be ok");
     assert_eq!(1, result.len());
 }
 

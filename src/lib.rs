@@ -52,9 +52,13 @@ pub use crate::compiler::Compiler;
 pub use crate::errors::*;
 use crate::initialize::InitializationToken;
 pub use crate::matches::Match;
-pub use crate::rules::*;
+pub use crate::rules::{Metadata, MetadataValue, Rule, Rules};
 pub use crate::scanner::Scanner;
 pub use crate::string::YrString;
+pub use internals::{
+    CallbackMsg, CallbackReturn, MemoryBlock, MemoryBlockIterator, MemoryBlockIteratorSized,
+};
+pub use yara_sys::scan_flags::*;
 
 mod compiler;
 mod initialize;

@@ -6,9 +6,9 @@ use std::os::unix::io::AsRawFd;
 use std::os::windows::io::AsRawHandle as AsRawFd;
 use std::path::Path;
 
-pub use yara_sys::scan_flags::*;
-
-pub use crate::internals::{CallbackMsg, CallbackReturn};
+use crate::internals::{
+    CallbackMsg, CallbackReturn, MemoryBlockIterator, MemoryBlockIteratorSized,
+};
 use crate::{compiler::CompilerVariableValue, errors::*, internals, rules::Rules, Rule};
 
 /// A wrapper around compiled [Rules], with its own set of external variables, flags and timeout.
@@ -276,6 +276,74 @@ impl<'rules> Scanner<'rules> {
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
     ) -> Result<(), Error> {
         internals::scanner_scan_file(self.inner, file, callback).map_err(|e| e.into())
+    }
+
+    /// Scan a series of memory blocks
+    ///
+    /// Return a `Vec` of matching rules.
+    ///
+    /// * `iter` - the iterator over [MemoryBlock](internals::MemoryBlock)
+    pub fn scan_mem_blocks<'r>(
+        &self,
+        iter: impl MemoryBlockIterator,
+    ) -> Result<Vec<Rule<'r>>, Error> {
+        let mut results: Vec<Rule> = Vec::new();
+        let callback = |message: CallbackMsg<'r>| {
+            if let CallbackMsg::RuleMatching(rule) = message {
+                results.push(rule)
+            }
+            CallbackReturn::Continue
+        };
+        self.scan_mem_blocks_callback(iter, callback)
+            .map(|_| results)
+    }
+
+    /// Scan a series of memory blocks
+    ///
+    /// Returns
+    ///
+    /// * `iter` - the iterator over [MemoryBlock](internals::MemoryBlock)
+    /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    pub fn scan_mem_blocks_callback<'r>(
+        &self,
+        iter: impl MemoryBlockIterator,
+        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+    ) -> Result<(), Error> {
+        internals::scanner_scan_mem_blocks(self.inner, iter, callback).map_err(|e| e.into())
+    }
+
+    /// Scan a series of memory blocks with size
+    ///
+    /// Return a `Vec` of matching rules.
+    ///
+    /// * `iter` - the iterator over [MemoryBlock](internals::MemoryBlock) with size
+    pub fn scan_mem_blocks_sized<'r>(
+        &self,
+        iter: impl MemoryBlockIteratorSized,
+    ) -> Result<Vec<Rule<'r>>, Error> {
+        let mut results: Vec<Rule> = Vec::new();
+        let callback = |message: CallbackMsg<'r>| {
+            if let CallbackMsg::RuleMatching(rule) = message {
+                results.push(rule)
+            }
+            CallbackReturn::Continue
+        };
+        self.scan_mem_blocks_sized_callback(iter, callback)
+            .map(|_| results)
+    }
+
+    /// Scan a series of memory blocks with size
+    ///
+    /// Returns
+    ///
+    /// * `iter` - the iterator over [MemoryBlock](internals::MemoryBlock) with size
+    /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
+    pub fn scan_mem_blocks_sized_callback<'r>(
+        &self,
+        iter: impl MemoryBlockIteratorSized,
+        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+    ) -> Result<(), Error> {
+        internals::scanner_scan_mem_blocks_sized(self.inner, iter, callback).map_err(|e| e.into())
     }
 
     /// Set the maximum number of seconds that the scanner will spend in any call
