@@ -84,8 +84,8 @@ impl Rules {
     ///
     /// ```
     /// # use yara::Compiler;
-    /// let mut compiler = Compiler::new()?;
-    /// compiler.add_rules_str("rule contains_rust {
+    /// let mut compiler = Compiler::new()?
+    ///     .add_rules_str("rule contains_rust {
     ///   strings:
     ///     $rust = \"rust\" nocase
     ///   condition:
@@ -389,8 +389,7 @@ mod test {
 
     #[test]
     fn rules_scan_proc() {
-        let mut compiler = Compiler::new().unwrap();
-        compiler.add_rules_str(RULES_PROC).unwrap();
+        let compiler = Compiler::new().unwrap().add_rules_str(RULES_PROC).unwrap();
         let rules = compiler.compile_rules().unwrap();
         let mut scanner = rules.scanner().unwrap();
         scanner.set_timeout(10);

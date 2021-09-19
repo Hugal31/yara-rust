@@ -13,6 +13,12 @@ use crate::internals;
 use crate::Rules;
 
 /// Yara rules compiler
+///
+/// # Note
+///
+/// add_rules_* functions takes ownership on the compiler, because if a rule fails to compile,
+/// the Compiler is corrupted. See issue [#47](https://github.com/Hugal31/yara-rust/issues/47).
+#[derive(Debug)]
 pub struct Compiler {
     inner: *mut yara_sys::YR_COMPILER,
     _token: InitializationToken,
@@ -35,14 +41,15 @@ impl Compiler {
     ///
     /// ```no_run
     /// # use yara::Compiler;
-    /// let mut compiler = Compiler::new()?;
-    /// compiler.add_rules_file("rules.txt")?;
+    /// let compiler = Compiler::new()?;
+    /// let compiler = compiler.add_rules_file("rules.txt")?;
     /// # Ok::<(), yara::Error>(())
     /// ```
-    pub fn add_rules_file<P: AsRef<Path>>(&mut self, path: P) -> Result<(), Error> {
+    pub fn add_rules_file<P: AsRef<Path>>(self, path: P) -> Result<Compiler, Error> {
         File::open(path.as_ref())
             .map_err(|e| IoError::new(e, IoErrorKind::OpenRulesFile).into())
             .and_then(|file| internals::compiler_add_file(self.inner, &file, path, None))
+            .map(|()| self)
     }
 
     /// Add rule definitions from a file within a namespace.
@@ -51,18 +58,19 @@ impl Compiler {
     ///
     /// ```no_run
     /// # use yara::Compiler;
-    /// let mut compiler = Compiler::new().unwrap();
-    /// let rules = compiler.add_rules_file_with_namespace("CVE-2010-1297.yar", "flash")?;
+    /// let compiler = Compiler::new()?
+    ///     .add_rules_file_with_namespace("CVE-2010-1297.yar", "flash")?;
     /// # Ok::<(), yara::Error>(())
     /// ```
     pub fn add_rules_file_with_namespace<P: AsRef<Path>>(
-        &mut self,
+        self,
         path: P,
         namespace: &str,
-    ) -> Result<(), Error> {
+    ) -> Result<Compiler, Error> {
         File::open(path.as_ref())
             .map_err(|e| IoError::new(e, IoErrorKind::OpenRulesFile).into())
             .and_then(|file| internals::compiler_add_file(self.inner, &file, path, Some(namespace)))
+            .map(|()| self)
     }
 
     /// Add rule definitions from a string.
@@ -71,15 +79,15 @@ impl Compiler {
     ///
     /// ```
     /// # use yara::Compiler;
-    /// let mut compiler = Compiler::new()?;
-    /// let rules = compiler.add_rules_str("rule is_empty {
+    /// let mut compiler = Compiler::new()?
+    ///     .add_rules_str("rule is_empty {
     ///   condition:
     ///     filesize == 0
     /// }")?;
     /// # Ok::<(), yara::Error>(())
     /// ```
-    pub fn add_rules_str(&mut self, rule: &str) -> Result<(), Error> {
-        internals::compiler_add_string(self.inner, rule, None)
+    pub fn add_rules_str(self, rule: &str) -> Result<Compiler, Error> {
+        internals::compiler_add_string(self.inner, rule, None).map(|()| self)
     }
 
     /// Add rule definition from a string within a namespace.
@@ -88,38 +96,38 @@ impl Compiler {
     ///
     /// ```
     /// # use yara::Compiler;
-    /// let mut compiler = Compiler::new()?;
-    /// compiler.add_rules_str_with_namespace("rule is_empty {
+    /// let mut compiler = Compiler::new()?
+    ///     .add_rules_str_with_namespace("rule is_empty {
     ///   condition:
     ///     filesize == 0
     /// }", "misc")?;
     /// # Ok::<(), yara::Error>(())
     /// ```
     pub fn add_rules_str_with_namespace(
-        &mut self,
+        self,
         rule: &str,
         namespace: &str,
-    ) -> Result<(), Error> {
-        internals::compiler_add_string(self.inner, rule, Some(namespace))
+    ) -> Result<Compiler, Error> {
+        internals::compiler_add_string(self.inner, rule, Some(namespace)).map(|()| self)
     }
 
     /// Add rules definitions from a opened file.
     pub fn add_rules_fd<P: AsRef<Path>, F: AsRawFd>(
-        &mut self,
+        self,
         file: &F,
         path: P,
-    ) -> Result<(), Error> {
-        internals::compiler_add_file(self.inner, file, path, None)
+    ) -> Result<Compiler, Error> {
+        internals::compiler_add_file(self.inner, file, path, None).map(|()| self)
     }
 
     /// Add rules definitions from a opened file with namespace.
     pub fn add_rules_fd_with_namespace<P: AsRef<Path>, F: AsRawFd>(
-        &mut self,
+        self,
         file: &F,
         path: P,
         namespace: &str,
-    ) -> Result<(), Error> {
-        internals::compiler_add_file(self.inner, file, path, Some(namespace))
+    ) -> Result<Compiler, Error> {
+        internals::compiler_add_file(self.inner, file, path, Some(namespace)).map(|()| self)
     }
 
     /// Compile the rules.

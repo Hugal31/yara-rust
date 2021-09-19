@@ -33,7 +33,7 @@ use crate::{compiler::CompilerVariableValue, errors::*, internals, rules::Rules,
 /// // You MUST declare external variables and default values at compile time.
 /// compiler.define_variable("habitat", "land")?;
 /// compiler.define_variable("is_cute", false)?;
-/// compiler.add_rules_str(r#"rule is_ferris {
+/// compiler = compiler.add_rules_str(r#"rule is_ferris {
 ///   strings:
 ///     $rust = "rust" nocase
 ///   condition:
@@ -383,8 +383,11 @@ mod test {
         compiler.define_variable("life_expectancy", 99).unwrap();
         compiler.define_variable("size", 1.0_f64).unwrap();
         compiler.define_variable("is_cute", false).unwrap();
-        compiler.add_rules_str(RULES).unwrap();
-        let rules = compiler.compile_rules().unwrap();
+        let rules = compiler
+            .add_rules_str(RULES)
+            .unwrap()
+            .compile_rules()
+            .unwrap();
         // Create two scanners, with different variable definitions:
         // a crab, and a Rust gamer.
         let mut scanner1 = rules.scanner().unwrap();
@@ -458,8 +461,7 @@ mod test {
 
     #[test]
     fn scanner_scan_proc() {
-        let mut compiler = Compiler::new().unwrap();
-        compiler.add_rules_str(RULES_PROC).unwrap();
+        let compiler = Compiler::new().unwrap().add_rules_str(RULES_PROC).unwrap();
         let rules = compiler.compile_rules().unwrap();
         let mut scanner = rules.scanner().unwrap();
         scanner.set_timeout(10);

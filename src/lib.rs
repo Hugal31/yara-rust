@@ -31,8 +31,8 @@
 //! }
 //! "#;
 //!
-//! let mut compiler = Compiler::new()?;
-//! compiler.add_rules_str(rules)?;
+//! let mut compiler = Compiler::new()?
+//!     .add_rules_str(rules)?;
 //! let rules = compiler.compile_rules()?;
 //! let results = rules.scan_file("File.apk", 5)?;
 //!

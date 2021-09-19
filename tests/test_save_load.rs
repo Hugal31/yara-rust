@@ -13,8 +13,8 @@ const RULES: &str = "rule a_rule {
 ";
 
 fn test_save() {
-    let mut compiler = Compiler::new().unwrap();
-    compiler
+    let compiler = Compiler::new()
+        .unwrap()
         .add_rules_str(RULES)
         .expect("add_rules_str should not fail");
     let mut rules = compiler.compile_rules().unwrap();

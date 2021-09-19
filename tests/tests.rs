@@ -35,9 +35,12 @@ rule re_is_ok {
 "#;
 
 fn compile(rule: &str) -> Rules {
-    let mut compiler = Compiler::new().expect("Should create compiler");
-    compiler.add_rules_str(rule).expect("Should parse rule");
-    compiler.compile_rules().expect("Should compile rules")
+    Compiler::new()
+        .expect("Should create compiler")
+        .add_rules_str(rule)
+        .expect("Should parse rule")
+        .compile_rules()
+        .expect("Should compile rules")
 }
 
 fn get_default_rules() -> Rules {
@@ -45,11 +48,12 @@ fn get_default_rules() -> Rules {
 }
 
 fn compile_with_namespace(rule: &str, namespace: &str) -> Rules {
-    let mut compiler = Compiler::new().expect("Should create compiler");
-    compiler
+    Compiler::new()
+        .expect("Should create compiler")
         .add_rules_str_with_namespace(rule, namespace)
-        .expect("Should parse rule");
-    compiler.compile_rules().expect("Should compile rules")
+        .expect("Should parse rule")
+        .compile_rules()
+        .expect("Should compile rules")
 }
 
 #[test]
@@ -72,13 +76,15 @@ fn test_create_compiler() {
 #[test]
 fn test_compile_string_rules() {
     let mut compiler = Compiler::new().unwrap();
-    assert!(compiler.add_rules_str(RULES).is_ok());
-    assert!(compiler.add_rules_str("nop.").is_err());
+    compiler = compiler.add_rules_str(RULES).expect("should compile");
+    compiler
+        .add_rules_str("nop.")
+        .expect_err("should not compile");
 }
 
 #[test]
 fn test_compile_error() {
-    let mut compiler = Compiler::new().unwrap();
+    let compiler = Compiler::new().unwrap();
     let err = compiler.add_rules_str("rule nop {\n").unwrap_err();
     if let Error::Compile(compile_error) = err {
         let first_error = compile_error.iter().next().unwrap();
@@ -90,13 +96,13 @@ fn test_compile_error() {
 
 #[test]
 fn test_compile_file_rules() {
-    let mut compiler = Compiler::new().unwrap();
+    let compiler = Compiler::new().unwrap();
     assert!(compiler.add_rules_file("tests/rules.txt").is_ok());
 }
 
 #[test]
 fn test_compile_fd_rules() {
-    let mut compiler = Compiler::new().unwrap();
+    let compiler = Compiler::new().unwrap();
     let file = std::fs::File::open("tests/rules.txt").unwrap();
     assert!(compiler.add_rules_fd(&file, "tests/rules.txt").is_ok());
 }
@@ -246,9 +252,12 @@ I love Rust!
 I love Rust!
 I love Rust!
 ";
-    let mut compiler = Compiler::new().unwrap();
-    compiler.add_rules_str(RULES).expect("Should be Ok");
-    let mut rules = compiler.compile_rules().unwrap();
+    let mut rules = Compiler::new()
+        .unwrap()
+        .add_rules_str(RULES)
+        .expect("Should be Ok")
+        .compile_rules()
+        .unwrap();
     rules.set_flags(yara::SCAN_FLAGS_FAST_MODE);
 
     let result = rules
@@ -371,7 +380,7 @@ rule IsNCharLong {
     compiler
         .define_variable("desired_length", 5)
         .expect("Should have added a rule");
-    compiler
+    compiler = compiler
         .add_rules_str(rule_definition)
         .expect("Should parse rule");
 
