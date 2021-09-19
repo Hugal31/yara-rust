@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.10.0](https://github.com/Hugal31/yara-rust/compare/v0.9.1...v0.10.0) (2021-09-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* Compiler.add_rules_* functions now takes `Compiler`
+by value and return it if the rule is succesfully added.
+* Minimum Rust version is now 1.55.
+
+### Features
+
+* **yara-sys:** vendored feature uses v4.1.2 ([18b7ae4](https://github.com/Hugal31/yara-rust/commit/18b7ae48656c1ffaf6b8ea8db295d43b86294812))
+* add support for `yr_scanner_scan_mem_blocks` ([e1aa11e](https://github.com/Hugal31/yara-rust/commit/e1aa11e75338c64fe63ef4bbeafaccce62f1dca2))
+
+### Bug Fixes
+
+* prevent UB when failing to compile a rule ([99f756a](https://github.com/Hugal31/yara-rust/commit/99f756a15dd9a11dde76923dcee0ee4bbdf6073b)), closes [#47](https://github.com/Hugal31/yara-rust/issues/47)
+
 ## [0.9.1](https://github.com/Hugal31/yara-rust/compare/v0.9.0...v0.9.1) (2021-09-13)
 
 
