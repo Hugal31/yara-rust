@@ -1,6 +1,7 @@
 use std::convert::TryFrom as _;
 use std::ffi::CStr;
 use std::fs::File;
+use std::os::raw::{c_char, c_void};
 #[cfg(unix)]
 use std::os::unix::io::AsRawFd;
 #[cfg(windows)]
@@ -18,10 +19,21 @@ use crate::Rules;
 ///
 /// add_rules_* functions takes ownership on the compiler, because if a rule fails to compile,
 /// the Compiler is corrupted. See issue [#47](https://github.com/Hugal31/yara-rust/issues/47).
-#[derive(Debug)]
 pub struct Compiler {
     inner: *mut yara_sys::YR_COMPILER,
     _token: InitializationToken,
+    // The user_data used by the include callback and it's associated free function
+    // Safety: It must stay alive until the end of compilation or until a new callback is set
+    include_user_data: Option<(*mut c_void, fn(*mut c_void))>,
+}
+
+impl std::fmt::Debug for Compiler {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Compiler")
+            .field("inner", &self.inner)
+            .field("_token", &self._token)
+            .finish()
+    }
 }
 
 impl Compiler {
@@ -32,6 +44,7 @@ impl Compiler {
         internals::compiler_create().map(|inner| Compiler {
             inner,
             _token: token,
+            include_user_data: None,
         })
     }
 
@@ -177,11 +190,126 @@ impl Compiler {
     ) -> Result<(), YaraError> {
         value.add_to_compiler(self.inner, identifier)
     }
+
+    /// Sets a custom callback for the `include 'file.yara'` directive.
+    ///
+    /// This allows includes to be resolve in a custom way (database, network, cache, ...)
+    /// instead of trying to read them on disk.
+    ///
+    /// The compiler takes ownership of the closure (it will be dropped at the same time)
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// # use yara::Compiler;
+    /// # use std::collections::HashMap;
+    /// let mut rules_db = HashMap::new();
+    /// rules_db.insert("something.yara".to_string(), "data".to_string());
+    /// let mut compiler = Compiler::new().unwrap();
+    /// compiler.set_include_callback(move |name, _, _| rules_db.get(name).map(|r| r.clone()));
+    /// ```
+    pub fn set_include_callback<C>(&mut self, callback: C)
+    where
+        C: Fn(&str, Option<&str>, Option<&str>) -> Option<String> + 'static,
+    {
+        unsafe extern "C" fn include_callback<C>(
+            include_name: *const c_char,
+            calling_rule_filename: *const c_char,
+            calling_rule_namespace: *const c_char,
+            user_data: *mut c_void,
+        ) -> *const c_char
+        where
+            C: Fn(&str, Option<&str>, Option<&str>) -> Option<String> + 'static,
+        {
+            let cb: &mut C = std::mem::transmute(user_data);
+
+            let name = std::ffi::CStr::from_ptr(include_name);
+            let name = match name.to_str() {
+                Ok(s) => s,
+                Err(_) => return std::ptr::null(),
+            };
+
+            let filename = match calling_rule_filename.is_null() {
+                true => None,
+                false => {
+                    let filename = std::ffi::CStr::from_ptr(calling_rule_filename);
+                    match filename.to_str() {
+                        Ok(s) => Some(s),
+                        Err(_) => return std::ptr::null(),
+                    }
+                }
+            };
+
+            let namespace = match calling_rule_namespace.is_null() {
+                true => None,
+                false => {
+                    let namespace = std::ffi::CStr::from_ptr(calling_rule_namespace);
+                    match namespace.to_str() {
+                        Ok(s) => Some(s),
+                        Err(_) => return std::ptr::null(),
+                    }
+                }
+            };
+
+            let res = match cb(name, filename, namespace) {
+                Some(res) => res,
+                None => return std::ptr::null(),
+            };
+
+            std::ffi::CString::new(res.into_bytes())
+                .map(|s| s.into_raw() as *const _)
+                .unwrap_or(std::ptr::null())
+        }
+
+        unsafe extern "C" fn free_include(ptr: *const c_char, _user_data: *mut c_void) {
+            std::ffi::CString::from_raw(ptr as *mut _);
+        }
+
+        fn free_user_data<C>(user_data: *mut c_void) {
+            unsafe {
+                let cb: *mut C = std::mem::transmute(user_data);
+                let _ = Box::from_raw(cb);
+            }
+        }
+
+        let callback = Box::new(callback);
+        let user_data = Box::leak(callback) as *mut _ as *mut c_void;
+        unsafe {
+            // Safety: the compiler is valid
+            yara_sys::yr_compiler_set_include_callback(
+                self.inner,
+                Some(include_callback::<C>),
+                Some(free_include),
+                user_data,
+            );
+        }
+
+        if let Some((data, free)) = self.include_user_data.take() {
+            free(data);
+        }
+        self.include_user_data = Some((user_data, free_user_data::<C>));
+    }
+
+    /// Disables the support for the `include 'file.yara'` directive
+    pub fn disable_include_directive(&mut self) {
+        unsafe {
+            // Safety: the compiler is valid
+            yara_sys::yr_compiler_set_include_callback(
+                self.inner,
+                None,
+                None,
+                std::ptr::null_mut(),
+            );
+        }
+    }
 }
 
 impl Drop for Compiler {
     fn drop(&mut self) {
         internals::compiler_destroy(self.inner);
+        if let Some((data, free)) = self.include_user_data.take() {
+            free(data);
+        }
     }
 }
 

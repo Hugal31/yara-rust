@@ -463,3 +463,61 @@ fn test_default_rules(rules: &Rules) {
     let scan_result = scan_mem_result.expect("Should be Ok");
     assert_eq!(1, scan_result.len());
 }
+
+#[test]
+fn test_include_callback() {
+    let rule_1 = r#"
+include "is_ok.yara"
+
+rule is_awesome {
+  strings:
+    $rust = /[Rr]ust/
+
+  condition:
+    $rust
+}
+"#;
+
+    let rule_2 = r#"
+rule is_ok {
+  strings:
+    $go = "go"
+
+  condition:
+    $go
+}
+"#;
+
+    use std::collections::HashMap;
+    let mut rules_cache = HashMap::new();
+    rules_cache.insert("is_ok.yara".to_string(), rule_2.to_string());
+
+    let mut compiler = Compiler::new().unwrap();
+    compiler.set_include_callback(move |name, _, _| rules_cache.get(name).map(|r| r.to_string()));
+
+    compiler
+        .add_rules_str(rule_1)
+        .expect("Should be Ok")
+        .compile_rules()
+        .expect("Compiles OK");
+}
+
+#[test]
+fn test_disable_include() {
+    let rule_1 = r#"
+include "is_ok.yara"
+
+rule is_awesome {
+  strings:
+    $rust = /[Rr]ust/
+
+  condition:
+    $rust
+}
+"#;
+
+    let mut compiler = Compiler::new().unwrap();
+    compiler.disable_include_directive();
+    let res = compiler.add_rules_str(rule_1);
+    assert!(res.is_err());
+}
