@@ -1,4 +1,3 @@
-use std::convert::TryFrom as _;
 use std::ffi::CStr;
 use std::fs::File;
 #[cfg(unix)]
@@ -139,7 +138,9 @@ impl Compiler {
     /// It is safe to destroy the compiler after, because the rules do not depends on the compiler.
     /// In addition, we must hide the compiler from the user because it can be used only once.
     pub fn compile_rules(self) -> Result<Rules, YaraError> {
-        internals::compiler_get_rules(self.inner).and_then(Rules::try_from)
+        internals::compiler_get_rules(self.inner).and_then(|v| unsafe {
+            Rules::unsafe_try_from(v)
+        })
     }
 
     /// Add a variable to the compiler.

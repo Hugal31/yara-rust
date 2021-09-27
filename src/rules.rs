@@ -1,4 +1,3 @@
-use std::convert::TryFrom;
 use std::fs::File;
 use std::io::{Read, Write};
 #[cfg(unix)]
@@ -50,10 +49,15 @@ unsafe impl std::marker::Send for Rules {}
 /// This is safe because Yara have a mutex on the YR_RULES
 unsafe impl std::marker::Sync for Rules {}
 
-impl TryFrom<*mut yara_sys::YR_RULES> for Rules {
-    type Error = YaraError;
-
-    fn try_from(rules: *mut yara_sys::YR_RULES) -> Result<Self, Self::Error> {
+impl Rules {
+    /// Takes ownership of the given [`YR_RULES`](yara_sys::YR_RULES) handle.
+    ///
+    /// # Safety
+    ///
+    /// The provided pointer must be valid, and be acquired from the Yara
+    /// library, either through [`yr_compiler_get_rules`], [`yr_rules_load`] or
+    /// [`yr_rules_load_stream`].
+    pub unsafe fn unsafe_try_from(rules: *mut yara_sys::YR_RULES) -> Result<Self, YaraError> {
         let token = InitializationToken::new()?;
 
         Ok(Rules {
