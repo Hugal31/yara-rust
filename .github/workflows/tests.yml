@@ -35,12 +35,12 @@ jobs:
         os: [ windows-2019 ]
         features: [ "vendored,bundled-4_1_2" ]
         rust: [ stable ]
-        openssl: [ "on", "off" ]
+        cryptolib: [ "OpenSSL", "WinCrypt", "disabled" ]
 
     runs-on: ${{ matrix.os }}
     steps:
         - name: Install OpenSSL
-          if: ${{ matrix.openssl == 'on' }}
+          if: ${{ matrix.cryptolib == 'OpenSSL' }}
           run: choco install openssl
         - uses: actions/checkout@v2
           with:
@@ -51,10 +51,9 @@ jobs:
             toolchain: ${{ matrix.rust }}
             override: true
         - name: Test
-          if: ${{ matrix.openssl == 'on' }}
           uses: actions-rs/cargo@v1
           env:
-            YARA_ENABLE_HASH: 1
+            YARA_CRYPTO_LIB: ${{ matrix.cryptolib }}
             INCLUDE: C:\Program Files\OpenSSL-Win64\include
             LIBRARY: C:\Program Files\OpenSSL-Win64\lib
             LIB: C:\Program Files\OpenSSL-Win64\lib
@@ -62,23 +61,15 @@ jobs:
             command: test
             toolchain: ${{ matrix.rust }}
             args: --verbose --no-default-features --features ${{ matrix.features }}
-        - name: Test
-          if: ${{ matrix.openssl == 'off' }}
-          uses: actions-rs/cargo@v1
-          env:
-            YARA_ENABLE_CRYPTO: 0
-          with:
-            command: test
-            toolchain: ${{ matrix.rust }}
-            args: --verbose --no-default-features --features ${{ matrix.features }} 
 
-  build-macos: 
+  build-macos:
     strategy:
       matrix:
         os: [ macos-10.15 ]
         features: [ "vendored,bindgen", "vendored,bundled-4_1_2" ]
         rust: [ stable, nightly ]
-        openssl_dir: [ "/usr/local/opt/openssl" ]
+        cryptolib: [ "OpenSSL", "CommonCrypto", "disabled" ]
+        openssl_dir: [ "/usr/local/opt/openssl@1.1" ]
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -93,11 +84,10 @@ jobs:
       - name: Test
         uses: actions-rs/cargo@v1
         env:
-          YARA_ENABLE_HASH: 1
-          C_INCLUDE_PATH: '${{ matrix.openssl_dir }}/include'
+          YARA_CRYPTO_LIB: '${{ matrix.cryptolib }}'
+          CFLAGS: '-I ${{ matrix.openssl_dir }}/include'
           OPENSSL_LIB_DIR: '${{ matrix.openssl_dir }}/lib'
         with:
           command: build
           toolchain: ${{ matrix.rust }}
           args: --verbose --no-default-features --features ${{ matrix.features }}
-  

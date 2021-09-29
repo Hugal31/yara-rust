@@ -32,12 +32,41 @@ mod build {
     use std::path::PathBuf;
 
     use globwalk;
-    use libloading::Library;
-    use std::env::consts::DLL_SUFFIX;
     #[cfg(unix)]
     use std::os::unix::fs::symlink as symlink_dir;
     #[cfg(windows)]
     use std::os::windows::fs::symlink_dir;
+
+    enum CryptoLib {
+        OpenSSL,
+        Wincrypt,
+        CommonCrypto,
+        None,
+    }
+
+    fn get_crypto_lib() -> CryptoLib {
+        match get_env_var("YARA_CRYPTO_LIB")
+            .map(|v| v.to_lowercase())
+            .as_deref()
+        {
+            Some("openssl") => CryptoLib::OpenSSL,
+            Some("wincrypt") => CryptoLib::Wincrypt,
+            Some("commoncrypto") => CryptoLib::CommonCrypto,
+            Some(_) => CryptoLib::None,
+            None => {
+                // defaults to target family's crypto lib if not specified
+                match std::env::var("CARGO_CFG_TARGET_OS").ok().unwrap().as_str() {
+                    "linux" | "freebsd" | "android" | "openbsd" | "netbsd" => CryptoLib::OpenSSL,
+                    "windows" => CryptoLib::Wincrypt,
+                    "macos" | "ios" => CryptoLib::CommonCrypto,
+                    _ => {
+                        println!("cargo:warning=Can't determine crypto lib to use during compilation for your target platform, please specify one via YARA_CRYPTO_LIB or disable it via YARA_CRYPTO_LIB=disable");
+                        std::process::exit(1);
+                    }
+                }
+            }
+        }
+    }
 
     pub fn build_and_link() {
         let old_basedir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("yara");
@@ -66,15 +95,13 @@ mod build {
         match std::env::var("CARGO_CFG_TARGET_OS").ok().unwrap().as_str() {
             "windows" => cc
                 .file(basedir.join("proc").join("windows.c"))
-                .define("USE_WINDOWS_PROC", "")
-                .define("HAVE_WINCRYPT_H", ""),
+                .define("USE_WINDOWS_PROC", ""),
             "linux" => cc
                 .file(basedir.join("proc").join("linux.c"))
                 .define("USE_LINUX_PROC", ""),
             "macos" => cc
                 .file(basedir.join("proc").join("mach.c"))
-                .define("USE_MACH_PROC", "")
-                .define("HAVE_COMMONCRYPTO_COMMONCRYPTO_H", ""),
+                .define("USE_MACH_PROC", ""),
             _ => cc
                 .file(basedir.join("libyara/proc/none.c"))
                 .define("USE_NO_PROC", ""),
@@ -90,22 +117,15 @@ mod build {
         };
 
         let mut enable_crypto = false;
-        if is_enable("YARA_ENABLE_CRYPTO", true) {
-            let mut libcrypto = format!("libcrypto{}", DLL_SUFFIX);
-            if let Some(openssl_lib_dir) = get_env_var("OPENSSL_LIB_DIR") {
-                let mut buffer = PathBuf::from(openssl_lib_dir);
-                println!("cargo:rustc-link-search=native={}", buffer.display());
-                buffer.push(libcrypto);
-                libcrypto = buffer.to_str().unwrap().to_string();
-            }
+        match get_crypto_lib() {
+            CryptoLib::OpenSSL => {
+                if let Some(openssl_lib_dir) = get_env_var("OPENSSL_LIB_DIR") {
+                    println!(
+                        "cargo:rustc-link-search=native={}",
+                        PathBuf::from(openssl_lib_dir).display()
+                    );
+                }
 
-            let load_result = unsafe { Library::new(libcrypto) };
-            if let Err(err) = load_result {
-                println!("cargo:warning=Please install OpenSSL library");
-                println!("cargo:warning={:?}", err);
-                std::process::exit(1);
-            }
-            else {
                 enable_crypto = true;
                 cc.define("HAVE_LIBCRYPTO", "1");
                 if std::env::var("CARGO_CFG_TARGET_FAMILY")
@@ -123,9 +143,20 @@ mod build {
                     println!("cargo:rustc-link-lib=dylib=crypto");
                 }
             }
+            CryptoLib::Wincrypt => {
+                enable_crypto = true;
+                cc.define("HAVE_WINCRYPT_H", "1");
+                println!("cargo:rustc-link-lib=dylib=crypt32");
+            }
+            CryptoLib::CommonCrypto => {
+                enable_crypto = true;
+                cc.define("HAVE_COMMONCRYPTO_COMMONCRYPTO_H", "1");
+                println!("cargo:rustc-link-lib=dylib=System");
+            }
+            CryptoLib::None => {}
         }
 
-        if is_enable("YARA_ENABLE_HASH", false) && enable_crypto {
+        if is_enable("YARA_ENABLE_HASH", true) && enable_crypto {
             cc.define("HASH_MODULE", "1");
         } else {
             exclude.push(basedir.join("modules").join("hash").join("hash.c"));

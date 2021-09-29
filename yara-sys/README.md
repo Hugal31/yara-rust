@@ -31,14 +31,14 @@ You can specify the location of Yara:
 You can specify compile options for libyara v4.1.2 if choice `vendored` (`0` - disable, `1` - enable):
 - YARA_ENABLE_PROFILING - enable rules profiling support (default: **Disable**)
 - YARA_ENABLE_NDEBUG - enable NDEBUG (default: **Enable**)
-- YARA_ENABLE_HASH - enable [hash](https://yara.readthedocs.io/en/stable/modules/hash.html) module (default: **Disable**)
+- YARA_ENABLE_HASH - enable [hash](https://yara.readthedocs.io/en/stable/modules/hash.html) module (default: **Enable**)
 - YARA_ENABLE_MAGIC - enable [magic](https://yara.readthedocs.io/en/stable/modules/magic.html) module (depends on libmagic) (default: **Disable**)
 - YARA_ENABLE_CUCKOO - enable [cuckoo](https://yara.readthedocs.io/en/stable/modules/cuckoo.html) module (depends on [Jansson](https://digip.org/jansson/) for parsing JSON) (default: **Disable**)
 - YARA_ENABLE_DOTNET - enable [dotnet](https://yara.readthedocs.io/en/stable/modules/dotnet.html) module (default: **Enable**)
 - YARA_ENABLE_DEX - enable dex module (default: **Enable**)
 - YARA_ENABLE_DEX_DEBUG - enable dex module debugging (default: **Disable**)
 - YARA_ENABLE_MACHO - enable macho module (default: **Enable**)
-- YARA_ENABLE_CRYPTO - enable OpenSSL (default: **Enable**)
+- YARA_CRYPTO_LIB - which crypto lib to use for the hash and pe modules. Header files must be available during compilation, and the lib must be installed on the target platform. Recognized values: `OpenSSL`, `Wincrypt`, `CommonCrypto` or `disable`. (default: will choose based on target os)
 - YARA_DEBUG_VERBOSITY - Set debug level information on runtime (default: **0**)
 - OPENSSL_LIB_DIR - path to OpenSSL library directory
 
