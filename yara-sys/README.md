@@ -41,6 +41,16 @@ You can specify compile options for libyara v4.1.3 if choice `vendored` (`0` - d
 - YARA_ENABLE_CRYPTO - enable OpenSSL (default: **Enable**)
 - YARA_DEBUG_VERBOSITY - Set debug level information on runtime (default: **0**)
 - OPENSSL_LIB_DIR - path to OpenSSL library directory
+
+Each of these variables can also be supplied with certain prefixes and suffixes,
+in the following prioritized order:
+
+1. `<var>_<target>` - for example, `YARA_ENABLE_MACHO_x86_64-unknown-linux-gnu`
+2. `<var>_<target_with_underscores>` - for example, `YARA_ENABLE_MACHO_x86_64_unknown_linux_gnu`
+3. `<var>` - a plain `YARA_ENABLE_MACHO`, as above.
+
+If none of these variables exist, yara-sys uses built-in defaults
+
 ## License
 
 Licensed under either of

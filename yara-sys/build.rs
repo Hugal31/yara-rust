@@ -9,8 +9,30 @@ pub fn cargo_rerun_if_env_changed(env_name: &str) {
     println!("cargo:rerun-if-env-changed={}", env_name);
 }
 
+fn get_target_env_var(env_var: &str) -> Option<String> {
+    let target = std::env::var("TARGET").unwrap();
+    std::env::var(format!("{}_{}", env_var, target))
+        .or(std::env::var(format!(
+            "{}_{}",
+            env_var,
+            target.replace("-", "_")
+        )))
+        .or(std::env::var(env_var))
+        .ok()
+}
+
+fn is_enable(env_var: &str, default: bool) -> bool {
+    match get_env_var(env_var).as_deref() {
+        Some("0") => false,
+        Some(_) => true,
+        None => default,
+    }
+}
+
 #[cfg(feature = "vendored")]
 mod build {
+    use super::get_target_env_var;
+    use super::is_enable;
     use std::path::PathBuf;
 
     use super::cargo_rerun_if_env_changed;
@@ -20,14 +42,6 @@ mod build {
     use std::os::unix::fs::symlink as symlink_dir;
     #[cfg(windows)]
     use std::os::windows::fs::symlink_dir;
-
-    fn is_enable(env_var: &str, default: bool) -> bool {
-        match std::env::var(env_var).ok().as_deref() {
-            Some("0") => false,
-            Some(_) => true,
-            None => default,
-        }
-    }
 
     pub fn build_and_link() {
         let old_basedir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("yara");
@@ -82,7 +96,7 @@ mod build {
         let mut enable_crypto = false;
         if is_enable("YARA_ENABLE_CRYPTO", true) {
             let mut libcrypto = format!("libcrypto{}", DLL_SUFFIX);
-            if let Ok(openssl_lib_dir) = std::env::var("OPENSSL_LIB_DIR") {
+            if let Some(openssl_lib_dir) = get_target_env_var("OPENSSL_LIB_DIR") {
                 let mut buffer = PathBuf::from(openssl_lib_dir);
                 println!("cargo:rustc-link-search=native={}", buffer.display());
                 buffer.push(libcrypto);
@@ -156,7 +170,7 @@ mod build {
             cc.define("NDEBUG", "1");
         }
 
-        let verbosity = std::env::var("YARA_DEBUG_VERBOSITY").unwrap_or_else(|_| "0".to_string());
+        let verbosity = get_target_env_var("YARA_DEBUG_VERBOSITY").unwrap_or_else(|_| "0".to_string());
         cc.define("YR_DEBUG_VERBOSITY", verbosity.as_str());
 
         let walker = globwalk::GlobWalkerBuilder::from_patterns(&basedir, &["**/*.c", "!proc/*"])
@@ -210,23 +224,24 @@ mod build {
 #[cfg(not(feature = "vendored"))]
 mod build {
     use super::cargo_rerun_if_env_changed;
+    use super::get_target_env_var;
+    use super::is_enable;
 
     /// Tell cargo to tell rustc to link the system yara
     /// shared library.
     pub fn build_and_link() {
-        let kind = match std::env::var("LIBYARA_STATIC").ok().as_deref() {
-            Some("0") => "dylib",
-            Some(_) => "static",
-            None => "dylib",
+        let kind = if is_enable("LIBYARA_STATIC", false) {
+            "static"
+        } else {
+            "dylib"
         };
         println!("cargo:rustc-link-lib={}=yara", kind);
         cargo_rerun_if_env_changed("LIBYARA_STATIC");
         cargo_rerun_if_env_changed("YARA_LIBRARY_PATH");
 
         // Add the environment variable YARA_LIBRARY_PATH to the library search path.
-        if let Some(yara_library_path) = std::env::var("YARA_LIBRARY_PATH")
-            .ok()
-            .filter(|path| !path.is_empty())
+        if let Some(yara_library_path) =
+            get_target_env_var("YARA_LIBRARY_PATH").filter(|path| !path.is_empty())
         {
             println!("cargo:rustc-link-search=native={}", yara_library_path);
         }
@@ -258,6 +273,8 @@ mod bindings {
 
     use std::env;
     use std::path::PathBuf;
+
+    use super::get_target_env_var;
 
     pub fn add_bindings() {
         let mut builder = bindgen::Builder::default()
@@ -297,9 +314,8 @@ mod bindings {
             .opaque_type("YR_FIXUP")
             .opaque_type("YR_LOOP_CONTEXT");
 
-        if let Some(yara_include_dir) = env::var("YARA_INCLUDE_DIR")
-            .ok()
-            .filter(|dir| !dir.is_empty())
+        if let Some(yara_include_dir) =
+            get_target_env_var("YARA_INCLUDE_DIR").filter(|dir| !dir.is_empty())
         {
             builder = builder.clang_arg(format!("-I{}", yara_include_dir))
         }
