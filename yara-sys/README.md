@@ -27,7 +27,7 @@ You can specify the location of Yara:
   variable.
 - The path of the Yara headers by setting the `YARA_INCLUDE_DIR` environment
   variable, if you use the `bindgen` feature.
-  
+
 You can specify compile options for libyara v4.1.2 if choice `vendored` (`0` - disable, `1` - enable):
 - YARA_ENABLE_PROFILING - enable rules profiling support (default: **Disable**)
 - YARA_ENABLE_NDEBUG - enable NDEBUG (default: **Enable**)
@@ -39,8 +39,18 @@ You can specify compile options for libyara v4.1.2 if choice `vendored` (`0` - d
 - YARA_ENABLE_DEX_DEBUG - enable dex module debugging (default: **Disable**)
 - YARA_ENABLE_MACHO - enable macho module (default: **Enable**)
 - YARA_ENABLE_CRYPTO - enable OpenSSL (default: **Enable**)
-- YARA_DEBUG_VERBOSIT - Set debug level information on runtime (default: **0**)
+- YARA_DEBUG_VERBOSITY - Set debug level information on runtime (default: **0**)
 - OPENSSL_LIB_DIR - path to OpenSSL library directory
+
+Each of these variables can also be supplied with certain prefixes and suffixes,
+in the following prioritized order:
+
+1. `<var>_<target>` - for example, `YARA_ENABLE_MACHO_x86_64-unknown-linux-gnu`
+2. `<var>_<target_with_underscores>` - for example, `YARA_ENABLE_MACHO_x86_64_unknown_linux_gnu`
+3. `<var>` - a plain `YARA_ENABLE_MACHO`, as above.
+
+If none of these variables exist, yara-sys uses built-in defaults
+
 ## License
 
 Licensed under either of
