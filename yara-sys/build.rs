@@ -244,8 +244,6 @@ mod bindings {
     use std::fs;
     use std::path::PathBuf;
 
-    use super::cargo_rerun_if_env_changed;
-
     pub fn add_bindings() {
         let binding_file = match env::var("CARGO_CFG_TARGET_FAMILY").unwrap().as_ref() {
             "unix" => "yara-4.1.2-unix.rs",
