@@ -16,6 +16,7 @@ pub enum CallbackMsg<'r> {
     ScanFinished,
     ImportModule,
     ModuleImported,
+    TooManyMatches,
     UnknownMsg,
 }
 
@@ -37,6 +38,7 @@ impl<'r> CallbackMsg<'r> {
             yara_sys::CALLBACK_MSG_SCAN_FINISHED => ScanFinished,
             yara_sys::CALLBACK_MSG_IMPORT_MODULE => ImportModule,
             yara_sys::CALLBACK_MSG_MODULE_IMPORTED => ModuleImported,
+            yara_sys::CALLBACK_MSG_TOO_MANY_MATCHES => TooManyMatches,
             _ => UnknownMsg,
         }
     }
