@@ -17,8 +17,6 @@ pub mod scan_flags {
         SCAN_FLAGS_REPORT_RULES_MATCHING,
         SCAN_FLAGS_REPORT_RULES_NOT_MATCHING,
     };
-
-    pub use super::META_TYPE_INTEGER;
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
