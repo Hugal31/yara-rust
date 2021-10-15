@@ -124,10 +124,10 @@ fn test_scan_mem() {
 }
 
 #[test]
-fn test_scan_mem_callback_abort<'r>() {
+fn test_scan_mem_callback_abort() {
     let rules = get_default_rules();
     let mut results = Vec::new();
-    let callback = |message: CallbackMsg<'r>| {
+    let callback = |message| {
         if let CallbackMsg::RuleMatching(rule) = message {
             results.push(rule);
         }

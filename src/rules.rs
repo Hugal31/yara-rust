@@ -1,4 +1,3 @@
-use std::convert::TryFrom;
 use std::fs::File;
 use std::io::{Read, Write};
 #[cfg(unix)]
@@ -50,10 +49,15 @@ unsafe impl std::marker::Send for Rules {}
 /// This is safe because Yara have a mutex on the YR_RULES
 unsafe impl std::marker::Sync for Rules {}
 
-impl TryFrom<*mut yara_sys::YR_RULES> for Rules {
-    type Error = YaraError;
-
-    fn try_from(rules: *mut yara_sys::YR_RULES) -> Result<Self, Self::Error> {
+impl Rules {
+    /// Takes ownership of the given [`YR_RULES`](yara_sys::YR_RULES) handle.
+    ///
+    /// # Safety
+    ///
+    /// The provided pointer must be valid, and be acquired from the Yara
+    /// library, either through [`yr_compiler_get_rules`], [`yr_rules_load`] or
+    /// [`yr_rules_load_stream`].
+    pub unsafe fn unsafe_try_from(rules: *mut yara_sys::YR_RULES) -> Result<Self, YaraError> {
         let token = InitializationToken::new()?;
 
         Ok(Rules {
@@ -108,7 +112,7 @@ impl Rules {
     /// assert_eq!(b"Rust", m.data.as_slice());
     /// # Ok::<(), yara::Error>(())
     /// ```
-    pub fn scan_mem<'r>(&self, mem: &[u8], timeout: u16) -> Result<Vec<Rule<'r>>, YaraError> {
+    pub fn scan_mem<'r>(&'r self, mem: &[u8], timeout: u16) -> Result<Vec<Rule<'r>>, YaraError> {
         let mut results: Vec<Rule<'r>> = Vec::new();
         let callback = |message: CallbackMsg<'r>| {
             if let CallbackMsg::RuleMatching(rule) = message {
@@ -128,7 +132,7 @@ impl Rules {
     /// * `timeout` - the timeout is in seconds
     /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
     pub fn scan_mem_callback<'r>(
-        &self,
+        &'r self,
         mem: &[u8],
         timeout: u16,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
@@ -149,7 +153,7 @@ impl Rules {
     /// * `path` - Path to file
     /// * `timeout` - the timeout is in seconds
     pub fn scan_file<'r, P: AsRef<Path>>(
-        &self,
+        &'r self,
         path: P,
         timeout: u16,
     ) -> Result<Vec<Rule<'r>>, Error> {
@@ -172,7 +176,7 @@ impl Rules {
     /// * `timeout` - the timeout is in seconds
     /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
     pub fn scan_file_callback<'r, P: AsRef<Path>>(
-        &self,
+        &'r self,
         path: P,
         timeout: u16,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
@@ -201,7 +205,7 @@ impl Rules {
     /// # Permissions
     ///
     /// You need to be able to attach to process `pid`.
-    pub fn scan_process<'r>(&self, pid: u32, timeout: u16) -> Result<Vec<Rule<'r>>, YaraError> {
+    pub fn scan_process<'r>(&'r self, pid: u32, timeout: u16) -> Result<Vec<Rule<'r>>, YaraError> {
         let mut results: Vec<Rule> = Vec::new();
         let callback = |message| {
             if let internals::CallbackMsg::RuleMatching(rule) = message {
@@ -225,7 +229,7 @@ impl Rules {
     ///
     /// You need to be able to attach to process `pid`.
     pub fn scan_process_callback<'r>(
-        &self,
+        &'r self,
         pid: u32,
         timeout: u16,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
@@ -245,7 +249,7 @@ impl Rules {
     ///
     /// * `file` - the object that implements get raw file descriptor or file handle
     /// * `timeout` - the timeout is in seconds
-    pub fn scan_fd<'r, F: AsRawFd>(&self, fd: &F, timeout: u16) -> Result<Vec<Rule<'r>>, Error> {
+    pub fn scan_fd<'r, F: AsRawFd>(&'r self, fd: &F, timeout: u16) -> Result<Vec<Rule<'r>>, Error> {
         let mut results: Vec<Rule> = Vec::new();
         let callback = |message: CallbackMsg<'r>| {
             if let CallbackMsg::RuleMatching(rule) = message {
@@ -265,7 +269,7 @@ impl Rules {
     /// * `timeout` - the timeout is in seconds
     /// * `callback` - YARA callback more read [here](https://yara.readthedocs.io/en/stable/capi.html#scanning-data)
     pub fn scan_fd_callback<'r, F: AsRawFd>(
-        &self,
+        &'r self,
         fd: &F,
         timeout: u16,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
