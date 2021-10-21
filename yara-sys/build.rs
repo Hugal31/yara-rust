@@ -220,15 +220,18 @@ mod bindings {
     use std::path::PathBuf;
 
     pub fn add_bindings() {
-        let binding_file = match env::var("CARGO_CFG_TARGET_FAMILY").unwrap().as_ref() {
-            "unix" => "yara-4.1.2-unix.rs",
-            "windows" => "yara-4.1.2-windows.rs",
-            f => panic!("no bundled bindings for family {}", f),
-        };
+        let binding_file = format!("yara-4.1.2-{}.rs", env::var("TARGET").unwrap());
         let out_dir = env::var("OUT_DIR").expect("$OUT_DIR should be defined");
         let out_path = PathBuf::from(out_dir).join("bindings.rs");
-        fs::copy(PathBuf::from("bindings").join(binding_file), out_path)
-            .expect("Could not copy bindings to output directory");
+        let binding_path = PathBuf::from("bindings").join(binding_file);
+        if binding_path.is_file() {
+            fs::copy(binding_path, out_path)
+                .expect("Could not copy bindings to output directory");
+        }
+        else {
+            println!("cargo:warning=Bindigs for target=\"{}\" does not exists", env::var("TARGET").unwrap());
+            std::process::exit(1);
+        }
     }
 }
 
