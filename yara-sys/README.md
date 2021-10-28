@@ -39,7 +39,7 @@ You can specify compile options for libyara v4.1.2 if choice `vendored` (`0` - d
 - YARA_ENABLE_DEX_DEBUG - enable dex module debugging (default: **Disable**)
 - YARA_ENABLE_MACHO - enable macho module (default: **Enable**)
 - YARA_ENABLE_CRYPTO - enable OpenSSL (default: **Enable**)
-- YARA_DEBUG_VERBOSIT - Set debug level information on runtime (default: **0**)
+- YARA_DEBUG_VERBOSITY - Set debug level information on runtime (default: **0**)
 - OPENSSL_LIB_DIR - path to OpenSSL library directory
 ## License
 

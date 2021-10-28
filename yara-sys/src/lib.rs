@@ -11,9 +11,13 @@ use std::os::raw::c_char;
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 pub mod scan_flags {
-    pub use super::{SCAN_FLAGS_FAST_MODE, SCAN_FLAGS_NO_TRYCATCH, SCAN_FLAGS_PROCESS_MEMORY};
-
-    pub use super::META_TYPE_INTEGER;
+    pub use super::{
+        SCAN_FLAGS_FAST_MODE,
+        SCAN_FLAGS_NO_TRYCATCH,
+        SCAN_FLAGS_PROCESS_MEMORY,
+        SCAN_FLAGS_REPORT_RULES_MATCHING,
+        SCAN_FLAGS_REPORT_RULES_NOT_MATCHING,
+    };
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
