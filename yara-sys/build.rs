@@ -259,13 +259,24 @@ mod bindings {
             .allowlist_function("yr_rule_.*")
             .allowlist_function("yr_rules_.*")
             .allowlist_function("yr_scanner_.*")
-            .allowlist_type("YR_ARENA")
-            .allowlist_type("YR_EXTERNAL_VARIABLE")
             .allowlist_type("YR_MATCH")
-            .opaque_type("YR_COMPILER")
-            .opaque_type("YR_AC_MATCH_TABLE")
-            .opaque_type("YR_AC_TRANSITION_TABLE")
-            .opaque_type("_YR_EXTERNAL_VARIABLE");
+            .allowlist_type("YR_META")
+            .allowlist_type("YR_RULES")
+            .opaque_type("YR_RULES")
+
+            // XXX: Ideally, YR_COMPILER would be marked as opaque. Unfortunately, because it
+            // contains a jmp_buf that is, on x64 windows msvc, aligned on 16-bytes, this generates
+            // a u128 array, which triggers many improper_ctypes warnings.
+            // To avoid those warnings, the YR_COMPILER is not opaque, but we try to make its
+            // direct dependencies opaque, to avoid bloating the filesize.
+            .allowlist_type("YR_ARENA")
+            .allowlist_type("YR_AC_AUTOMATON")
+            .allowlist_type("YR_AC_MATCH")
+            .allowlist_type("YR_ATOMS_CONFIG")
+            .opaque_type("YR_AC_.*")
+            .opaque_type("YR_ATOMS_CONFIG")
+            .opaque_type("YR_FIXUP")
+            .opaque_type("YR_LOOP_CONTEXT");
 
         if let Some(yara_include_dir) = env::var("YARA_INCLUDE_DIR")
             .ok()
