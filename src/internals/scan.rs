@@ -69,17 +69,17 @@ pub fn rules_scan_mem<'a>(
     mem: &[u8],
     timeout: i32,
     flags: i32,
-    callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
+    mut callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
-    let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
+    let (user_data, scan_callback) = get_scan_callback(&mut callback);
     let result = unsafe {
         yara_sys::yr_rules_scan_mem(
             rules,
             mem.as_ptr(),
             mem.len().try_into().unwrap(),
             flags,
-            Some(scan_callback),
-            &p_callback as *const Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> as *mut _,
+            scan_callback,
+            user_data,
             timeout,
         )
     };
@@ -96,15 +96,11 @@ pub fn rules_scan_mem<'a>(
 pub fn scanner_scan_mem<'a>(
     scanner: *mut yara_sys::YR_SCANNER,
     mem: &[u8],
-    callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
+    mut callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
-    let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
+    let (user_data, scan_callback) = get_scan_callback(&mut callback);
     let result = unsafe {
-        yara_sys::yr_scanner_set_callback(
-            scanner,
-            Some(scan_callback),
-            &p_callback as *const Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> as *mut _,
-        );
+        yara_sys::yr_scanner_set_callback(scanner, scan_callback, user_data);
         yara_sys::yr_scanner_scan_mem(scanner, mem.as_ptr(), mem.len().try_into().unwrap())
     };
     yara_sys::Error::from_code(result)
@@ -118,21 +114,13 @@ pub fn rules_scan_file<'a, F: AsRawFd>(
     file: &F,
     timeout: i32,
     flags: i32,
-    callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
+    mut callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
     let fd = file.as_raw_fd();
-    let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
+    let (user_data, scan_callback) = get_scan_callback(&mut callback);
 
-    let result = unsafe {
-        yara_sys::yr_rules_scan_fd(
-            rules,
-            fd,
-            flags,
-            Some(scan_callback),
-            &p_callback as *const Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> as *mut _,
-            timeout,
-        )
-    };
+    let result =
+        unsafe { yara_sys::yr_rules_scan_fd(rules, fd, flags, scan_callback, user_data, timeout) };
     yara_sys::Error::from_code(result)
         .map_err(|e| e.into())
         .map(|_| ())
@@ -144,20 +132,13 @@ pub fn rules_scan_file<'a, F: AsRawHandle>(
     file: &F,
     timeout: i32,
     flags: i32,
-    callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
+    mut callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
     let handle = file.as_raw_handle();
-    let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
+    let (user_data, scan_callback) = get_scan_callback(&mut callback);
 
     let result = unsafe {
-        yara_sys::yr_rules_scan_fd(
-            rules,
-            handle,
-            flags,
-            Some(scan_callback),
-            &p_callback as *const Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> as *mut _,
-            timeout,
-        )
+        yara_sys::yr_rules_scan_fd(rules, handle, flags, scan_callback, user_data, timeout)
     };
     yara_sys::Error::from_code(result)
         .map_err(|e| e.into())
@@ -172,17 +153,13 @@ pub fn rules_scan_file<'a, F: AsRawHandle>(
 pub fn scanner_scan_file<'a, F: AsRawFd>(
     scanner: *mut yara_sys::YR_SCANNER,
     file: &F,
-    callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
+    mut callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
     let fd = file.as_raw_fd();
-    let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
+    let (user_data, scan_callback) = get_scan_callback(&mut callback);
 
     let result = unsafe {
-        yara_sys::yr_scanner_set_callback(
-            scanner,
-            Some(scan_callback),
-            &p_callback as *const Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> as *mut _,
-        );
+        yara_sys::yr_scanner_set_callback(scanner, scan_callback, user_data);
         yara_sys::yr_scanner_scan_fd(scanner, fd)
     };
     yara_sys::Error::from_code(result)
@@ -198,17 +175,13 @@ pub fn scanner_scan_file<'a, F: AsRawFd>(
 pub fn scanner_scan_file<'a, F: AsRawHandle>(
     scanner: *mut yara_sys::YR_SCANNER,
     file: &F,
-    callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
+    mut callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
     let handle = file.as_raw_handle();
-    let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
+    let (user_data, scan_callback) = get_scan_callback(&mut callback);
 
     let result = unsafe {
-        yara_sys::yr_scanner_set_callback(
-            scanner,
-            Some(scan_callback),
-            &p_callback as *const Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> as *mut _,
-        );
+        yara_sys::yr_scanner_set_callback(scanner, scan_callback, user_data);
         yara_sys::yr_scanner_scan_fd(scanner, handle)
     };
     yara_sys::Error::from_code(result)
@@ -222,18 +195,11 @@ pub fn rules_scan_proc<'a>(
     pid: u32,
     timeout: i32,
     flags: i32,
-    callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
+    mut callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
-    let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
+    let (user_data, scan_callback) = get_scan_callback(&mut callback);
     let result = unsafe {
-        yara_sys::yr_rules_scan_proc(
-            rules,
-            pid as i32,
-            flags,
-            Some(scan_callback),
-            &p_callback as *const Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> as *mut _,
-            timeout,
-        )
+        yara_sys::yr_rules_scan_proc(rules, pid as i32, flags, scan_callback, user_data, timeout)
     };
 
     yara_sys::Error::from_code(result)
@@ -249,15 +215,11 @@ pub fn rules_scan_proc<'a>(
 pub fn scanner_scan_proc<'a>(
     scanner: *mut yara_sys::YR_SCANNER,
     pid: u32,
-    callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
+    mut callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
-    let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
+    let (user_data, scan_callback) = get_scan_callback(&mut callback);
     let result = unsafe {
-        yara_sys::yr_scanner_set_callback(
-            scanner,
-            Some(scan_callback),
-            &p_callback as *const Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> as *mut _,
-        );
+        yara_sys::yr_scanner_set_callback(scanner, scan_callback, user_data);
         yara_sys::yr_scanner_scan_proc(scanner, pid as i32)
     };
     yara_sys::Error::from_code(result)
@@ -286,15 +248,11 @@ pub fn scanner_scan_mem_blocks_sized<'a>(
 fn scanner_scan_mem_blocks_inner<'a>(
     scanner: *mut yara_sys::YR_SCANNER,
     mut iter: yara_sys::YR_MEMORY_BLOCK_ITERATOR,
-    callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
+    mut callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
-    let p_callback: Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> = Box::new(callback);
+    let (user_data, scan_callback) = get_scan_callback(&mut callback);
     let result = unsafe {
-        yara_sys::yr_scanner_set_callback(
-            scanner,
-            Some(scan_callback),
-            &p_callback as *const Box<dyn FnMut(CallbackMsg<'a>) -> CallbackReturn> as *mut _,
-        );
+        yara_sys::yr_scanner_set_callback(scanner, scan_callback, user_data);
         yara_sys::yr_scanner_scan_mem_blocks(scanner, &mut iter as *mut _)
     };
     yara_sys::Error::from_code(result)
@@ -302,15 +260,27 @@ fn scanner_scan_mem_blocks_inner<'a>(
         .map(|_| ())
 }
 
-extern "C" fn scan_callback(
+pub fn get_scan_callback<'a, F>(closure: &mut F) -> (*mut c_void, yara_sys::YR_CALLBACK_FUNC)
+where
+    F: FnMut(CallbackMsg<'a>) -> CallbackReturn,
+{
+    (
+        closure as *mut F as *mut c_void,
+        Some(scan_callback::<'a, F>),
+    )
+}
+
+extern "C" fn scan_callback<'a, F>(
     context: *mut yara_sys::YR_SCAN_CONTEXT,
     message: i32,
     message_data: *mut c_void,
     user_data: *mut c_void,
-) -> i32 {
+) -> i32
+where
+    F: FnMut(CallbackMsg<'a>) -> CallbackReturn,
+{
     let message = CallbackMsg::from_yara(context, message, message_data);
-    let callback: &mut Box<dyn FnMut(CallbackMsg) -> CallbackReturn> =
-        unsafe { std::mem::transmute(user_data) };
+    let callback = unsafe { &mut *(user_data as *mut F) };
     callback(message).to_yara()
 }
 
