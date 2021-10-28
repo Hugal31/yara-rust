@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.11.0](https://github.com/Hugal31/yara-rust/compare/v0.10.0...v0.11.0) (2021-10-28)
+
+
+### Features
+
+* Add support for the include directive ([26273f0](https://github.com/Hugal31/yara-rust/commit/26273f0f03e182b0e00ec2173f304f156738689d))
+
+
+### Bug Fixes
+
+* add missing CallbackMsg type ([ea2a28c](https://github.com/Hugal31/yara-rust/commit/ea2a28c3548c3c917408338543d0e04a0917f047))
+* add scan flags ([af34e15](https://github.com/Hugal31/yara-rust/commit/af34e15c317c511addb68988d8971b3354de9010))
+* avoid warnings in generated bindings on x64 windows msvc ([43d0be1](https://github.com/Hugal31/yara-rust/commit/43d0be1cdd8bafaffa26cfb0c247da573fe1a818))
+* improve API safety ([7dd00b1](https://github.com/Hugal31/yara-rust/commit/7dd00b1bf66b14f01a367b3ae1fab444f210287f))
+* remove Box closure ([50a9a4e](https://github.com/Hugal31/yara-rust/commit/50a9a4ea5d553878fdc69fbf11dcb0a9eb584973))
+* remove `non_upper_case_globals` warning with windows x86 target ([d1176b7](https://github.com/Hugal31/yara-rust/commit/d1176b76c59dcbf730188d764ca474278c4b6630))
+* remove unused flag ([15f2472](https://github.com/Hugal31/yara-rust/commit/15f2472ecad8aba28a0455ead4472b4a263831d2))
+
 ## [0.10.0](https://github.com/Hugal31/yara-rust/compare/v0.9.1...v0.10.0) (2021-09-19)
 
 

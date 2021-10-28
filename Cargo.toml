@@ -1,6 +1,6 @@
 [package]
 name = "yara"
-version = "0.10.0"
+version = "0.11.0"
 authors = ["Hugo Laloge <hugo.laloge@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "Rust bindings for VirusTotal/yara"
@@ -27,7 +27,7 @@ tempfile = "3.2.0"
 
 [dependencies.yara-sys]
 path = "yara-sys"
-version = "0.10"
+version = "0.11"
 default-features = false
 
 [package.metadata.docs.rs]
