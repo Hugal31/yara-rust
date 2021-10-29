@@ -144,7 +144,7 @@ impl Rules {
             self.inner,
             mem,
             i32::from(timeout),
-            self.flags as i32,
+            self.flags.bits(),
             callback,
         )
     }
@@ -187,14 +187,8 @@ impl Rules {
         File::open(path)
             .map_err(|e| IoError::new(e, IoErrorKind::OpenScanFile).into())
             .and_then(|file| {
-                internals::rules_scan_file(
-                    self.inner,
-                    &file,
-                    i32::from(timeout),
-                    self.flags as i32,
-                    callback,
-                )
-                .map_err(|e| e.into())
+                internals::rules_scan_file(self.inner, &file, timeout, self.flags.bits(), callback)
+                    .map_err(|e| e.into())
             })
     }
 
@@ -208,7 +202,7 @@ impl Rules {
     /// # Permissions
     ///
     /// You need to be able to attach to process `pid`.
-    pub fn scan_process<'r>(&'r self, pid: u32, timeout: i32) -> Result<Vec<Rule<'r>>, YaraError> {
+    pub fn scan_process<'r>(&'r self, pid: i32, timeout: i32) -> Result<Vec<Rule<'r>>, YaraError> {
         let mut results: Vec<Rule> = Vec::new();
         let callback = |message| {
             if let internals::CallbackMsg::RuleMatching(rule) = message {
@@ -233,17 +227,11 @@ impl Rules {
     /// You need to be able to attach to process `pid`.
     pub fn scan_process_callback<'r>(
         &'r self,
-        pid: u32,
+        pid: i32,
         timeout: i32,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
     ) -> Result<(), YaraError> {
-        internals::rules_scan_proc(
-            self.inner,
-            pid,
-            i32::from(timeout),
-            self.flags as i32,
-            callback,
-        )
+        internals::rules_scan_proc(self.inner, pid, timeout, self.flags.bits(), callback)
     }
 
     /// Scan a opened file.
