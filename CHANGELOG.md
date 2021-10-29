@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.12.0](https://github.com/Hugal31/yara-rust/compare/v0.11.1...v0.12.0) (2021-10-29)
+
+
+### Features
+
+* upgrade yara to 4.1.3 ([18b869d](https://github.com/Hugal31/yara-rust/commit/18b869d24f9c61aeac06eb0640d12ff353eb057d))
+
 ### [0.11.1](https://github.com/Hugal31/yara-rust/compare/v0.11.0...v0.11.1) (2021-10-29)
 
 
