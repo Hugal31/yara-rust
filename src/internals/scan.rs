@@ -192,14 +192,14 @@ pub fn scanner_scan_file<'a, F: AsRawHandle>(
 /// Attach a process, pause it, and scan its memory.
 pub fn rules_scan_proc<'a>(
     rules: *mut yara_sys::YR_RULES,
-    pid: i32,
+    pid: u32,
     timeout: i32,
     flags: i32,
     mut callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
     let (user_data, scan_callback) = get_scan_callback(&mut callback);
     let result = unsafe {
-        yara_sys::yr_rules_scan_proc(rules, pid, flags, scan_callback, user_data, timeout)
+        yara_sys::yr_rules_scan_proc(rules, pid as i32, flags, scan_callback, user_data, timeout)
     };
 
     yara_sys::Error::from_code(result)
@@ -214,13 +214,13 @@ pub fn rules_scan_proc<'a>(
 /// data races, so it should only be called from a &mut Scanner.
 pub fn scanner_scan_proc<'a>(
     scanner: *mut yara_sys::YR_SCANNER,
-    pid: i32,
+    pid: u32,
     mut callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
     let (user_data, scan_callback) = get_scan_callback(&mut callback);
     let result = unsafe {
         yara_sys::yr_scanner_set_callback(scanner, scan_callback, user_data);
-        yara_sys::yr_scanner_scan_proc(scanner, pid)
+        yara_sys::yr_scanner_scan_proc(scanner, pid as i32)
     };
     yara_sys::Error::from_code(result)
         .map_err(|e| e.into())

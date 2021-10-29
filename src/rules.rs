@@ -202,7 +202,7 @@ impl Rules {
     /// # Permissions
     ///
     /// You need to be able to attach to process `pid`.
-    pub fn scan_process<'r>(&'r self, pid: i32, timeout: i32) -> Result<Vec<Rule<'r>>, YaraError> {
+    pub fn scan_process<'r>(&'r self, pid: u32, timeout: i32) -> Result<Vec<Rule<'r>>, YaraError> {
         let mut results: Vec<Rule> = Vec::new();
         let callback = |message| {
             if let internals::CallbackMsg::RuleMatching(rule) = message {
@@ -227,7 +227,7 @@ impl Rules {
     /// You need to be able to attach to process `pid`.
     pub fn scan_process_callback<'r>(
         &'r self,
-        pid: i32,
+        pid: u32,
         timeout: i32,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
     ) -> Result<(), YaraError> {

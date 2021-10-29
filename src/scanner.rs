@@ -217,7 +217,7 @@ impl<'rules> Scanner<'rules> {
     ///
     /// This function takes the Scanner as `&mut` because it modifies the
     /// `scanner->callback` and `scanner->user_data`, which are not behind a Mutex.
-    pub fn scan_process<'r>(&mut self, pid: i32) -> Result<Vec<Rule<'r>>, YaraError> {
+    pub fn scan_process<'r>(&mut self, pid: u32) -> Result<Vec<Rule<'r>>, YaraError> {
         let mut results: Vec<Rule> = Vec::new();
         let callback = |message| {
             if let internals::CallbackMsg::RuleMatching(rule) = message {
@@ -245,7 +245,7 @@ impl<'rules> Scanner<'rules> {
     /// `scanner->callback` and `scanner->user_data`, which are not behind a Mutex.
     pub fn scan_process_callback<'r>(
         &mut self,
-        pid: i32,
+        pid: u32,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
     ) -> Result<(), YaraError> {
         internals::scanner_scan_proc(self.inner, pid, callback)
