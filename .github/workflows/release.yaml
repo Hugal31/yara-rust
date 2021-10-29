@@ -33,7 +33,7 @@ jobs:
           override: true
       - uses: katyo/publish-crates@v1
         with:
-          args: "--features bundled-4_1_2"
+          args: "--features bundled-4_1_3"
           dry-run: ${{ github.event.inputs.dry_run }}
           registry-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
