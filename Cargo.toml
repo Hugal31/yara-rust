@@ -1,3 +1,6 @@
+[workspace]
+members = ["yara-sys"]
+
 [package]
 name = "yara"
 version = "0.11.0"
