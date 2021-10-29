@@ -90,8 +90,7 @@ mod build {
                 println!("cargo:warning=Please install OpenSSL library");
                 println!("cargo:warning={:?}", err);
                 std::process::exit(1);
-            }
-            else {
+            } else {
                 enable_crypto = true;
                 cc.define("HAVE_LIBCRYPTO", "1");
                 if std::env::var("CARGO_CFG_TARGET_FAMILY")
@@ -213,7 +212,7 @@ mod build {
     }
 }
 
-#[cfg(feature = "bundled-4_1_2")]
+#[cfg(feature = "bundled-4_1_3")]
 mod bindings {
     use std::env;
     use std::fs;
@@ -221,8 +220,8 @@ mod bindings {
 
     pub fn add_bindings() {
         let binding_file = match env::var("CARGO_CFG_TARGET_FAMILY").unwrap().as_ref() {
-            "unix" => "yara-4.1.2-unix.rs",
-            "windows" => "yara-4.1.2-windows.rs",
+            "unix" => "yara-4.1.3-unix.rs",
+            "windows" => "yara-4.1.3-windows.rs",
             f => panic!("no bundled bindings for family {}", f),
         };
         let out_dir = env::var("OUT_DIR").expect("$OUT_DIR should be defined");
@@ -232,7 +231,7 @@ mod bindings {
     }
 }
 
-#[cfg(not(feature = "bundled-4_1_2"))]
+#[cfg(not(feature = "bundled-4_1_3"))]
 mod bindings {
     extern crate bindgen;
 
@@ -263,7 +262,6 @@ mod bindings {
             .allowlist_type("YR_META")
             .allowlist_type("YR_RULES")
             .opaque_type("YR_RULES")
-
             // XXX: Ideally, YR_COMPILER would be marked as opaque. Unfortunately, because it
             // contains a jmp_buf that is, on x64 windows msvc, aligned on 16-bytes, this generates
             // a u128 array, which triggers many improper_ctypes warnings.
