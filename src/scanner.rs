@@ -6,10 +6,13 @@ use std::os::unix::io::AsRawFd;
 use std::os::windows::io::AsRawHandle as AsRawFd;
 use std::path::Path;
 
+use crate::compiler::CompilerVariableValue;
+use crate::errors::*;
+use crate::flags::ScanFlags;
 use crate::internals::{
-    CallbackMsg, CallbackReturn, MemoryBlockIterator, MemoryBlockIteratorSized,
+    self, CallbackMsg, CallbackReturn, MemoryBlockIterator, MemoryBlockIteratorSized,
 };
-use crate::{compiler::CompilerVariableValue, errors::*, internals, rules::Rules, Rule};
+use crate::rules::{Rule, Rules};
 
 /// A wrapper around compiled [Rules], with its own set of external variables, flags and timeout.
 ///
@@ -348,13 +351,13 @@ impl<'rules> Scanner<'rules> {
 
     /// Set the maximum number of seconds that the scanner will spend in any call
     /// to scan_xxx.
-    pub fn set_timeout(&mut self, seconds: u32) {
-        internals::scanner_set_timeout(self.inner, seconds as i32)
+    pub fn set_timeout(&mut self, seconds: i32) {
+        internals::scanner_set_timeout(self.inner, seconds)
     }
 
     /// Set the flags that will be used by any call to scan_xxx .
-    pub fn set_flags(&mut self, flags: u32) {
-        internals::scanner_set_flags(self.inner, flags as i32)
+    pub fn set_flags(&mut self, flags: ScanFlags) {
+        internals::scanner_set_flags(self.inner, flags.bits())
     }
 }
 

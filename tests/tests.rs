@@ -2,7 +2,7 @@ extern crate yara;
 
 use yara::{
     CallbackMsg, CallbackReturn, CompileErrorLevel, Compiler, ConfigName, Error, MemoryBlock,
-    MemoryBlockIterator, MemoryBlockIteratorSized, Metadata, MetadataValue, Rules, Yara,
+    MemoryBlockIterator, MemoryBlockIteratorSized, Metadata, MetadataValue, Rules, ScanFlags, Yara,
 };
 use yara_sys;
 
@@ -258,10 +258,10 @@ I love Rust!
         .expect("Should be Ok")
         .compile_rules()
         .unwrap();
-    rules.set_flags(yara::SCAN_FLAGS_FAST_MODE);
+    rules.set_flags(ScanFlags::FAST_MODE);
 
     let result = rules
-        .scan_mem(test_mem, test_mem.len() as u16)
+        .scan_mem(test_mem, test_mem.len() as i32)
         .expect("Should have scanned byte string");
     assert_eq!(1, result.len());
     let rule = &result[0];
