@@ -1,6 +1,14 @@
 name: tests
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - 'LICENSE-*'
+      - '**.md'
+  pull_request:
+    paths:
+      - 'LICENSE-*'
+      - '**.md'
 
 jobs:
   test-posix:
