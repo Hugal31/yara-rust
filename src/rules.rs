@@ -9,8 +9,11 @@ use std::path::Path;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
-use crate::internals::{CallbackMsg, CallbackReturn};
-use crate::{errors::*, initialize::InitializationToken, internals, YrString};
+use crate::errors::*;
+use crate::flags::ScanFlags;
+use crate::initialize::InitializationToken;
+use crate::internals::{self, CallbackMsg, CallbackReturn};
+use crate::string::YrString;
 
 /// A set of compiled rules.
 ///
@@ -19,7 +22,7 @@ use crate::{errors::*, initialize::InitializationToken, internals, YrString};
 pub struct Rules {
     pub(crate) inner: *mut yara_sys::YR_RULES,
     pub(crate) _token: InitializationToken,
-    flags: u32,
+    flags: ScanFlags,
 }
 
 // On the subject of thread-safety:
@@ -63,7 +66,7 @@ impl Rules {
         Ok(Rules {
             inner: rules,
             _token: token,
-            flags: 0,
+            flags: ScanFlags::default(),
         })
     }
 }
@@ -112,7 +115,7 @@ impl Rules {
     /// assert_eq!(b"Rust", m.data.as_slice());
     /// # Ok::<(), yara::Error>(())
     /// ```
-    pub fn scan_mem<'r>(&'r self, mem: &[u8], timeout: u16) -> Result<Vec<Rule<'r>>, YaraError> {
+    pub fn scan_mem<'r>(&'r self, mem: &[u8], timeout: i32) -> Result<Vec<Rule<'r>>, YaraError> {
         let mut results: Vec<Rule<'r>> = Vec::new();
         let callback = |message: CallbackMsg<'r>| {
             if let CallbackMsg::RuleMatching(rule) = message {
@@ -134,7 +137,7 @@ impl Rules {
     pub fn scan_mem_callback<'r>(
         &'r self,
         mem: &[u8],
-        timeout: u16,
+        timeout: i32,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
     ) -> Result<(), YaraError> {
         internals::rules_scan_mem(
@@ -155,7 +158,7 @@ impl Rules {
     pub fn scan_file<'r, P: AsRef<Path>>(
         &'r self,
         path: P,
-        timeout: u16,
+        timeout: i32,
     ) -> Result<Vec<Rule<'r>>, Error> {
         let mut results: Vec<Rule> = Vec::new();
         let callback = |message: CallbackMsg<'r>| {
@@ -178,7 +181,7 @@ impl Rules {
     pub fn scan_file_callback<'r, P: AsRef<Path>>(
         &'r self,
         path: P,
-        timeout: u16,
+        timeout: i32,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
     ) -> Result<(), Error> {
         File::open(path)
@@ -205,7 +208,7 @@ impl Rules {
     /// # Permissions
     ///
     /// You need to be able to attach to process `pid`.
-    pub fn scan_process<'r>(&'r self, pid: u32, timeout: u16) -> Result<Vec<Rule<'r>>, YaraError> {
+    pub fn scan_process<'r>(&'r self, pid: u32, timeout: i32) -> Result<Vec<Rule<'r>>, YaraError> {
         let mut results: Vec<Rule> = Vec::new();
         let callback = |message| {
             if let internals::CallbackMsg::RuleMatching(rule) = message {
@@ -231,7 +234,7 @@ impl Rules {
     pub fn scan_process_callback<'r>(
         &'r self,
         pid: u32,
-        timeout: u16,
+        timeout: i32,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
     ) -> Result<(), YaraError> {
         internals::rules_scan_proc(
@@ -249,7 +252,7 @@ impl Rules {
     ///
     /// * `file` - the object that implements get raw file descriptor or file handle
     /// * `timeout` - the timeout is in seconds
-    pub fn scan_fd<'r, F: AsRawFd>(&'r self, fd: &F, timeout: u16) -> Result<Vec<Rule<'r>>, Error> {
+    pub fn scan_fd<'r, F: AsRawFd>(&'r self, fd: &F, timeout: i32) -> Result<Vec<Rule<'r>>, Error> {
         let mut results: Vec<Rule> = Vec::new();
         let callback = |message: CallbackMsg<'r>| {
             if let CallbackMsg::RuleMatching(rule) = message {
@@ -271,17 +274,11 @@ impl Rules {
     pub fn scan_fd_callback<'r, F: AsRawFd>(
         &'r self,
         fd: &F,
-        timeout: u16,
+        timeout: i32,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
     ) -> Result<(), Error> {
-        internals::rules_scan_file(
-            self.inner,
-            fd,
-            i32::from(timeout),
-            self.flags as i32,
-            callback,
-        )
-        .map_err(|e| e.into())
+        internals::rules_scan_file(self.inner, fd, timeout, self.flags.bits(), callback)
+            .map_err(|e| e.into())
     }
 
     /// Save the rules to a file.
@@ -310,7 +307,7 @@ impl Rules {
         internals::rules_load_stream(reader).map(|inner| Rules {
             inner,
             _token: token,
-            flags: 0,
+            flags: ScanFlags::default(),
         })
     }
 
@@ -322,11 +319,11 @@ impl Rules {
         internals::rules_load(filename).map(|inner| Rules {
             inner,
             _token: token,
-            flags: 0,
+            flags: ScanFlags::default(),
         })
     }
 
-    pub fn set_flags(&mut self, flags: u32) {
+    pub fn set_flags(&mut self, flags: ScanFlags) {
         self.flags = flags
     }
 }

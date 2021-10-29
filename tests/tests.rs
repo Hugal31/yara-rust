@@ -261,7 +261,7 @@ I love Rust!
     rules.set_flags(yara::SCAN_FLAGS_FAST_MODE);
 
     let result = rules
-        .scan_mem(test_mem, test_mem.len() as u16)
+        .scan_mem(test_mem, test_mem.len() as i32)
         .expect("Should have scanned byte string");
     assert_eq!(1, result.len());
     let rule = &result[0];
