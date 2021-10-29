@@ -2,19 +2,13 @@ name: tests
 
 on:
   push:
-    paths:
-      - 'src/**'
-      - 'tests/**'
-      - 'yara-sys/**'
-      - '!yara-sys/README.md'
-      - 'Cargo.toml'
+    paths-ignore:
+      - 'LICENSE-*'
+      - '**.md'
   pull_request:
     paths:
-      - 'src/**'
-      - 'tests/**'
-      - 'yara-sys/**'
-      - '!yara-sys/README.md'
-      - 'Cargo.toml'
+      - 'LICENSE-*'
+      - '**.md'
 
 jobs:
   test-posix:
