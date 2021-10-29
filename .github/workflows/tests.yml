@@ -1,6 +1,20 @@
 name: tests
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'yara-sys/**'
+      - '!yara-sys/README.md'
+      - 'Cargo.toml'
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'yara-sys/**'
+      - '!yara-sys/README.md'
+      - 'Cargo.toml'
 
 jobs:
   test-posix:
