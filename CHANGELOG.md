@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.11.1](https://github.com/Hugal31/yara-rust/compare/v0.11.0...v0.11.1) (2021-10-29)
+
+
+### Bug Fixes
+
+* fix timeout type ([edbc0f2](https://github.com/Hugal31/yara-rust/commit/edbc0f2e09673902a6c791fb781768dede2e929c))
+* pid type ([467d783](https://github.com/Hugal31/yara-rust/commit/467d783ddefb0811c6a27d8fc85295d2ad5f9be1))
+
 ## [0.11.0](https://github.com/Hugal31/yara-rust/compare/v0.10.0...v0.11.0) (2021-10-28)
 
 

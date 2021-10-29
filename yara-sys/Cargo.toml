@@ -1,6 +1,6 @@
 [package]
 name = "yara-sys"
-version = "0.11.0"
+version = "0.11.1"
 authors = ["Hugo Laloge <hugo.laloge@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "Native bindings to the libyara library"

@@ -3,7 +3,7 @@ members = ["yara-sys"]
 
 [package]
 name = "yara"
-version = "0.11.0"
+version = "0.11.1"
 authors = ["Hugo Laloge <hugo.laloge@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "Rust bindings for VirusTotal/yara"
@@ -31,7 +31,7 @@ tempfile = "3.2.0"
 
 [dependencies.yara-sys]
 path = "yara-sys"
-version = "0.11"
+version = "0.11.1"
 default-features = false
 
 [package.metadata.docs.rs]
