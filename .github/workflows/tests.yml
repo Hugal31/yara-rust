@@ -6,7 +6,7 @@ on:
       - 'LICENSE-*'
       - '**.md'
   pull_request:
-    paths:
+    paths-ignore:
       - 'LICENSE-*'
       - '**.md'
 
