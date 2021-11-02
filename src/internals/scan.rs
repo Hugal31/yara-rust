@@ -286,7 +286,7 @@ where
 
 /// Setting the flags modifies the Scanner with no locks preventing data races,
 /// so it should only be called from a &mut Scanner.
-pub fn scanner_set_flags<'a>(scanner: *mut yara_sys::YR_SCANNER, flags: i32) {
+pub fn scanner_set_flags(scanner: *mut yara_sys::YR_SCANNER, flags: i32) {
     unsafe {
         yara_sys::yr_scanner_set_flags(scanner, flags);
     }
@@ -294,7 +294,7 @@ pub fn scanner_set_flags<'a>(scanner: *mut yara_sys::YR_SCANNER, flags: i32) {
 
 /// Setting the timeout modifies the Scanner with no locks preventing data races,
 /// so it should only be called from a &mut Scanner.
-pub fn scanner_set_timeout<'a>(scanner: *mut yara_sys::YR_SCANNER, seconds: i32) {
+pub fn scanner_set_timeout(scanner: *mut yara_sys::YR_SCANNER, seconds: i32) {
     unsafe {
         yara_sys::yr_scanner_set_timeout(scanner, seconds);
     }

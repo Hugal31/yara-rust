@@ -14,7 +14,6 @@ mod build {
     use std::path::PathBuf;
 
     use super::cargo_rerun_if_env_changed;
-    use globwalk;
     use libloading::Library;
     use std::env::consts::DLL_SUFFIX;
     #[cfg(unix)]
@@ -157,7 +156,7 @@ mod build {
             cc.define("NDEBUG", "1");
         }
 
-        let verbosity = std::env::var("YARA_DEBUG_VERBOSITY").unwrap_or("0".to_string());
+        let verbosity = std::env::var("YARA_DEBUG_VERBOSITY").unwrap_or_else(|_| "0".to_string());
         cc.define("YR_DEBUG_VERBOSITY", verbosity.as_str());
 
         let walker = globwalk::GlobWalkerBuilder::from_patterns(&basedir, &["**/*.c", "!proc/*"])

@@ -77,7 +77,7 @@ impl Rules {
     /// You can create as many scanners as you want, and they each can have
     /// their own scan flag, timeout, and external variables defined.
     pub fn scanner(&self) -> Result<crate::scanner::Scanner, YaraError> {
-        crate::scanner::Scanner::new(&self)
+        crate::scanner::Scanner::new(self)
     }
 
     /// Scan memory.
@@ -140,13 +140,7 @@ impl Rules {
         timeout: i32,
         callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
     ) -> Result<(), YaraError> {
-        internals::rules_scan_mem(
-            self.inner,
-            mem,
-            i32::from(timeout),
-            self.flags.bits(),
-            callback,
-        )
+        internals::rules_scan_mem(self.inner, mem, timeout, self.flags.bits(), callback)
     }
 
     /// Scan a file.
@@ -202,7 +196,7 @@ impl Rules {
     /// # Permissions
     ///
     /// You need to be able to attach to process `pid`.
-    pub fn scan_process<'r>(&'r self, pid: u32, timeout: i32) -> Result<Vec<Rule<'r>>, YaraError> {
+    pub fn scan_process(&self, pid: u32, timeout: i32) -> Result<Vec<Rule>, YaraError> {
         let mut results: Vec<Rule> = Vec::new();
         let callback = |message| {
             if let internals::CallbackMsg::RuleMatching(rule) = message {

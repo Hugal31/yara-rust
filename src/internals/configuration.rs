@@ -1,7 +1,5 @@
 use std::ffi::c_void;
 
-use yara_sys;
-
 use crate::errors::*;
 
 /// A `ConfigName` is enum of available configuration options
