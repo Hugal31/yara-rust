@@ -5,10 +5,15 @@ fn main() {
     bindings::add_bindings();
 }
 
+pub fn cargo_rerun_if_env_changed(env_name: &str) {
+    println!("cargo:rerun-if-env-changed={}", env_name);
+}
+
 #[cfg(feature = "vendored")]
 mod build {
     use std::path::PathBuf;
 
+    use super::cargo_rerun_if_env_changed;
     use globwalk;
     use libloading::Library;
     use std::env::consts::DLL_SUFFIX;
@@ -180,6 +185,19 @@ mod build {
         let include_dir = basedir.join("include");
         let lib_dir = std::env::var("OUT_DIR").unwrap();
 
+        cargo_rerun_if_env_changed("YARA_ENABLE_PROFILING");
+        cargo_rerun_if_env_changed("YARA_ENABLE_NDEBUG");
+        cargo_rerun_if_env_changed("YARA_ENABLE_HASH");
+        cargo_rerun_if_env_changed("YARA_ENABLE_MAGIC");
+        cargo_rerun_if_env_changed("YARA_ENABLE_CUCKOO");
+        cargo_rerun_if_env_changed("YARA_ENABLE_DOTNET");
+        cargo_rerun_if_env_changed("YARA_ENABLE_DEX");
+        cargo_rerun_if_env_changed("YARA_ENABLE_DEX_DEBUG");
+        cargo_rerun_if_env_changed("YARA_ENABLE_MACHO");
+        cargo_rerun_if_env_changed("YARA_DEBUG_VERBOSITY");
+        cargo_rerun_if_env_changed("OPENSSL_LIB_DIR");
+        cargo_rerun_if_env_changed("YARA_LIBRARY_PATH");
+
         println!("cargo:rustc-link-search=native={}", lib_dir);
         println!("cargo:rustc-link-lib=static=yara");
         println!("cargo:include={}", include_dir.display());
@@ -192,6 +210,8 @@ mod build {
 
 #[cfg(not(feature = "vendored"))]
 mod build {
+    use super::cargo_rerun_if_env_changed;
+
     /// Tell cargo to tell rustc to link the system yara
     /// shared library.
     pub fn build_and_link() {
@@ -201,6 +221,8 @@ mod build {
             None => "dylib",
         };
         println!("cargo:rustc-link-lib={}=yara", kind);
+        cargo_rerun_if_env_changed("LIBYARA_STATIC");
+        cargo_rerun_if_env_changed("YARA_LIBRARY_PATH");
 
         // Add the environment variable YARA_LIBRARY_PATH to the library search path.
         if let Some(yara_library_path) = std::env::var("YARA_LIBRARY_PATH")
@@ -233,7 +255,7 @@ mod bindings {
 
 #[cfg(not(feature = "bundled-4_1_3"))]
 mod bindings {
-    extern crate bindgen;
+    use super::cargo_rerun_if_env_changed;
 
     use std::env;
     use std::path::PathBuf;
@@ -290,5 +312,7 @@ mod bindings {
         bindings
             .write_to_file(out_path.join("bindings.rs"))
             .expect("Couldn't write bindings!");
+
+        cargo_rerun_if_env_changed("YARA_INCLUDE_DIR");
     }
 }
