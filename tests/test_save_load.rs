@@ -1,5 +1,3 @@
-extern crate yara;
-
 use std::fs::remove_file;
 
 use yara::{Compiler, Rules};
