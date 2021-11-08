@@ -12,6 +12,8 @@ use crate::initialize::InitializationToken;
 use crate::internals;
 use crate::Rules;
 
+type Callback = (*mut c_void, fn(*mut c_void));
+
 /// Yara rules compiler
 ///
 /// # Note
@@ -23,7 +25,7 @@ pub struct Compiler {
     _token: InitializationToken,
     // The user_data used by the include callback and it's associated free function
     // Safety: It must stay alive until the end of compilation or until a new callback is set
-    include_user_data: Option<(*mut c_void, fn(*mut c_void))>,
+    include_user_data: Option<Callback>,
 }
 
 impl std::fmt::Debug for Compiler {
@@ -151,9 +153,7 @@ impl Compiler {
     /// It is safe to destroy the compiler after, because the rules do not depends on the compiler.
     /// In addition, we must hide the compiler from the user because it can be used only once.
     pub fn compile_rules(self) -> Result<Rules, YaraError> {
-        internals::compiler_get_rules(self.inner).and_then(|v| unsafe {
-            Rules::unsafe_try_from(v)
-        })
+        internals::compiler_get_rules(self.inner).and_then(|v| unsafe { Rules::unsafe_try_from(v) })
     }
 
     /// Add a variable to the compiler.
@@ -222,7 +222,7 @@ impl Compiler {
         where
             C: Fn(&str, Option<&str>, Option<&str>) -> Option<String> + 'static,
         {
-            let cb: &mut C = std::mem::transmute(user_data);
+            let cb: &mut C = &mut *(user_data as *mut C);
 
             let name = std::ffi::CStr::from_ptr(include_name);
             let name = match name.to_str() {
