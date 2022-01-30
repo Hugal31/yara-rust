@@ -8,8 +8,14 @@ fn main() {
 pub fn cargo_rerun_if_env_changed(env_name: &str) {
     let target = std::env::var("TARGET").unwrap();
     println!("cargo:rerun-if-env-changed={}", env_name);
-    println!("cargo:rerun-if-env-changed={}", format!("{}_{}", env_var, target));
-    println!("cargo:rerun-if-env-changed={}", format!("{}_{}", env_var, target.replace("-", "_")));
+    println!(
+        "cargo:rerun-if-env-changed={}",
+        format!("{}_{}", env_var, target)
+    );
+    println!(
+        "cargo:rerun-if-env-changed={}",
+        format!("{}_{}", env_var, target.replace("-", "_"))
+    );
 }
 
 pub fn get_target_env_var(env_var: &str) -> Option<String> {
@@ -207,7 +213,8 @@ mod build {
             cc.define("NDEBUG", "1");
         }
 
-        let verbosity = get_target_env_var("YARA_DEBUG_VERBOSITY").unwrap_or_else(|_| "0".to_string());
+        let verbosity =
+            get_target_env_var("YARA_DEBUG_VERBOSITY").unwrap_or_else(|_| "0".to_string());
         cc.define("YR_DEBUG_VERBOSITY", verbosity.as_str());
 
         let walker = globwalk::GlobWalkerBuilder::from_patterns(&basedir, &["**/*.c", "!proc/*"])
