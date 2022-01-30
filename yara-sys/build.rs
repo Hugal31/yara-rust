@@ -5,28 +5,22 @@ fn main() {
     bindings::add_bindings();
 }
 
-pub fn cargo_rerun_if_env_changed(env_name: &str) {
+pub fn cargo_rerun_if_env_changed(env_var: &str) {
     let target = std::env::var("TARGET").unwrap();
-    println!("cargo:rerun-if-env-changed={}", env_name);
+    println!("cargo:rerun-if-env-changed={}", env_var);
+    println!("cargo:rerun-if-env-changed={}_{}", env_var, target);
     println!(
-        "cargo:rerun-if-env-changed={}",
-        format!("{}_{}", env_var, target)
-    );
-    println!(
-        "cargo:rerun-if-env-changed={}",
-        format!("{}_{}", env_var, target.replace("-", "_"))
+        "cargo:rerun-if-env-changed={}_{}",
+        env_var,
+        target.replace("-", "_")
     );
 }
 
 pub fn get_target_env_var(env_var: &str) -> Option<String> {
     let target = std::env::var("TARGET").unwrap();
     std::env::var(format!("{}_{}", env_var, target))
-        .or(std::env::var(format!(
-            "{}_{}",
-            env_var,
-            target.replace("-", "_")
-        )))
-        .or(std::env::var(env_var))
+        .or_else(|_| std::env::var(format!("{}_{}", env_var, target.replace("-", "_"))))
+        .or_else(|_| std::env::var(env_var))
         .ok()
 }
 
@@ -40,8 +34,6 @@ pub fn is_enable(env_var: &str, default: bool) -> bool {
 
 #[cfg(feature = "vendored")]
 mod build {
-    use globwalk;
-    use std::env::consts::DLL_SUFFIX;
     #[cfg(unix)]
     use std::os::unix::fs::symlink as symlink_dir;
     #[cfg(windows)]
@@ -60,7 +52,7 @@ mod build {
     }
 
     fn get_crypto_lib() -> CryptoLib {
-        match get_env_var("YARA_CRYPTO_LIB")
+        match get_target_env_var("YARA_CRYPTO_LIB")
             .map(|v| v.to_lowercase())
             .as_deref()
         {
@@ -134,7 +126,7 @@ mod build {
         let mut enable_crypto = false;
         match get_crypto_lib() {
             CryptoLib::OpenSSL => {
-                if let Some(openssl_lib_dir) = get_env_var("OPENSSL_LIB_DIR") {
+                if let Some(openssl_lib_dir) = get_target_env_var("OPENSSL_LIB_DIR") {
                     println!(
                         "cargo:rustc-link-search=native={}",
                         PathBuf::from(openssl_lib_dir).display()
@@ -214,7 +206,7 @@ mod build {
         }
 
         let verbosity =
-            get_target_env_var("YARA_DEBUG_VERBOSITY").unwrap_or_else(|_| "0".to_string());
+            get_target_env_var("YARA_DEBUG_VERBOSITY").unwrap_or_else(|| "0".to_string());
         cc.define("YR_DEBUG_VERBOSITY", verbosity.as_str());
 
         let walker = globwalk::GlobWalkerBuilder::from_patterns(&basedir, &["**/*.c", "!proc/*"])
