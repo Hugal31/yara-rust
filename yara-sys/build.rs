@@ -6,10 +6,13 @@ fn main() {
 }
 
 pub fn cargo_rerun_if_env_changed(env_name: &str) {
+    let target = std::env::var("TARGET").unwrap();
     println!("cargo:rerun-if-env-changed={}", env_name);
+    println!("cargo:rerun-if-env-changed={}", format!("{}_{}", env_var, target));
+    println!("cargo:rerun-if-env-changed={}", format!("{}_{}", env_var, target.replace("-", "_")));
 }
 
-fn get_target_env_var(env_var: &str) -> Option<String> {
+pub fn get_target_env_var(env_var: &str) -> Option<String> {
     let target = std::env::var("TARGET").unwrap();
     std::env::var(format!("{}_{}", env_var, target))
         .or(std::env::var(format!(
@@ -21,8 +24,8 @@ fn get_target_env_var(env_var: &str) -> Option<String> {
         .ok()
 }
 
-fn is_enable(env_var: &str, default: bool) -> bool {
-    match get_env_var(env_var).as_deref() {
+pub fn is_enable(env_var: &str, default: bool) -> bool {
+    match get_target_env_var(env_var).as_deref() {
         Some("0") => false,
         Some(_) => true,
         None => default,
@@ -31,17 +34,17 @@ fn is_enable(env_var: &str, default: bool) -> bool {
 
 #[cfg(feature = "vendored")]
 mod build {
-    use super::get_target_env_var;
-    use super::is_enable;
-    use std::path::PathBuf;
-
-    use super::cargo_rerun_if_env_changed;
-    use std::env::consts::DLL_SUFFIX;
     use globwalk;
+    use std::env::consts::DLL_SUFFIX;
     #[cfg(unix)]
     use std::os::unix::fs::symlink as symlink_dir;
     #[cfg(windows)]
     use std::os::windows::fs::symlink_dir;
+    use std::path::PathBuf;
+
+    use super::cargo_rerun_if_env_changed;
+    use super::get_target_env_var;
+    use super::is_enable;
 
     enum CryptoLib {
         OpenSSL,
@@ -303,11 +306,10 @@ mod bindings {
 
 #[cfg(not(feature = "bundled-4_1_3"))]
 mod bindings {
-    use super::cargo_rerun_if_env_changed;
-
     use std::env;
     use std::path::PathBuf;
 
+    use super::cargo_rerun_if_env_changed;
     use super::get_target_env_var;
 
     pub fn add_bindings() {
