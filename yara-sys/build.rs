@@ -34,10 +34,8 @@ pub fn is_enable(env_var: &str, default: bool) -> bool {
 
 #[cfg(feature = "vendored")]
 mod build {
-    #[cfg(unix)]
-    use std::os::unix::fs::symlink as symlink_dir;
-    #[cfg(windows)]
-    use std::os::windows::fs::symlink_dir;
+    use fs_extra::dir::{copy, CopyOptions};
+
     use std::path::PathBuf;
 
     use super::cargo_rerun_if_env_changed;
@@ -80,7 +78,10 @@ mod build {
         let out_dir = std::env::var("OUT_DIR").map(PathBuf::from).unwrap();
         let basedir = out_dir.join("yara");
         if !basedir.exists() {
-            symlink_dir(old_basedir, &basedir).unwrap();
+            let mut opt = CopyOptions::new();
+            opt.overwrite = true;
+            opt.copy_inside = true;
+            copy(old_basedir, &basedir, &opt).unwrap();
         }
         let basedir = basedir.join("libyara");
 
