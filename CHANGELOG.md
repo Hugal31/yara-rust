@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.13.0](https://github.com/Hugal31/yara-rust/compare/v0.12.0...v0.13.0) (2022-02-02)
+
+### ⚠ BREAKING CHANGES
+
+* **yara-sys**: for the vendored feaure, `YARA_ENABLE_HASH` is now enabled by default.
+
+### Features
+
+* **yara-sys:** recompile if ENV change ([a669bd3](https://github.com/Hugal31/yara-rust/commit/a669bd3aacc4141a0b5a7eb2beb7306abc74a652))
+* **yara-sys:** add support wincrypt and common crypto ([34d2664](https://github.com/Hugal31/yara-rust/commit/34d26645e8a0bf7071cdea7d27a45bc3d96a3cdf))
+
+### Bug Fixes
+
+* **yara-sys** improve `cargo_rerun_if_env_changed` to support targets ([ef8e51e](https://github.com/Hugal31/yara-rust/commit/ef8e51e63e432fe9f4fb684d33bb05fff9e7754f))
+* **yara-sys** fix vendored build symlink issue on Windows ([9e1954b](https://github.com/Hugal31/yara-rust/commit/9e1954b5732a5b677c07c642974a5b83b0a0e0f2))
+
 ## [0.12.0](https://github.com/Hugal31/yara-rust/compare/v0.11.1...v0.12.0) (2021-10-29)
 
 
