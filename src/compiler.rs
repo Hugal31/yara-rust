@@ -263,7 +263,7 @@ impl Compiler {
         }
 
         unsafe extern "C" fn free_include(ptr: *const c_char, _user_data: *mut c_void) {
-            std::ffi::CString::from_raw(ptr as *mut _);
+            let _ = std::ffi::CString::from_raw(ptr as *mut _);
         }
 
         fn free_user_data<C>(user_data: *mut c_void) {

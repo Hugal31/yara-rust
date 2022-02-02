@@ -5,27 +5,71 @@ fn main() {
     bindings::add_bindings();
 }
 
-pub fn cargo_rerun_if_env_changed(env_name: &str) {
-    println!("cargo:rerun-if-env-changed={}", env_name);
+pub fn cargo_rerun_if_env_changed(env_var: &str) {
+    let target = std::env::var("TARGET").unwrap();
+    println!("cargo:rerun-if-env-changed={}", env_var);
+    println!("cargo:rerun-if-env-changed={}_{}", env_var, target);
+    println!(
+        "cargo:rerun-if-env-changed={}_{}",
+        env_var,
+        target.replace("-", "_")
+    );
+}
+
+pub fn get_target_env_var(env_var: &str) -> Option<String> {
+    let target = std::env::var("TARGET").unwrap();
+    std::env::var(format!("{}_{}", env_var, target))
+        .or_else(|_| std::env::var(format!("{}_{}", env_var, target.replace("-", "_"))))
+        .or_else(|_| std::env::var(env_var))
+        .ok()
+}
+
+pub fn is_enable(env_var: &str, default: bool) -> bool {
+    match get_target_env_var(env_var).as_deref() {
+        Some("0") => false,
+        Some(_) => true,
+        None => default,
+    }
 }
 
 #[cfg(feature = "vendored")]
 mod build {
+    use fs_extra::dir::{copy, CopyOptions};
+
     use std::path::PathBuf;
 
     use super::cargo_rerun_if_env_changed;
-    use libloading::Library;
-    use std::env::consts::DLL_SUFFIX;
-    #[cfg(unix)]
-    use std::os::unix::fs::symlink as symlink_dir;
-    #[cfg(windows)]
-    use std::os::windows::fs::symlink_dir;
+    use super::get_target_env_var;
+    use super::is_enable;
 
-    fn is_enable(env_var: &str, default: bool) -> bool {
-        match std::env::var(env_var).ok().as_deref() {
-            Some("0") => false,
-            Some(_) => true,
-            None => default,
+    enum CryptoLib {
+        OpenSSL,
+        Wincrypt,
+        CommonCrypto,
+        None,
+    }
+
+    fn get_crypto_lib() -> CryptoLib {
+        match get_target_env_var("YARA_CRYPTO_LIB")
+            .map(|v| v.to_lowercase())
+            .as_deref()
+        {
+            Some("openssl") => CryptoLib::OpenSSL,
+            Some("wincrypt") => CryptoLib::Wincrypt,
+            Some("commoncrypto") => CryptoLib::CommonCrypto,
+            Some(_) => CryptoLib::None,
+            None => {
+                // defaults to target family's crypto lib if not specified
+                match std::env::var("CARGO_CFG_TARGET_OS").ok().unwrap().as_str() {
+                    "linux" | "freebsd" | "android" | "openbsd" | "netbsd" => CryptoLib::OpenSSL,
+                    "windows" => CryptoLib::Wincrypt,
+                    "macos" | "ios" => CryptoLib::CommonCrypto,
+                    _ => {
+                        println!("cargo:warning=Can't determine crypto lib to use during compilation for your target platform, please specify one via YARA_CRYPTO_LIB or disable it via YARA_CRYPTO_LIB=disable");
+                        std::process::exit(1);
+                    }
+                }
+            }
         }
     }
 
@@ -34,7 +78,10 @@ mod build {
         let out_dir = std::env::var("OUT_DIR").map(PathBuf::from).unwrap();
         let basedir = out_dir.join("yara");
         if !basedir.exists() {
-            symlink_dir(old_basedir, &basedir).unwrap();
+            let mut opt = CopyOptions::new();
+            opt.overwrite = true;
+            opt.copy_inside = true;
+            copy(old_basedir, &basedir, &opt).unwrap();
         }
         let basedir = basedir.join("libyara");
 
@@ -56,15 +103,13 @@ mod build {
         match std::env::var("CARGO_CFG_TARGET_OS").ok().unwrap().as_str() {
             "windows" => cc
                 .file(basedir.join("proc").join("windows.c"))
-                .define("USE_WINDOWS_PROC", "")
-                .define("HAVE_WINCRYPT_H", ""),
+                .define("USE_WINDOWS_PROC", ""),
             "linux" => cc
                 .file(basedir.join("proc").join("linux.c"))
                 .define("USE_LINUX_PROC", ""),
             "macos" => cc
                 .file(basedir.join("proc").join("mach.c"))
-                .define("USE_MACH_PROC", "")
-                .define("HAVE_COMMONCRYPTO_COMMONCRYPTO_H", ""),
+                .define("USE_MACH_PROC", ""),
             _ => cc
                 .file(basedir.join("libyara/proc/none.c"))
                 .define("USE_NO_PROC", ""),
@@ -80,21 +125,15 @@ mod build {
         };
 
         let mut enable_crypto = false;
-        if is_enable("YARA_ENABLE_CRYPTO", true) {
-            let mut libcrypto = format!("libcrypto{}", DLL_SUFFIX);
-            if let Ok(openssl_lib_dir) = std::env::var("OPENSSL_LIB_DIR") {
-                let mut buffer = PathBuf::from(openssl_lib_dir);
-                println!("cargo:rustc-link-search=native={}", buffer.display());
-                buffer.push(libcrypto);
-                libcrypto = buffer.to_str().unwrap().to_string();
-            }
+        match get_crypto_lib() {
+            CryptoLib::OpenSSL => {
+                if let Some(openssl_lib_dir) = get_target_env_var("OPENSSL_LIB_DIR") {
+                    println!(
+                        "cargo:rustc-link-search=native={}",
+                        PathBuf::from(openssl_lib_dir).display()
+                    );
+                }
 
-            let load_result = unsafe { Library::new(libcrypto) };
-            if let Err(err) = load_result {
-                println!("cargo:warning=Please install OpenSSL library");
-                println!("cargo:warning={:?}", err);
-                std::process::exit(1);
-            } else {
                 enable_crypto = true;
                 cc.define("HAVE_LIBCRYPTO", "1");
                 if std::env::var("CARGO_CFG_TARGET_FAMILY")
@@ -112,9 +151,20 @@ mod build {
                     println!("cargo:rustc-link-lib=dylib=crypto");
                 }
             }
+            CryptoLib::Wincrypt => {
+                enable_crypto = true;
+                cc.define("HAVE_WINCRYPT_H", "1");
+                println!("cargo:rustc-link-lib=dylib=crypt32");
+            }
+            CryptoLib::CommonCrypto => {
+                enable_crypto = true;
+                cc.define("HAVE_COMMONCRYPTO_COMMONCRYPTO_H", "1");
+                println!("cargo:rustc-link-lib=dylib=System");
+            }
+            CryptoLib::None => {}
         }
 
-        if is_enable("YARA_ENABLE_HASH", false) && enable_crypto {
+        if is_enable("YARA_ENABLE_HASH", true) && enable_crypto {
             cc.define("HASH_MODULE", "1");
         } else {
             exclude.push(basedir.join("modules").join("hash").join("hash.c"));
@@ -156,7 +206,8 @@ mod build {
             cc.define("NDEBUG", "1");
         }
 
-        let verbosity = std::env::var("YARA_DEBUG_VERBOSITY").unwrap_or_else(|_| "0".to_string());
+        let verbosity =
+            get_target_env_var("YARA_DEBUG_VERBOSITY").unwrap_or_else(|| "0".to_string());
         cc.define("YR_DEBUG_VERBOSITY", verbosity.as_str());
 
         let walker = globwalk::GlobWalkerBuilder::from_patterns(&basedir, &["**/*.c", "!proc/*"])
@@ -210,23 +261,24 @@ mod build {
 #[cfg(not(feature = "vendored"))]
 mod build {
     use super::cargo_rerun_if_env_changed;
+    use super::get_target_env_var;
+    use super::is_enable;
 
     /// Tell cargo to tell rustc to link the system yara
     /// shared library.
     pub fn build_and_link() {
-        let kind = match std::env::var("LIBYARA_STATIC").ok().as_deref() {
-            Some("0") => "dylib",
-            Some(_) => "static",
-            None => "dylib",
+        let kind = if is_enable("LIBYARA_STATIC", false) {
+            "static"
+        } else {
+            "dylib"
         };
         println!("cargo:rustc-link-lib={}=yara", kind);
         cargo_rerun_if_env_changed("LIBYARA_STATIC");
         cargo_rerun_if_env_changed("YARA_LIBRARY_PATH");
 
         // Add the environment variable YARA_LIBRARY_PATH to the library search path.
-        if let Some(yara_library_path) = std::env::var("YARA_LIBRARY_PATH")
-            .ok()
-            .filter(|path| !path.is_empty())
+        if let Some(yara_library_path) =
+            get_target_env_var("YARA_LIBRARY_PATH").filter(|path| !path.is_empty())
         {
             println!("cargo:rustc-link-search=native={}", yara_library_path);
         }
@@ -254,10 +306,11 @@ mod bindings {
 
 #[cfg(not(feature = "bundled-4_1_3"))]
 mod bindings {
-    use super::cargo_rerun_if_env_changed;
-
     use std::env;
     use std::path::PathBuf;
+
+    use super::cargo_rerun_if_env_changed;
+    use super::get_target_env_var;
 
     pub fn add_bindings() {
         let mut builder = bindgen::Builder::default()
@@ -297,9 +350,8 @@ mod bindings {
             .opaque_type("YR_FIXUP")
             .opaque_type("YR_LOOP_CONTEXT");
 
-        if let Some(yara_include_dir) = env::var("YARA_INCLUDE_DIR")
-            .ok()
-            .filter(|dir| !dir.is_empty())
+        if let Some(yara_include_dir) =
+            get_target_env_var("YARA_INCLUDE_DIR").filter(|dir| !dir.is_empty())
         {
             builder = builder.clang_arg(format!("-I{}", yara_include_dir))
         }
