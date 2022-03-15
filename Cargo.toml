@@ -16,7 +16,7 @@ edition = "2018"
 [features]
 default = ["bindgen"]
 bindgen = ["yara-sys/bindgen"]
-bundled-4_1_3 = ["yara-sys/bundled-4_1_3"]
+bundled-4_2_0 = ["yara-sys/bundled-4_2_0"]
 vendored = ["yara-sys/vendored"]
 
 [dependencies]
