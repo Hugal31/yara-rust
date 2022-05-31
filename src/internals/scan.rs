@@ -232,8 +232,9 @@ pub fn scanner_scan_mem_blocks<'a>(
     iter: impl MemoryBlockIterator,
     callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
-    let iter = WrapperMemoryBlockIterator::new(iter).as_yara();
-    scanner_scan_mem_blocks_inner(scanner, iter, callback)
+    let mut iter = WrapperMemoryBlockIterator::new(iter);
+    let yr_iter = iter.as_yara();
+    scanner_scan_mem_blocks_inner(scanner, yr_iter, callback)
 }
 
 pub fn scanner_scan_mem_blocks_sized<'a>(
@@ -241,8 +242,9 @@ pub fn scanner_scan_mem_blocks_sized<'a>(
     iter: impl MemoryBlockIteratorSized,
     callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
-    let iter = WrapperMemoryBlockIterator::new(iter).as_yara_sized();
-    scanner_scan_mem_blocks_inner(scanner, iter, callback)
+    let mut iter = WrapperMemoryBlockIterator::new(iter);
+    let yr_iter = iter.as_yara_sized();
+    scanner_scan_mem_blocks_inner(scanner, yr_iter, callback)
 }
 
 fn scanner_scan_mem_blocks_inner<'a>(
