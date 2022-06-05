@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.13.1](https://github.com/Hugal31/yara-rust/compare/v0.13.0...v0.13.1) (2022-06-05)
+
+
+### Bug Fixes
+
+* fix undefined behavior with custom scanners ([5503c1b](https://github.com/Hugal31/yara-rust/commit/5503c1baea7a220c2a08efdb404c6e41b8ae06d6))
+
 ## [0.13.0](https://github.com/Hugal31/yara-rust/compare/v0.12.0...v0.13.0) (2022-02-02)
 
 ### ⚠ BREAKING CHANGES
