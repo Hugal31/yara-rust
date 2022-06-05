@@ -1,4 +1,8 @@
-use std::ptr;
+use std::{
+    marker::PhantomData,
+    ops::{Deref, DerefMut},
+    ptr,
+};
 use yara_sys::{size_t, YR_MEMORY_BLOCK, YR_MEMORY_BLOCK_ITERATOR};
 
 #[derive(Debug)]
@@ -54,26 +58,61 @@ impl<T> WrapperMemoryBlockIterator<T> {
 }
 
 impl<T: MemoryBlockIterator> WrapperMemoryBlockIterator<T> {
-    pub fn as_yara(&mut self) -> YR_MEMORY_BLOCK_ITERATOR {
-        YR_MEMORY_BLOCK_ITERATOR {
+    // Clippy warns there is a needless lifetime on this.
+    // I don't know if I missed something or if clippy is wrong, but removing the lifetime is
+    // unsafe.
+    #[allow(clippy::needless_lifetimes)]
+    pub fn as_yara<'a>(&'a mut self) -> impl DerefMut<Target = YR_MEMORY_BLOCK_ITERATOR> + 'a {
+        SafeYrMemoryBlockIterator::new(YR_MEMORY_BLOCK_ITERATOR {
             context: self as *mut WrapperMemoryBlockIterator<T> as *mut std::os::raw::c_void,
             first: Some(mem_block_iterator_first::<T>),
             next: Some(mem_block_iterator_next::<T>),
             file_size: None,
             last_error: 0,
-        }
+        })
     }
 }
 
 impl<T: MemoryBlockIteratorSized> WrapperMemoryBlockIterator<T> {
-    pub fn as_yara_sized(&mut self) -> YR_MEMORY_BLOCK_ITERATOR {
-        YR_MEMORY_BLOCK_ITERATOR {
+    #[allow(clippy::needless_lifetimes)]
+    pub fn as_yara_sized<'a>(
+        &'a mut self,
+    ) -> impl DerefMut<Target = YR_MEMORY_BLOCK_ITERATOR> + 'a {
+        SafeYrMemoryBlockIterator::new(YR_MEMORY_BLOCK_ITERATOR {
             context: self as *mut WrapperMemoryBlockIterator<T> as *mut std::os::raw::c_void,
             first: Some(mem_block_iterator_first::<T>),
             next: Some(mem_block_iterator_next::<T>),
             file_size: Some(mem_block_iterator_file_size::<T>),
             last_error: 0,
+        })
+    }
+}
+
+struct SafeYrMemoryBlockIterator<'a> {
+    iterator: YR_MEMORY_BLOCK_ITERATOR,
+    _marker: PhantomData<&'a ()>,
+}
+
+impl<'a> SafeYrMemoryBlockIterator<'a> {
+    pub fn new(iterator: YR_MEMORY_BLOCK_ITERATOR) -> Self {
+        Self {
+            iterator,
+            _marker: PhantomData::default(),
         }
+    }
+}
+
+impl<'a> Deref for SafeYrMemoryBlockIterator<'a> {
+    type Target = YR_MEMORY_BLOCK_ITERATOR;
+
+    fn deref(&self) -> &Self::Target {
+        &self.iterator
+    }
+}
+
+impl<'a> DerefMut for SafeYrMemoryBlockIterator<'a> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.iterator
     }
 }
 
