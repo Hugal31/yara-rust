@@ -12,14 +12,14 @@ pub fn cargo_rerun_if_env_changed(env_var: &str) {
     println!(
         "cargo:rerun-if-env-changed={}_{}",
         env_var,
-        target.replace("-", "_")
+        target.replace('-', "_")
     );
 }
 
 pub fn get_target_env_var(env_var: &str) -> Option<String> {
     let target = std::env::var("TARGET").unwrap();
     std::env::var(format!("{}_{}", env_var, target))
-        .or_else(|_| std::env::var(format!("{}_{}", env_var, target.replace("-", "_"))))
+        .or_else(|_| std::env::var(format!("{}_{}", env_var, target.replace('-', "_"))))
         .or_else(|_| std::env::var(env_var))
         .ok()
 }

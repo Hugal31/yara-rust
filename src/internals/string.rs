@@ -51,8 +51,9 @@ impl<'a> From<(&'a YR_SCAN_CONTEXT, &'a YR_STRING)> for YrString<'a> {
         let identifier = unsafe { CStr::from_ptr(string.get_identifier()) }
             .to_str()
             .unwrap();
-        let matches = unsafe { &*context.matches.offset(string.idx as isize) };
-        let matches = MatchIterator::from(matches).map(Match::from).collect();
+        let matches = unsafe { context.matches.as_ref() }
+            .map(|matches| MatchIterator::from(matches).map(Match::from).collect())
+            .unwrap_or_else(Vec::new);
 
         YrString {
             identifier,

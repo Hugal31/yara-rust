@@ -232,8 +232,9 @@ pub fn scanner_scan_mem_blocks<'a>(
     iter: impl MemoryBlockIterator,
     callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
-    let iter = WrapperMemoryBlockIterator::new(iter).as_yara();
-    scanner_scan_mem_blocks_inner(scanner, iter, callback)
+    let mut iter = WrapperMemoryBlockIterator::new(iter);
+    let mut yr_iter = iter.as_yara();
+    scanner_scan_mem_blocks_inner(scanner, &mut *yr_iter, callback)
 }
 
 pub fn scanner_scan_mem_blocks_sized<'a>(
@@ -241,19 +242,20 @@ pub fn scanner_scan_mem_blocks_sized<'a>(
     iter: impl MemoryBlockIteratorSized,
     callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
-    let iter = WrapperMemoryBlockIterator::new(iter).as_yara_sized();
-    scanner_scan_mem_blocks_inner(scanner, iter, callback)
+    let mut iter = WrapperMemoryBlockIterator::new(iter);
+    let mut yr_iter = iter.as_yara_sized();
+    scanner_scan_mem_blocks_inner(scanner, &mut *yr_iter, callback)
 }
 
 fn scanner_scan_mem_blocks_inner<'a>(
     scanner: *mut yara_sys::YR_SCANNER,
-    mut iter: yara_sys::YR_MEMORY_BLOCK_ITERATOR,
+    iter: &mut yara_sys::YR_MEMORY_BLOCK_ITERATOR,
     mut callback: impl FnMut(CallbackMsg<'a>) -> CallbackReturn,
 ) -> Result<(), YaraError> {
     let (user_data, scan_callback) = get_scan_callback(&mut callback);
     let result = unsafe {
         yara_sys::yr_scanner_set_callback(scanner, scan_callback, user_data);
-        yara_sys::yr_scanner_scan_mem_blocks(scanner, &mut iter as *mut _)
+        yara_sys::yr_scanner_scan_mem_blocks(scanner, iter as *mut _)
     };
     yara_sys::Error::from_code(result)
         .map_err(|e| e.into())

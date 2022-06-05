@@ -2,7 +2,6 @@ use yara::{
     CallbackMsg, CallbackReturn, CompileErrorLevel, Compiler, ConfigName, Error, MemoryBlock,
     MemoryBlockIterator, MemoryBlockIteratorSized, Metadata, MetadataValue, Rules, ScanFlags, Yara,
 };
-use yara_sys;
 
 const RULES: &str = r#"
 import "pe"
@@ -518,4 +517,47 @@ rule is_awesome {
     compiler.disable_include_directive();
     let res = compiler.add_rules_str(rule_1);
     assert!(res.is_err());
+}
+
+#[test]
+fn test_custom_memory_iterator() {
+    use libflate::gzip::Decoder;
+    use std::io::{self, Read};
+
+    pub struct GZipMemoryBlockIterator<R> {
+        buffer: Vec<u8>,
+        decoder: Decoder<R>,
+    }
+
+    impl<R: Read> GZipMemoryBlockIterator<R> {
+        pub fn new(reader: R) -> io::Result<Self> {
+            Ok(GZipMemoryBlockIterator {
+                buffer: vec![0; 1024],
+                decoder: Decoder::new(reader)?,
+            })
+        }
+    }
+
+    impl<R: Read> MemoryBlockIterator for GZipMemoryBlockIterator<R> {
+        fn first(&mut self) -> Option<MemoryBlock> {
+            self.next()
+        }
+
+        fn next(&mut self) -> Option<MemoryBlock> {
+            let size = self.decoder.read(&mut self.buffer).unwrap();
+            if size == 0 {
+                return None;
+            }
+            Some(MemoryBlock::new(0, size as u64, &self.buffer))
+        }
+    }
+
+    let file = std::fs::File::open("tests/scanfile.txt.gz").unwrap();
+    let iterator = GZipMemoryBlockIterator::new(file).unwrap();
+    let rules = compile(RULES);
+    let scanner = rules.scanner().unwrap();
+    let scan_result = scanner
+        .scan_mem_blocks(iterator)
+        .expect("should have scanned the gzipped file");
+    assert_eq!(1, scan_result.len());
 }
