@@ -107,17 +107,24 @@ fn test_compile_fd_rules() {
 #[test]
 fn test_scan_mem() {
     let rules = get_default_rules();
-    let result = rules.scan_mem("I love Rust!".as_bytes(), 10);
+    let result = rules.scan_mem("I love Rust! And go is ok".as_bytes(), 10);
 
     let result = result.expect("Should be Ok");
-    let rule = &result[0];
-    assert_eq!(1, result.len());
-    assert_eq!("is_awesome", rule.identifier);
-    assert_eq!(1, rule.strings.len());
-    assert_eq!("$rust", rule.strings[0].identifier);
-    assert_eq!(1, rule.strings[0].matches.len());
-    assert_eq!(7, rule.strings[0].matches[0].offset);
-    assert_eq!(b"Rust", rule.strings[0].matches[0].data.as_slice());
+    assert_eq!(3, result.len());
+    {
+        let rule = &result[0];
+        assert_eq!("is_awesome", rule.identifier);
+        assert_eq!(1, rule.strings.len());
+        assert_eq!("$rust", rule.strings[0].identifier);
+        assert_eq!(1, rule.strings[0].matches.len());
+        assert_eq!(7, rule.strings[0].matches[0].offset);
+        assert_eq!(b"Rust", rule.strings[0].matches[0].data.as_slice());
+    }
+    {
+        let rule = &result[1];
+        assert_eq!("is_ok", rule.identifier);
+        assert_eq!(b"go", rule.strings[0].matches[0].data.as_slice());
+    }
 }
 
 #[test]
