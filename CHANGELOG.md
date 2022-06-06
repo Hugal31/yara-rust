@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [0.13.1](https://github.com/Hugal31/yara-rust/compare/v0.13.0...v0.13.1) (2022-06-05)
+## [0.13.2](https://github.com/Hugal31/yara-rust/compare/v0.13.1...v0.13.2) (2022-06-06)
+
+
+### Bug Fixes
+
+* fix YR_STRING conversion that was picking only the first string ([daea8e2](https://github.com/Hugal31/yara-rust/commit/daea8e23d1bf96c0775895173da566fa934abe5f))
+
+## [0.13.1](https://github.com/Hugal31/yara-rust/compare/v0.13.0...v0.13.1) (2022-06-05)
 
 
 ### Bug Fixes
