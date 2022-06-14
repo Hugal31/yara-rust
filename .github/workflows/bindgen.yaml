@@ -1,0 +1,34 @@
+name: tests
+
+on:
+  pull_request:
+
+jobs:
+  bindgen:
+    strategy:
+      matrix:
+        os: [ windows-2019, ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Install rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - name: Generate bindings
+        run: |
+          cargo build --verbose --no-default-features --features vendored,bindgen
+          mkdir out
+          find -name 'bindings.rs'
+          ln $(find -name 'bindings.rs') "./out/yara-4.2.1-unix.rs"
+          ls out
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: bindings
+          path: |
+            out
