@@ -16,10 +16,10 @@ version of Yara. Just make sure the version you specify is the same that the
 version on your system!
 
 - `bindgen`: **recommended**: this is the default feature, to use generated bindings.
-- `bundled-4_1_3`: use pre-generated bindings for Yara 4.1.3. Useful if you do not
+- `bundled-4_2_1`: use pre-generated bindings for Yara 4.2.1. Useful if you do not
   want to install LLVM to run bindgen. However, you'll have to make sure you use
   a version of Yara with the same major and minor version number.
-- `vendored`: automatically compile and link libyara v4.1.3.
+- `vendored`: automatically compile and link libyara v4.2.1.
 
 You can specify the location of Yara:
 
@@ -28,7 +28,7 @@ You can specify the location of Yara:
 - The path of the Yara headers by setting the `YARA_INCLUDE_DIR` environment
   variable, if you use the `bindgen` feature.
   
-You can specify compile options for libyara v4.1.3 if choice `vendored` (`0` - disable, `1` - enable):
+You can specify compile options for libyara v4.2.1 if choice `vendored` (`0` - disable, `1` - enable):
 - YARA_ENABLE_PROFILING - enable rules profiling support (default: **Disable**)
 - YARA_ENABLE_NDEBUG - enable NDEBUG (default: **Enable**)
 - YARA_ENABLE_HASH - enable [hash](https://yara.readthedocs.io/en/stable/modules/hash.html) module (default: **Enable**)

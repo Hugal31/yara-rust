@@ -2714,12 +2714,15 @@ pub const ERROR_WRITING_FILE: u32 = 58;
 pub const ERROR_INVALID_MODIFIER: u32 = 59;
 pub const ERROR_DUPLICATED_MODIFIER: u32 = 60;
 pub const ERROR_BLOCK_NOT_READY: u32 = 61;
+pub const ERROR_INVALID_PERCENTAGE: u32 = 62;
+pub const ERROR_IDENTIFIER_MATCHES_WILDCARD: u32 = 63;
 pub const CALLBACK_MSG_RULE_MATCHING: u32 = 1;
 pub const CALLBACK_MSG_RULE_NOT_MATCHING: u32 = 2;
 pub const CALLBACK_MSG_SCAN_FINISHED: u32 = 3;
 pub const CALLBACK_MSG_IMPORT_MODULE: u32 = 4;
 pub const CALLBACK_MSG_MODULE_IMPORTED: u32 = 5;
 pub const CALLBACK_MSG_TOO_MANY_MATCHES: u32 = 6;
+pub const CALLBACK_MSG_CONSOLE_LOG: u32 = 7;
 pub const CALLBACK_CONTINUE: u32 = 0;
 pub const CALLBACK_ABORT: u32 = 1;
 pub const CALLBACK_ERROR: u32 = 2;
@@ -4728,6 +4731,95 @@ fn bindgen_test_layout_RE_FIBER_POOL() {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+pub struct RE_FAST_EXEC_POSITION {
+    pub round: ::std::os::raw::c_int,
+    pub input: *const u8,
+    pub prev: *mut RE_FAST_EXEC_POSITION,
+    pub next: *mut RE_FAST_EXEC_POSITION,
+}
+#[test]
+fn bindgen_test_layout_RE_FAST_EXEC_POSITION() {
+    assert_eq!(
+        ::std::mem::size_of::<RE_FAST_EXEC_POSITION>(),
+        32usize,
+        concat!("Size of: ", stringify!(RE_FAST_EXEC_POSITION))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<RE_FAST_EXEC_POSITION>(),
+        8usize,
+        concat!("Alignment of ", stringify!(RE_FAST_EXEC_POSITION))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_FAST_EXEC_POSITION>())).round as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_FAST_EXEC_POSITION),
+            "::",
+            stringify!(round)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_FAST_EXEC_POSITION>())).input as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_FAST_EXEC_POSITION),
+            "::",
+            stringify!(input)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_FAST_EXEC_POSITION>())).prev as *const _ as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_FAST_EXEC_POSITION),
+            "::",
+            stringify!(prev)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_FAST_EXEC_POSITION>())).next as *const _ as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_FAST_EXEC_POSITION),
+            "::",
+            stringify!(next)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct RE_FAST_EXEC_POSITION_POOL {
+    pub head: *mut RE_FAST_EXEC_POSITION,
+}
+#[test]
+fn bindgen_test_layout_RE_FAST_EXEC_POSITION_POOL() {
+    assert_eq!(
+        ::std::mem::size_of::<RE_FAST_EXEC_POSITION_POOL>(),
+        8usize,
+        concat!("Size of: ", stringify!(RE_FAST_EXEC_POSITION_POOL))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<RE_FAST_EXEC_POSITION_POOL>(),
+        8usize,
+        concat!("Alignment of ", stringify!(RE_FAST_EXEC_POSITION_POOL))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<RE_FAST_EXEC_POSITION_POOL>())).head as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(RE_FAST_EXEC_POSITION_POOL),
+            "::",
+            stringify!(head)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
 pub struct YR_MATCHES {
     pub head: *mut YR_MATCH,
     pub tail: *mut YR_MATCH,
@@ -5440,6 +5532,7 @@ pub struct YR_SCAN_CONTEXT {
     pub matches_notebook: *mut YR_NOTEBOOK,
     pub stopwatch: YR_STOPWATCH,
     pub re_fiber_pool: RE_FIBER_POOL,
+    pub re_fast_exec_position_pool: RE_FAST_EXEC_POSITION_POOL,
     pub rule_matches_flags: *mut ::std::os::raw::c_ulong,
     pub ns_unsatisfied_flags: *mut ::std::os::raw::c_ulong,
     pub strings_temp_disabled: *mut ::std::os::raw::c_ulong,
@@ -5451,7 +5544,7 @@ pub struct YR_SCAN_CONTEXT {
 fn bindgen_test_layout_YR_SCAN_CONTEXT() {
     assert_eq!(
         ::std::mem::size_of::<YR_SCAN_CONTEXT>(),
-        176usize,
+        184usize,
         concat!("Size of: ", stringify!(YR_SCAN_CONTEXT))
     );
     assert_eq!(
@@ -5605,9 +5698,22 @@ fn bindgen_test_layout_YR_SCAN_CONTEXT() {
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<YR_SCAN_CONTEXT>())).rule_matches_flags as *const _ as usize
+            &(*(::std::ptr::null::<YR_SCAN_CONTEXT>())).re_fast_exec_position_pool as *const _
+                as usize
         },
         128usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(re_fast_exec_position_pool)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<YR_SCAN_CONTEXT>())).rule_matches_flags as *const _ as usize
+        },
+        136usize,
         concat!(
             "Offset of field: ",
             stringify!(YR_SCAN_CONTEXT),
@@ -5619,7 +5725,7 @@ fn bindgen_test_layout_YR_SCAN_CONTEXT() {
         unsafe {
             &(*(::std::ptr::null::<YR_SCAN_CONTEXT>())).ns_unsatisfied_flags as *const _ as usize
         },
-        136usize,
+        144usize,
         concat!(
             "Offset of field: ",
             stringify!(YR_SCAN_CONTEXT),
@@ -5631,7 +5737,7 @@ fn bindgen_test_layout_YR_SCAN_CONTEXT() {
         unsafe {
             &(*(::std::ptr::null::<YR_SCAN_CONTEXT>())).strings_temp_disabled as *const _ as usize
         },
-        144usize,
+        152usize,
         concat!(
             "Offset of field: ",
             stringify!(YR_SCAN_CONTEXT),
@@ -5641,7 +5747,7 @@ fn bindgen_test_layout_YR_SCAN_CONTEXT() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<YR_SCAN_CONTEXT>())).matches as *const _ as usize },
-        152usize,
+        160usize,
         concat!(
             "Offset of field: ",
             stringify!(YR_SCAN_CONTEXT),
@@ -5653,7 +5759,7 @@ fn bindgen_test_layout_YR_SCAN_CONTEXT() {
         unsafe {
             &(*(::std::ptr::null::<YR_SCAN_CONTEXT>())).unconfirmed_matches as *const _ as usize
         },
-        160usize,
+        168usize,
         concat!(
             "Offset of field: ",
             stringify!(YR_SCAN_CONTEXT),
@@ -5663,7 +5769,7 @@ fn bindgen_test_layout_YR_SCAN_CONTEXT() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<YR_SCAN_CONTEXT>())).profiling_info as *const _ as usize },
-        168usize,
+        176usize,
         concat!(
             "Offset of field: ",
             stringify!(YR_SCAN_CONTEXT),
@@ -5746,6 +5852,7 @@ pub struct _YR_COMPILER {
     pub rules_table: *mut YR_HASH_TABLE,
     pub objects_table: *mut YR_HASH_TABLE,
     pub strings_table: *mut YR_HASH_TABLE,
+    pub wildcard_identifiers_table: *mut YR_HASH_TABLE,
     pub sz_table: *mut YR_HASH_TABLE,
     pub fixup_stack_head: *mut YR_FIXUP,
     pub num_namespaces: ::std::os::raw::c_int,
@@ -5772,7 +5879,7 @@ pub struct _YR_COMPILER {
 fn bindgen_test_layout__YR_COMPILER() {
     assert_eq!(
         ::std::mem::size_of::<_YR_COMPILER>(),
-        9680usize,
+        9696usize,
         concat!("Size of: ", stringify!(_YR_COMPILER))
     );
     assert_eq!(
@@ -5943,8 +6050,20 @@ fn bindgen_test_layout__YR_COMPILER() {
         )
     );
     assert_eq!(
-        unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).sz_table as *const _ as usize },
+        unsafe {
+            &(*(::std::ptr::null::<_YR_COMPILER>())).wildcard_identifiers_table as *const _ as usize
+        },
         352usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(wildcard_identifiers_table)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).sz_table as *const _ as usize },
+        360usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -5954,7 +6073,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).fixup_stack_head as *const _ as usize },
-        360usize,
+        368usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -5964,7 +6083,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).num_namespaces as *const _ as usize },
-        368usize,
+        376usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -5974,7 +6093,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).loop_ as *const _ as usize },
-        376usize,
+        384usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -5984,7 +6103,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).loop_index as *const _ as usize },
-        728usize,
+        736usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -5996,7 +6115,7 @@ fn bindgen_test_layout__YR_COMPILER() {
         unsafe {
             &(*(::std::ptr::null::<_YR_COMPILER>())).loop_for_of_var_index as *const _ as usize
         },
-        732usize,
+        740usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -6006,7 +6125,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).file_name_stack as *const _ as usize },
-        736usize,
+        744usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -6018,7 +6137,7 @@ fn bindgen_test_layout__YR_COMPILER() {
         unsafe {
             &(*(::std::ptr::null::<_YR_COMPILER>())).file_name_stack_ptr as *const _ as usize
         },
-        864usize,
+        872usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -6030,7 +6149,7 @@ fn bindgen_test_layout__YR_COMPILER() {
         unsafe {
             &(*(::std::ptr::null::<_YR_COMPILER>())).last_error_extra_info as *const _ as usize
         },
-        868usize,
+        876usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -6040,7 +6159,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).lex_buf as *const _ as usize },
-        1124usize,
+        1132usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -6050,7 +6169,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).lex_buf_ptr as *const _ as usize },
-        9320usize,
+        9328usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -6060,7 +6179,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).lex_buf_len as *const _ as usize },
-        9328usize,
+        9336usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -6070,7 +6189,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).include_base_dir as *const _ as usize },
-        9330usize,
+        9338usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -6080,7 +6199,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).user_data as *const _ as usize },
-        9592usize,
+        9600usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -6092,7 +6211,7 @@ fn bindgen_test_layout__YR_COMPILER() {
         unsafe {
             &(*(::std::ptr::null::<_YR_COMPILER>())).incl_clbk_user_data as *const _ as usize
         },
-        9600usize,
+        9608usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -6104,7 +6223,7 @@ fn bindgen_test_layout__YR_COMPILER() {
         unsafe {
             &(*(::std::ptr::null::<_YR_COMPILER>())).re_ast_clbk_user_data as *const _ as usize
         },
-        9608usize,
+        9616usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -6114,7 +6233,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).callback as *const _ as usize },
-        9616usize,
+        9624usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -6124,7 +6243,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).include_callback as *const _ as usize },
-        9624usize,
+        9632usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -6134,7 +6253,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).include_free as *const _ as usize },
-        9632usize,
+        9640usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -6144,7 +6263,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).re_ast_callback as *const _ as usize },
-        9640usize,
+        9648usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -6154,7 +6273,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { &(*(::std::ptr::null::<_YR_COMPILER>())).atoms_config as *const _ as usize },
-        9648usize,
+        9656usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -6279,7 +6398,8 @@ extern "C" {
 pub const _YR_CONFIG_NAME_YR_CONFIG_STACK_SIZE: _YR_CONFIG_NAME = 0;
 pub const _YR_CONFIG_NAME_YR_CONFIG_MAX_STRINGS_PER_RULE: _YR_CONFIG_NAME = 1;
 pub const _YR_CONFIG_NAME_YR_CONFIG_MAX_MATCH_DATA: _YR_CONFIG_NAME = 2;
-pub const _YR_CONFIG_NAME_YR_CONFIG_LAST: _YR_CONFIG_NAME = 3;
+pub const _YR_CONFIG_NAME_YR_CONFIG_MAX_PROCESS_MEMORY_CHUNK: _YR_CONFIG_NAME = 3;
+pub const _YR_CONFIG_NAME_YR_CONFIG_LAST: _YR_CONFIG_NAME = 4;
 pub type _YR_CONFIG_NAME = ::std::os::raw::c_int;
 pub use self::_YR_CONFIG_NAME as YR_CONFIG_NAME;
 extern "C" {
