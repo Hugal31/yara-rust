@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.14.0](https://github.com/Hugal31/yara-rust/compare/v0.13.2...v0.14.0) (2022-06-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* Feature `bundled-4_1_3` is deleted in favor of `bundled-4_2_1`.
+
+### Features
+
+* Upgrade yara to 4.2.1 ([598d75a](https://github.com/Hugal31/yara-rust/commit/598d75ab0a33860bb17e6ec003ea32a044145df5))
+* Merge pull request #72 from ikrivosheev/feature/upgrade_yara ([34ef96f](https://github.com/Hugal31/yara-rust/commit/34ef96f437d6ecf99022021b83af303030fb044b)), closes [#72](https://github.com/Hugal31/yara-rust/issues/72)
+
 ## [0.13.2](https://github.com/Hugal31/yara-rust/compare/v0.13.1...v0.13.2) (2022-06-06)
 
 
