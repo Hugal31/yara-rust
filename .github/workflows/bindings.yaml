@@ -4,9 +4,13 @@ on:
   push:
 #    paths:
 #      - yara-sys/yara
+#      - yara-sys/build.rs
+#      - yara-sys/wrapper.h
   pull_request:
 #    paths:
 #      - yara-sys/yara
+#      - yara-sys/build.rs
+#      - yara-sys/wrapper.h
 
 jobs:
   bindings:
@@ -35,11 +39,12 @@ jobs:
           toolchain: stable
           override: true
       - name: Generate bindings
+        shell: bash
         run: |
           cargo build --verbose --no-default-features --features vendored,bindgen
           mkdir out
           find -name 'bindings.rs'
-          ln $(find -name 'bindings.rs') "./out/bindings.rs"
+          cp "$(find -name 'bindings.rs')" "./out/bindings.rs"
           ls out
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
