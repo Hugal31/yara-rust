@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.15.0](https://github.com/Hugal31/yara-rust/compare/v0.14.0...v0.15.0) (2022-06-19)
+
+
+### Features
+
+* generate bindings from ci ([43ec836](https://github.com/Hugal31/yara-rust/commit/43ec836f01e85f517bc82690df1e6e14ab1db259))
+* pass message data in some CallbackMsg ([4911879](https://github.com/Hugal31/yara-rust/commit/491187908325e45f5b68729be70b32d28fb19864))
+
+### ⚠ BREAKING CHANGES
+
+* `CallbackMsg::RuleNotMatching` and `TooManyMatches` how have values.
+
 ## [0.14.0](https://github.com/Hugal31/yara-rust/compare/v0.13.2...v0.14.0) (2022-06-14)
 
 
