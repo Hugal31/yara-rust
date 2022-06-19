@@ -7,16 +7,16 @@ use std::os::unix::io::AsRawFd;
 use std::os::windows::io::AsRawHandle;
 
 use crate::internals::*;
-use crate::Rule;
+use crate::{Rule, YrString};
 
 #[derive(Debug)]
 pub enum CallbackMsg<'r> {
     RuleMatching(Rule<'r>),
-    RuleNotMatching,
-    ScanFinished,
+    RuleNotMatching(Rule<'r>),
     ImportModule,
     ModuleImported,
-    TooManyMatches,
+    TooManyMatches(YrString<'r>),
+    ScanFinished,
     UnknownMsg,
 }
 
@@ -34,11 +34,19 @@ impl<'r> CallbackMsg<'r> {
                 let context = unsafe { &*context };
                 RuleMatching(Rule::from((context, rule)))
             }
-            yara_sys::CALLBACK_MSG_RULE_NOT_MATCHING => RuleNotMatching,
-            yara_sys::CALLBACK_MSG_SCAN_FINISHED => ScanFinished,
+            yara_sys::CALLBACK_MSG_RULE_NOT_MATCHING => {
+                let rule = unsafe { &*(message_data as *mut yara_sys::YR_RULE) };
+                let context = unsafe { &*context };
+                RuleNotMatching(Rule::from((context, rule)))
+            }
             yara_sys::CALLBACK_MSG_IMPORT_MODULE => ImportModule,
             yara_sys::CALLBACK_MSG_MODULE_IMPORTED => ModuleImported,
-            yara_sys::CALLBACK_MSG_TOO_MANY_MATCHES => TooManyMatches,
+            yara_sys::CALLBACK_MSG_TOO_MANY_MATCHES => {
+                let yr_string = unsafe { &*(message_data as *mut yara_sys::YR_STRING) };
+                let context = unsafe { &*context };
+                TooManyMatches(YrString::from((context, yr_string)))
+            }
+            yara_sys::CALLBACK_MSG_SCAN_FINISHED => ScanFinished,
             _ => UnknownMsg,
         }
     }
