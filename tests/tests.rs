@@ -568,3 +568,25 @@ fn test_custom_memory_iterator() {
         .expect("should have scanned the gzipped file");
     assert_eq!(1, scan_result.len());
 }
+
+#[test]
+fn test_callback_rule_not_matching() {
+    let rules = get_default_rules();
+    let mut matching_rules = vec![];
+    let mut not_matching_rules = vec![];
+
+    rules
+        .scan_mem_callback(b"gok", 1, |callback_msg| {
+            match callback_msg {
+                CallbackMsg::RuleMatching(rule) => matching_rules.push(rule.identifier),
+                CallbackMsg::RuleNotMatching(rule) => not_matching_rules.push(rule.identifier),
+                _ => (),
+            };
+            CallbackReturn::Continue
+        })
+        .expect("should scan");
+
+    matching_rules.sort();
+    assert_eq!(matching_rules, &["is_ok", "re_is_ok"]);
+    assert_eq!(not_matching_rules, &["is_awesome"]);
+}
