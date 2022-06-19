@@ -4,11 +4,13 @@ on:
   push:
     paths:
       - yara-sys/yara
+      - yara-sys/Cargo.toml
       - yara-sys/build.rs
       - yara-sys/wrapper.h
   pull_request:
     paths:
       - yara-sys/yara
+      - yara-sys/Cargo.toml
       - yara-sys/build.rs
       - yara-sys/wrapper.h
 
@@ -18,9 +20,21 @@ jobs:
       matrix:
         include:
           - os: "ubuntu-latest"
-            family: "unix"
+            target: "i686-unknown-linux-gnu"
+          - os: "ubuntu-latest"
+            target: "x86_64-unknown-linux-gnu"
+          - os: "ubuntu-latest"
+            target: "aarch64-unknown-linux-gnu"
           - os: "windows-latest"
-            family: "windows"
+            target: "i686-pc-windows-gnu"
+          - os: "windows-latest"
+            target: "i686-pc-windows-msvc"
+          - os: "windows-latest"
+            target: "x86_64-pc-windows-msvc"
+          - os: "windows-latest"
+            target: "x86_64-pc-windows-gnu"
+          - os: "macos-latest"
+            target: "x86_64-apple-darwin"
     runs-on: ${{ matrix.os }}
     steps:
       # required for bindgen to work, see https://github.com/rust-lang/rust-bindgen/issues/1797
@@ -41,6 +55,7 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
+          target: ${{ matrix.target }}
           override: true
       - name: Generate bindings
         shell: bash
@@ -48,9 +63,9 @@ jobs:
           cargo build --verbose --no-default-features --features vendored,bindgen
           mkdir out
           find -name 'bindings.rs'
-          cp "$(find -name 'bindings.rs')" "./out/yara-${{ matrix.family }}.rs"
+          cp "$(find -name 'bindings.rs')" "./out/yara-${{ matrix.target }}.rs"
           ls out
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
-          path: ./out/yara-${{ matrix.family }}.rs
+          path: ./out/yara-${{ matrix.target }}.rs
