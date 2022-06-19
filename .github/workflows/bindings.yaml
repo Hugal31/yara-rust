@@ -62,8 +62,8 @@ jobs:
         run: |
           cargo build --verbose --no-default-features --features vendored,bindgen
           mkdir out
-          find -name 'bindings.rs'
-          cp "$(find -name 'bindings.rs')" "./out/yara-${{ matrix.target }}.rs"
+          find . -name 'bindings.rs'
+          cp "$(find . -name 'bindings.rs')" "./out/yara-${{ matrix.target }}.rs"
           ls out
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
