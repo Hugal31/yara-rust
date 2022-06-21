@@ -24,11 +24,14 @@ const RULES: &str = r#"
 
 fn main() {
     let compiler = Compiler::new().unwrap();
-    compiler.add_rules_str(RULES)
+    let compiler = compiler
+        .add_rules_str(RULES)
         .expect("Should have parsed rule");
-    let rules = compiler.compile_rules()
+    let rules = compiler
+        .compile_rules()
         .expect("Should have compiled rules");
-    let results = rules.scan_mem("I love Rust!".as_bytes(), 5)
+    let results = rules
+        .scan_mem("I love Rust!".as_bytes(), 5)
         .expect("Should have scanned");
     assert!(results.iter().any(|r| r.identifier == "contains_rust"));
 }
