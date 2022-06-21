@@ -84,7 +84,9 @@ jobs:
             apt install -y --no-install-recommends curl ca-certificates llvm-dev libclang-dev clang
             update-ca-certificates
             # Install rustup
-            curl --fail --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable_aarch64-unknown-linux-gnu --profile minimal
+            curl --fail --proto '=https' -o /tmp/rustup-init --tlsv1.2 -sSf https://static.rust-lang.org/rustup/dist/aarch64-unknown-linux-gnu/rustup-init 
+            chmod +x /tmp/rustup-init
+            /tmp/rustup-init -y --target aarch64-unknown-linux-gnu --profile minimal
 
           dockerRunArgs: |
             --volume "${PWD}:/usr/src/yara/"
