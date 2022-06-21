@@ -93,7 +93,7 @@ jobs:
           run: |
             export PATH="$HOME/.cargo/bin:$PATH"
             cd /usr/src/yara/
-            cargo build --verbose --no-default-features -- features vendored,bindgen
+            cargo build --verbose --no-default-features --features vendored,bindgen
             find . -name 'bindings.rs'
             cp "$(find . -name bindings.rs)" "./out/yara-aarch64-unknown-linux-gnu.rs"
             ls ./out
