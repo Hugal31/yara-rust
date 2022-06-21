@@ -15,20 +15,12 @@ on:
       - yara-sys/wrapper.h
 
 jobs:
-  bindings:
+  x86_64_bindings:
     strategy:
       matrix:
         include:
           - os: "ubuntu-latest"
-            target: "i686-unknown-linux-gnu"
-          - os: "ubuntu-latest"
             target: "x86_64-unknown-linux-gnu"
-          - os: "ubuntu-latest"
-            target: "aarch64-unknown-linux-gnu"
-          - os: "windows-latest"
-            target: "i686-pc-windows-gnu"
-          - os: "windows-latest"
-            target: "i686-pc-windows-msvc"
           - os: "windows-latest"
             target: "x86_64-pc-windows-msvc"
           - os: "windows-latest"
@@ -69,3 +61,36 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: ./out/yara-${{ matrix.target }}.rs
+
+  aarch64_bindings:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: aarch64
+          distro: ubuntu_latest
+          githubToken: ${{ github.token }}
+
+          install: |
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -- -y --default-toolchain stable_aarch64-unknown-linux-gnu --profile minimal
+          
+          setup: |
+            mkdir /out
+
+          dockerRunArgs: |
+            --volume "${PWD}/out:/out"
+
+          run: |
+            cargo build --verbose --no-default-features -- features vendored,bindgen
+            find . -name 'bindings.rs'
+            cp "$(find . -name bindings.rs)" "/out/yara-aarch64-unknown-linux-gnu.rs"
+            ls /out
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: ./out/yara-aarch64-unknown-linux-gnu.rs
+

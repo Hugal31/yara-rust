@@ -20,13 +20,10 @@ version on your system!
 - `bundled-4_2_1`: use pre-generated bindings for Yara 4.2.1. Useful if you do not
   want to install LLVM to run bindgen. However, you'll have to make sure you use
   a version of Yara with the same major and minor version number. List of supported targets:
-  - aarch64-unknown-linux-gnu
-  - i686-pc-windows-gnu
-  - i686-pc-windows-msvc
   - x86_64-pc-windows-gnu
   - x86_64-pc-windows-msvc
-  - i686-unknown-linux-gnu
   - x86_64-unknown-linux-gnu
+  - aarch64-unknown-linux-gnu
 
 You can specify the location of Yara:
 
