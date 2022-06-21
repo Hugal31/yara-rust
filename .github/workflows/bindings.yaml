@@ -75,8 +75,11 @@ jobs:
           githubToken: ${{ github.token }}
 
           install: |
+            # Install systemd dependecies
+            apt update -q -y
+            apt install -q -y curl llvm-dev libclang-dev clang
+            # Install rustup
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -- -y --default-toolchain stable_aarch64-unknown-linux-gnu --profile minimal
-          
           setup: |
             mkdir /out
 
