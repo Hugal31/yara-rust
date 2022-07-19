@@ -26,13 +26,15 @@ impl<'a> Iterator for MatchIterator<'a> {
     type Item = &'a yara_sys::YR_MATCH;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if !self.head.is_null() {
+        while !self.head.is_null() {
             let m = unsafe { &*self.head };
             self.head = m.next;
-            Some(m)
-        } else {
-            None
+            // Do not list private matches, see `yr_string_matches_foreach` in libyara.
+            if !m.is_private {
+                return Some(m);
+            }
         }
+        None
     }
 }
 
