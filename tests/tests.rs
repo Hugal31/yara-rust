@@ -532,6 +532,7 @@ fn test_custom_memory_iterator() {
     use std::io::{self, Read};
 
     pub struct GZipMemoryBlockIterator<R> {
+        offset: usize,
         buffer: Vec<u8>,
         decoder: Decoder<R>,
     }
@@ -539,6 +540,7 @@ fn test_custom_memory_iterator() {
     impl<R: Read> GZipMemoryBlockIterator<R> {
         pub fn new(reader: R) -> io::Result<Self> {
             Ok(GZipMemoryBlockIterator {
+                offset: 0,
                 buffer: vec![0; 1024],
                 decoder: Decoder::new(reader)?,
             })
@@ -555,7 +557,8 @@ fn test_custom_memory_iterator() {
             if size == 0 {
                 return None;
             }
-            Some(MemoryBlock::new(0, &self.buffer[..size]))
+            self.offset += size;
+            Some(MemoryBlock::new(self.offset, &self.buffer[..size]))
         }
     }
 
