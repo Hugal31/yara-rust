@@ -226,7 +226,7 @@ fn test_scan_mem_blocks_sized() {
             let old_base = self.base;
             self.base += data.len() as u64;
             self.current += 1;
-            Some(MemoryBlock::new(old_base, data.len() as u64, data))
+            Some(MemoryBlock::new(old_base, data))
         }
     }
 
@@ -555,7 +555,7 @@ fn test_custom_memory_iterator() {
             if size == 0 {
                 return None;
             }
-            Some(MemoryBlock::new(0, size as u64, &self.buffer))
+            Some(MemoryBlock::new(0, &self.buffer[..size]))
         }
     }
 
