@@ -190,7 +190,7 @@ fn test_scan_mem_blocks() {
             let old_base = self.base;
             self.base += data.len() as u64;
             self.current += 1;
-            Some(MemoryBlock::new(old_base, data.len() as u64, data))
+            Some(MemoryBlock::new(old_base, data))
         }
     }
 
