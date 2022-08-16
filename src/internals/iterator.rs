@@ -17,7 +17,7 @@ impl<'a> MemoryBlock<'a> {
     }
 
     fn as_yara(&mut self) -> YR_MEMORY_BLOCK {
-        let fetch_data = if self.data.len() == 0 {
+        let fetch_data = if self.data.is_empty() {
             mem_block_fetch_data_null
         } else {
             mem_block_fetch_data
