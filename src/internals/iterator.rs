@@ -3,22 +3,21 @@ use std::{
     ops::{Deref, DerefMut},
     ptr,
 };
-use yara_sys::{size_t, YR_MEMORY_BLOCK, YR_MEMORY_BLOCK_ITERATOR};
+use yara_sys::{YR_MEMORY_BLOCK, YR_MEMORY_BLOCK_ITERATOR};
 
 #[derive(Debug)]
 pub struct MemoryBlock<'a> {
     base: u64,
-    size: size_t,
     data: &'a [u8],
 }
 
 impl<'a> MemoryBlock<'a> {
-    pub fn new(base: u64, size: size_t, data: &'a [u8]) -> Self {
-        Self { base, size, data }
+    pub fn new(base: u64, data: &'a [u8]) -> Self {
+        Self { base, data }
     }
 
     fn as_yara(&mut self) -> YR_MEMORY_BLOCK {
-        let fetch_data = if self.size == 0 {
+        let fetch_data = if self.data.is_empty() {
             mem_block_fetch_data_null
         } else {
             mem_block_fetch_data
@@ -26,7 +25,7 @@ impl<'a> MemoryBlock<'a> {
 
         YR_MEMORY_BLOCK {
             base: self.base,
-            size: self.size,
+            size: self.data.len() as u64,
             context: self as *mut MemoryBlock as *mut std::os::raw::c_void,
             fetch_data: Some(fetch_data),
         }

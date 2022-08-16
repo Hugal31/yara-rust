@@ -190,7 +190,7 @@ fn test_scan_mem_blocks() {
             let old_base = self.base;
             self.base += data.len() as u64;
             self.current += 1;
-            Some(MemoryBlock::new(old_base, data.len() as u64, data))
+            Some(MemoryBlock::new(old_base, data))
         }
     }
 
@@ -226,7 +226,7 @@ fn test_scan_mem_blocks_sized() {
             let old_base = self.base;
             self.base += data.len() as u64;
             self.current += 1;
-            Some(MemoryBlock::new(old_base, data.len() as u64, data))
+            Some(MemoryBlock::new(old_base, data))
         }
     }
 
@@ -532,6 +532,7 @@ fn test_custom_memory_iterator() {
     use std::io::{self, Read};
 
     pub struct GZipMemoryBlockIterator<R> {
+        offset: u64,
         buffer: Vec<u8>,
         decoder: Decoder<R>,
     }
@@ -539,6 +540,7 @@ fn test_custom_memory_iterator() {
     impl<R: Read> GZipMemoryBlockIterator<R> {
         pub fn new(reader: R) -> io::Result<Self> {
             Ok(GZipMemoryBlockIterator {
+                offset: 0,
                 buffer: vec![0; 1024],
                 decoder: Decoder::new(reader)?,
             })
@@ -555,7 +557,8 @@ fn test_custom_memory_iterator() {
             if size == 0 {
                 return None;
             }
-            Some(MemoryBlock::new(0, size as u64, &self.buffer))
+            self.offset += size as u64;
+            Some(MemoryBlock::new(self.offset, &self.buffer[..size]))
         }
     }
 
