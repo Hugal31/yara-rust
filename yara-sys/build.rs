@@ -285,7 +285,7 @@ mod build {
     }
 }
 
-#[cfg(feature = "bundled-4_2_2")]
+#[cfg(feature = "bundled-4_2_3")]
 mod bindings {
     use std::env;
     use std::fs;
@@ -308,7 +308,7 @@ mod bindings {
     }
 }
 
-#[cfg(not(feature = "bundled-4_2_2"))]
+#[cfg(not(feature = "bundled-4_2_3"))]
 mod bindings {
     use std::env;
     use std::path::PathBuf;

@@ -16,8 +16,8 @@ version of Yara. Just make sure the version you specify is the same that the
 version on your system!
 
 - `bindgen`: **recommended**: this is the default feature, to use generated bindings.
-- `vendored`: automatically compile and link libyara v4.2.1.
-- `bundled-4_2_2`: use pre-generated bindings for Yara 4.2.1. Useful if you do not
+- `vendored`: automatically compile and link libyara v4.2.3.
+- `bundled-4_2_3`: use pre-generated bindings for Yara 4.2.3. Useful if you do not
   want to install LLVM to run bindgen. However, you'll have to make sure you use
   a version of Yara with the same major and minor version number. List of supported targets:
   - x86_64-apple-darwin
