@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.16.0](https://github.com/Hugal31/yara-rust/compare/v0.15.0...v0.16.0) (2022-09-01)
+
+
+### Features
+
+* generate bindings per target ([78180df](https://github.com/Hugal31/yara-rust/commit/78180dff375d12bec9ff17144e82d93c89e65fb1))
+* pre-generated bindings for target ([867516f](https://github.com/Hugal31/yara-rust/commit/867516f498eb84f0c5093aea1bf81ec66d0fe167))
+* upgrade yara to 4.2.3 ([#86](https://github.com/Hugal31/yara-rust/issues/86)) ([be11341](https://github.com/Hugal31/yara-rust/commit/be113419ebe5b9cf5df3b1517db98f2c2b4a3ffc))
+
+
+### Bug Fixes
+
+* build on aarch64 ([97534cd](https://github.com/Hugal31/yara-rust/commit/97534cd842484c8c726629bfd12143c795f62373))
+* do not list private matches in scan results ([99d413a](https://github.com/Hugal31/yara-rust/commit/99d413a0390f339c501a6502960189bdaa6f2201))
+* find command ([262b584](https://github.com/Hugal31/yara-rust/commit/262b5844162ffbe34430b05f5ae7fa56ae0aa50a))
+
 ## [0.15.0](https://github.com/Hugal31/yara-rust/compare/v0.14.0...v0.15.0) (2022-06-19)
 
 
