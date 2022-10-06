@@ -83,7 +83,7 @@ pub fn compiler_add_file<P: AsRef<Path>, F: AsRawFd>(
         yara_sys::yr_compiler_add_fd(
             compiler,
             fd,
-            namespace.map_or(ptr::null(), |n| n.as_ptr()),
+            namespace.as_ref().map_or(ptr::null(), |n| n.as_ptr()),
             path.as_ptr(),
         )
     };
@@ -113,7 +113,7 @@ pub fn compiler_add_file<P: AsRef<Path>, F: AsRawHandle>(
         yara_sys::yr_compiler_add_fd(
             compiler,
             handle,
-            namespace.map_or(ptr::null(), |n| n.as_ptr()),
+            namespace.as_ref().map_or(ptr::null(), |n| n.as_ptr()),
             path.as_ptr(),
         )
     };
