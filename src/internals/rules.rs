@@ -93,7 +93,7 @@ impl<'a> From<(&'a yara_sys::YR_SCAN_CONTEXT, &'a yara_sys::YR_RULE)> for Rule<'
         let identifier = unsafe { CStr::from_ptr(rule.get_identifier()) }
             .to_str()
             .unwrap();
-        let namespace = unsafe { CStr::from_ptr((&*rule.get_ns()).get_name()) }
+        let namespace = unsafe { CStr::from_ptr((*rule.get_ns()).get_name()) }
             .to_str()
             .unwrap();
         let metadatas = MetadataIterator::from(rule).map(Metadata::from).collect();
