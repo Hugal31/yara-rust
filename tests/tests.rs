@@ -317,6 +317,18 @@ fn test_namespace() {
         let is_empty_match = &matches[0];
         assert_eq!("ns", is_empty_match.namespace);
     }
+    {
+        let rules = Compiler::new()
+            .expect("Should create compiler")
+            .add_rules_file_with_namespace("tests/rules.txt", "ns")
+            .expect("Should parse file")
+            .compile_rules()
+            .expect("Should compile rules");
+        let matches = rules.scan_mem(b"RUST", 10).expect("should have scanned");
+
+        assert_eq!(1, matches.len());
+        assert_eq!("ns", matches[0].namespace);
+    }
 }
 
 #[test]
