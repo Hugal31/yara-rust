@@ -593,3 +593,20 @@ fn test_callback_rule_not_matching() {
     assert_eq!(matching_rules, &["is_ok", "re_is_ok"]);
     assert_eq!(not_matching_rules, &["is_awesome"]);
 }
+
+#[test]
+fn test_module_data<'a>() {
+    let rules = get_default_rules();
+    rules
+        .scan_mem_callback(b"", 1, |callback_msg| {
+            match callback_msg {
+                CallbackMsg::ImportModule(mut module) => {
+                    println!("{}", module.name());
+                    module.set_data(&[1, 2, 3]);
+                }
+                _ => (),
+            };
+            CallbackReturn::Continue
+        })
+        .expect("should scan");
+}

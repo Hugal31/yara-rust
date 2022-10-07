@@ -339,6 +339,7 @@ mod bindings {
             .allowlist_type("YR_MATCH")
             .allowlist_type("YR_META")
             .allowlist_type("YR_RULES")
+            .allowlist_type("YR_MODULE_IMPORT")
             .opaque_type("YR_RULES")
             // XXX: Ideally, YR_COMPILER would be marked as opaque. Unfortunately, because it
             // contains a jmp_buf that is, on x64 windows msvc, aligned on 16-bytes, this generates

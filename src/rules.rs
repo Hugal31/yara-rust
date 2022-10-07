@@ -117,7 +117,7 @@ impl Rules {
     /// ```
     pub fn scan_mem<'r>(&'r self, mem: &[u8], timeout: i32) -> Result<Vec<Rule<'r>>, YaraError> {
         let mut results: Vec<Rule<'r>> = Vec::new();
-        let callback = |message: CallbackMsg<'r>| {
+        let callback = |message: CallbackMsg<'r, 'r>| {
             if let CallbackMsg::RuleMatching(rule) = message {
                 results.push(rule)
             }
@@ -138,7 +138,7 @@ impl Rules {
         &'r self,
         mem: &[u8],
         timeout: i32,
-        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+        callback: impl FnMut(CallbackMsg<'r, 'r>) -> CallbackReturn,
     ) -> Result<(), YaraError> {
         internals::rules_scan_mem(self.inner, mem, timeout, self.flags.bits(), callback)
     }
@@ -155,7 +155,7 @@ impl Rules {
         timeout: i32,
     ) -> Result<Vec<Rule<'r>>, Error> {
         let mut results: Vec<Rule> = Vec::new();
-        let callback = |message: CallbackMsg<'r>| {
+        let callback = |message: CallbackMsg<'r, 'r>| {
             if let CallbackMsg::RuleMatching(rule) = message {
                 results.push(rule)
             }
@@ -176,7 +176,7 @@ impl Rules {
         &'r self,
         path: P,
         timeout: i32,
-        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+        callback: impl FnMut(CallbackMsg<'r, 'r>) -> CallbackReturn,
     ) -> Result<(), Error> {
         File::open(path)
             .map_err(|e| IoError::new(e, IoErrorKind::OpenScanFile).into())
@@ -223,7 +223,7 @@ impl Rules {
         &'r self,
         pid: u32,
         timeout: i32,
-        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+        callback: impl FnMut(CallbackMsg<'r, 'r>) -> CallbackReturn,
     ) -> Result<(), YaraError> {
         internals::rules_scan_proc(self.inner, pid, timeout, self.flags.bits(), callback)
     }
@@ -236,7 +236,7 @@ impl Rules {
     /// * `timeout` - the timeout is in seconds
     pub fn scan_fd<'r, F: AsRawFd>(&'r self, fd: &F, timeout: i32) -> Result<Vec<Rule<'r>>, Error> {
         let mut results: Vec<Rule> = Vec::new();
-        let callback = |message: CallbackMsg<'r>| {
+        let callback = |message: CallbackMsg<'r, 'r>| {
             if let CallbackMsg::RuleMatching(rule) = message {
                 results.push(rule)
             }
@@ -257,7 +257,7 @@ impl Rules {
         &'r self,
         fd: &F,
         timeout: i32,
-        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+        callback: impl FnMut(CallbackMsg<'r, 'r>) -> CallbackReturn,
     ) -> Result<(), Error> {
         internals::rules_scan_file(self.inner, fd, timeout, self.flags.bits(), callback)
             .map_err(|e| e.into())

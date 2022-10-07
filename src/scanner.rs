@@ -157,7 +157,7 @@ impl<'rules> Scanner<'rules> {
     pub fn scan_mem_callback<'r>(
         &mut self,
         mem: &[u8],
-        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+        callback: impl FnMut(CallbackMsg<'r, 'r>) -> CallbackReturn,
     ) -> Result<(), YaraError> {
         internals::scanner_scan_mem(self.inner, mem, callback)
     }
@@ -196,7 +196,7 @@ impl<'rules> Scanner<'rules> {
     pub fn scan_file_callback<'r, P: AsRef<Path>>(
         &mut self,
         path: P,
-        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+        callback: impl FnMut(CallbackMsg<'r, 'r>) -> CallbackReturn,
     ) -> Result<(), Error> {
         File::open(path)
             .map_err(|e| IoError::new(e, IoErrorKind::OpenScanFile).into())
@@ -246,7 +246,7 @@ impl<'rules> Scanner<'rules> {
     pub fn scan_process_callback<'r>(
         &mut self,
         pid: u32,
-        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+        callback: impl FnMut(CallbackMsg<'r, 'r>) -> CallbackReturn,
     ) -> Result<(), YaraError> {
         internals::scanner_scan_proc(self.inner, pid, callback)
     }
@@ -258,7 +258,7 @@ impl<'rules> Scanner<'rules> {
     /// * `file` - the object that implements get raw file descriptor or file handle
     pub fn scan_fd<'r, F: AsRawFd>(&self, file: &F) -> Result<Vec<Rule<'r>>, Error> {
         let mut results: Vec<Rule> = Vec::new();
-        let callback = |message: CallbackMsg<'r>| {
+        let callback = |message: CallbackMsg<'r, 'r>| {
             if let CallbackMsg::RuleMatching(rule) = message {
                 results.push(rule)
             }
@@ -276,7 +276,7 @@ impl<'rules> Scanner<'rules> {
     pub fn scan_fd_callback<'r, F: AsRawFd>(
         &self,
         file: &F,
-        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+        callback: impl FnMut(CallbackMsg<'r, 'r>) -> CallbackReturn,
     ) -> Result<(), Error> {
         internals::scanner_scan_file(self.inner, file, callback).map_err(|e| e.into())
     }
@@ -291,7 +291,7 @@ impl<'rules> Scanner<'rules> {
         iter: impl MemoryBlockIterator,
     ) -> Result<Vec<Rule<'r>>, Error> {
         let mut results: Vec<Rule> = Vec::new();
-        let callback = |message: CallbackMsg<'r>| {
+        let callback = |message: CallbackMsg<'r, 'r>| {
             if let CallbackMsg::RuleMatching(rule) = message {
                 results.push(rule)
             }
@@ -310,7 +310,7 @@ impl<'rules> Scanner<'rules> {
     pub fn scan_mem_blocks_callback<'r>(
         &self,
         iter: impl MemoryBlockIterator,
-        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+        callback: impl FnMut(CallbackMsg<'r, 'r>) -> CallbackReturn,
     ) -> Result<(), Error> {
         internals::scanner_scan_mem_blocks(self.inner, iter, callback).map_err(|e| e.into())
     }
@@ -325,7 +325,7 @@ impl<'rules> Scanner<'rules> {
         iter: impl MemoryBlockIteratorSized,
     ) -> Result<Vec<Rule<'r>>, Error> {
         let mut results: Vec<Rule> = Vec::new();
-        let callback = |message: CallbackMsg<'r>| {
+        let callback = |message: CallbackMsg<'r, 'r>| {
             if let CallbackMsg::RuleMatching(rule) = message {
                 results.push(rule)
             }
@@ -344,7 +344,7 @@ impl<'rules> Scanner<'rules> {
     pub fn scan_mem_blocks_sized_callback<'r>(
         &self,
         iter: impl MemoryBlockIteratorSized,
-        callback: impl FnMut(CallbackMsg<'r>) -> CallbackReturn,
+        callback: impl FnMut(CallbackMsg<'r, 'r>) -> CallbackReturn,
     ) -> Result<(), Error> {
         internals::scanner_scan_mem_blocks_sized(self.inner, iter, callback).map_err(|e| e.into())
     }
