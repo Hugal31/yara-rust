@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.16.1](https://github.com/Hugal31/yara-rust/compare/v0.16.0...v0.16.1) (2022-10-07)
+
+
+### Bug Fixes
+
+* fix use after free in `add_rules_file_with_namespace` ([#90](https://github.com/Hugal31/yara-rust/issues/90)) ([123f016](https://github.com/Hugal31/yara-rust/commit/123f016bc35c3722990b984e1791471de88d5df2))
+
 ## [0.16.0](https://github.com/Hugal31/yara-rust/compare/v0.15.0...v0.16.0) (2022-09-01)
 
 
