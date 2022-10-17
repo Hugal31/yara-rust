@@ -25,7 +25,7 @@ impl<'a> MemoryBlock<'a> {
 
         YR_MEMORY_BLOCK {
             base: self.base,
-            size: self.data.len() as u64,
+            size: self.data.len() as _,
             context: self as *mut MemoryBlock as *mut std::os::raw::c_void,
             fetch_data: Some(fetch_data),
         }
