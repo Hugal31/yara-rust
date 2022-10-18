@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.16.2](https://github.com/Hugal31/yara-rust/compare/v0.16.1...v0.16.2) (2022-10-18)
+
+
+### Bug Fixes
+
+* fix compilation of 0.16 release on i686 ([#91](https://github.com/Hugal31/yara-rust/issues/91)) ([f464003](https://github.com/Hugal31/yara-rust/commit/f464003d68676fe524ace0b033055ac59b9836ec))
+
 ## [0.16.1](https://github.com/Hugal31/yara-rust/compare/v0.16.0...v0.16.1) (2022-10-07)
 
 
