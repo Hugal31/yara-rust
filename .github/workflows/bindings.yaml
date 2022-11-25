@@ -3,12 +3,14 @@ name: bindings
 on:
   push:
     paths:
+      - .github/workflows/bindings.yaml
       - yara-sys/yara
       - yara-sys/Cargo.toml
       - yara-sys/build.rs
       - yara-sys/wrapper.h
   pull_request:
     paths:
+      - .github/workflows/bindings.yaml
       - yara-sys/yara
       - yara-sys/Cargo.toml
       - yara-sys/build.rs
@@ -21,12 +23,15 @@ jobs:
         include:
           - os: "ubuntu-latest"
             target: "x86_64-unknown-linux-gnu"
+          - os: "ubuntu-latest"
+            target: "x86_64-unknown-linux-musl"
           - os: "windows-latest"
             target: "x86_64-pc-windows-msvc"
           - os: "windows-latest"
             target: "x86_64-pc-windows-gnu"
           - os: "macos-latest"
             target: "x86_64-apple-darwin"
+
     runs-on: ${{ matrix.os }}
     steps:
       # required for bindgen to work, see https://github.com/rust-lang/rust-bindgen/issues/1797

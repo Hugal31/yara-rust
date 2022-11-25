@@ -40,11 +40,11 @@ jobs:
   test-posix:
     strategy:
       matrix:
-        os: [ ubuntu-20.04 ]
+        os: [ ubuntu-latest ]
+        target: ["x86_64-unknown-linux-musl", "x86_64-unknown-linux-gnu"]
         features: [ "vendored,bindgen", "vendored,bundled-4_2_3" ]
         rust: [ stable, nightly ]
 
-    needs: [linters]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -54,6 +54,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
+          target: ${{ matrix.target }}
           override: true
       - name: Test
         uses: actions-rs/cargo@v1
@@ -72,7 +73,6 @@ jobs:
         rust: [ stable ]
         cryptolib: [ "OpenSSL", "WinCrypt", "disabled" ]
 
-    needs: [linters]
     runs-on: ${{ matrix.os }}
     steps:
         - name: Install OpenSSL
@@ -107,7 +107,6 @@ jobs:
         cryptolib: [ "OpenSSL", "CommonCrypto", "disabled" ]
         openssl_dir: [ "/usr/local/opt/openssl@1.1" ]
 
-    needs: [linters]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
