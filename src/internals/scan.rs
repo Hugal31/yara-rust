@@ -242,7 +242,7 @@ pub fn scanner_scan_mem_blocks<'a>(
 ) -> Result<(), YaraError> {
     let mut iter = WrapperMemoryBlockIterator::new(iter);
     let mut yr_iter = iter.as_yara();
-    scanner_scan_mem_blocks_inner(scanner, &mut *yr_iter, callback)
+    scanner_scan_mem_blocks_inner(scanner, &mut yr_iter, callback)
 }
 
 pub fn scanner_scan_mem_blocks_sized<'a>(
@@ -252,7 +252,7 @@ pub fn scanner_scan_mem_blocks_sized<'a>(
 ) -> Result<(), YaraError> {
     let mut iter = WrapperMemoryBlockIterator::new(iter);
     let mut yr_iter = iter.as_yara_sized();
-    scanner_scan_mem_blocks_inner(scanner, &mut *yr_iter, callback)
+    scanner_scan_mem_blocks_inner(scanner, &mut yr_iter, callback)
 }
 
 fn scanner_scan_mem_blocks_inner<'a>(
@@ -328,7 +328,7 @@ pub fn scanner_define_boolean_variable(
     value: bool,
 ) -> Result<(), YaraError> {
     let identifier = CString::new(identifier).unwrap();
-    let value = if value { 1 } else { 0 };
+    let value = i32::from(value);
     let result = unsafe {
         yara_sys::yr_scanner_define_boolean_variable(scanner, identifier.as_ptr(), value)
     };
