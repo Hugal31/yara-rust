@@ -389,7 +389,7 @@ impl CompilerVariableValue for &str {
         compiler: *mut yara_sys::YR_COMPILER,
         identifier: &str,
     ) -> Result<(), YaraError> {
-        internals::compiler_define_str_variable(compiler, identifier, *self)
+        internals::compiler_define_str_variable(compiler, identifier, self)
     }
 
     fn assign_in_scanner(
@@ -397,7 +397,7 @@ impl CompilerVariableValue for &str {
         scanner: *mut yara_sys::YR_SCANNER,
         identifier: &str,
     ) -> Result<(), YaraError> {
-        internals::scanner_define_str_variable(scanner, identifier, *self)
+        internals::scanner_define_str_variable(scanner, identifier, self)
     }
 }
 
@@ -407,7 +407,7 @@ impl CompilerVariableValue for &CStr {
         compiler: *mut yara_sys::YR_COMPILER,
         identifier: &str,
     ) -> Result<(), YaraError> {
-        internals::compiler_define_cstr_variable(compiler, identifier, *self)
+        internals::compiler_define_cstr_variable(compiler, identifier, self)
     }
 
     fn assign_in_scanner(
@@ -415,6 +415,6 @@ impl CompilerVariableValue for &CStr {
         scanner: *mut yara_sys::YR_SCANNER,
         identifier: &str,
     ) -> Result<(), YaraError> {
-        internals::scanner_define_cstr_variable(scanner, identifier, *self)
+        internals::scanner_define_cstr_variable(scanner, identifier, self)
     }
 }

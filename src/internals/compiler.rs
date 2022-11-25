@@ -173,7 +173,7 @@ pub fn compiler_define_boolean_variable(
     value: bool,
 ) -> Result<(), YaraError> {
     let identifier = CString::new(identifier).unwrap();
-    let value = if value { 1 } else { 0 };
+    let value = i32::from(value);
     let result = unsafe {
         yara_sys::yr_compiler_define_boolean_variable(compiler, identifier.as_ptr(), value)
     };
