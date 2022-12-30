@@ -137,6 +137,7 @@ mod build {
         cc.define("CHECKSUM_1B", "1");
 
         let mut enable_crypto = false;
+        let mut use_authenticode = false;
         match get_crypto_lib() {
             CryptoLib::OpenSSL => {
                 // If OPENSSL_DIR is set, use it to extrapolate lib and include dir
@@ -162,6 +163,7 @@ mod build {
                 }
 
                 enable_crypto = true;
+                use_authenticode = true;
                 cc.define("HAVE_LIBCRYPTO", "1");
                 if std::env::var("CARGO_CFG_TARGET_FAMILY")
                     .ok()
@@ -192,6 +194,21 @@ mod build {
                 println!("cargo:rustc-link-lib=dylib=System");
             }
             CryptoLib::None => {}
+        }
+
+        if !use_authenticode {
+            // authenticode parser part of the PE module only works with OpenSSL.
+            let dir = basedir
+                .join("modules")
+                .join("pe")
+                .join("authenticode-parser");
+            let walker = globwalk::GlobWalkerBuilder::from_patterns(dir, &["*.c"])
+                .build()
+                .unwrap()
+                .filter_map(Result::ok);
+            for entry in walker {
+                exclude.push(entry.path().to_path_buf());
+            }
         }
 
         if cfg!(feature = "module-hash") && enable_crypto {
