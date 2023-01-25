@@ -14,7 +14,7 @@ pub enum CallbackMsg<'r> {
     RuleMatching(Rule<'r>),
     RuleNotMatching(Rule<'r>),
     ImportModule,
-    ModuleImported,
+    ModuleImported(YrObject<'r>),
     TooManyMatches(YrString<'r>),
     ScanFinished,
     UnknownMsg,
@@ -40,7 +40,10 @@ impl<'r> CallbackMsg<'r> {
                 RuleNotMatching(Rule::from((context, rule)))
             }
             yara_sys::CALLBACK_MSG_IMPORT_MODULE => ImportModule,
-            yara_sys::CALLBACK_MSG_MODULE_IMPORTED => ModuleImported,
+            yara_sys::CALLBACK_MSG_MODULE_IMPORTED => {
+                let object = unsafe { &*(message_data as *mut yara_sys::YR_OBJECT) };
+                ModuleImported(YrObject::from(object))
+            }
             yara_sys::CALLBACK_MSG_TOO_MANY_MATCHES => {
                 let yr_string = unsafe { &*(message_data as *mut yara_sys::YR_STRING) };
                 let context = unsafe { &*context };
