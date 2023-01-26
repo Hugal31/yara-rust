@@ -8,7 +8,11 @@ pub use crate::errors::*;
 
 use std::os::raw::c_char;
 
-include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+#[allow(clippy::all)]
+mod bindings {
+    include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+}
+pub use bindings::*;
 
 pub mod scan_flags {
     pub use super::{
