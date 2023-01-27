@@ -148,7 +148,7 @@ fn test_scan_mem_callback_error<'r>() {
     let rules = get_default_rules();
     let callback = |_| CallbackReturn::Error;
     let result = rules.scan_mem_callback("rust ok".as_bytes(), 10, callback);
-    let error = result.err().expect("Should be Err");
+    let error = result.expect_err("Should be Err");
     assert_eq!(yara_sys::Error::CallbackError, error.kind);
 }
 

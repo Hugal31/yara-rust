@@ -7,8 +7,8 @@ fn main() {
 
 pub fn cargo_rerun_if_env_changed(env_var: &str) {
     let target = std::env::var("TARGET").unwrap();
-    println!("cargo:rerun-if-env-changed={}", env_var);
-    println!("cargo:rerun-if-env-changed={}_{}", env_var, target);
+    println!("cargo:rerun-if-env-changed={env_var}");
+    println!("cargo:rerun-if-env-changed={env_var}_{target}");
     println!(
         "cargo:rerun-if-env-changed={}_{}",
         env_var,
@@ -18,7 +18,7 @@ pub fn cargo_rerun_if_env_changed(env_var: &str) {
 
 pub fn get_target_env_var(env_var: &str) -> Option<String> {
     let target = std::env::var("TARGET").unwrap();
-    std::env::var(format!("{}_{}", env_var, target))
+    std::env::var(format!("{env_var}_{target}"))
         .or_else(|_| std::env::var(format!("{}_{}", env_var, target.replace('-', "_"))))
         .or_else(|_| std::env::var(env_var))
         .ok()
@@ -248,10 +248,10 @@ mod build {
         cargo_rerun_if_env_changed("OPENSSL_LIB_DIR");
         cargo_rerun_if_env_changed("YARA_LIBRARY_PATH");
 
-        println!("cargo:rustc-link-search=native={}", lib_dir);
+        println!("cargo:rustc-link-search=native={lib_dir}");
         println!("cargo:rustc-link-lib=static=yara");
         println!("cargo:include={}", include_dir.display());
-        println!("cargo:lib={}", lib_dir);
+        println!("cargo:lib={lib_dir}");
 
         // tell the add_bindings phase to generate bindings from `include_dir`.
         std::env::set_var("YARA_INCLUDE_DIR", include_dir);
@@ -357,7 +357,7 @@ mod bindings {
         if let Some(yara_include_dir) =
             get_target_env_var("YARA_INCLUDE_DIR").filter(|dir| !dir.is_empty())
         {
-            builder = builder.clang_arg(format!("-I{}", yara_include_dir))
+            builder = builder.clang_arg(format!("-I{yara_include_dir}"))
         }
 
         let bindings = builder.generate().expect("Unable to generate bindings");

@@ -473,14 +473,14 @@ mod test {
         #[cfg(unix)]
         let process_match = Command::new("sh")
             .arg("-c")
-            .arg(format!("sleep 5; echo {}", UUID_MATCH))
+            .arg(format!("sleep 5; echo {UUID_MATCH}"))
             .stdout(Stdio::null())
             .spawn()
             .unwrap();
         #[cfg(unix)]
         let process_no_match = Command::new("sh")
             .arg("-c")
-            .arg(format!("sleep 5; echo {}", UUID_NO_MATCH))
+            .arg(format!("sleep 5; echo {UUID_NO_MATCH}"))
             .stdout(Stdio::null())
             .spawn()
             .unwrap();
