@@ -144,7 +144,7 @@ fn test_scan_mem_callback_abort() {
 }
 
 #[test]
-fn test_scan_mem_callback_error<'r>() {
+fn test_scan_mem_callback_error() {
     let rules = get_default_rules();
     let callback = |_| CallbackReturn::Error;
     let result = rules.scan_mem_callback("rust ok".as_bytes(), 10, callback);
