@@ -127,11 +127,26 @@ mod build {
         let mut enable_crypto = false;
         match get_crypto_lib() {
             CryptoLib::OpenSSL => {
-                if let Some(openssl_lib_dir) = get_target_env_var("OPENSSL_LIB_DIR") {
+                // If OPENSSL_DIR is set, use it to extrapolate lib and include dir
+                if let Some(openssl_dir) = get_target_env_var("OPENSSL_DIR") {
+                    let openssl_dir = PathBuf::from(openssl_dir);
+
+                    cc.include(openssl_dir.join("include"));
                     println!(
                         "cargo:rustc-link-search=native={}",
-                        PathBuf::from(openssl_lib_dir).display()
+                        openssl_dir.join("lib").display()
                     );
+                } else {
+                    // Otherwise, retrieve OPENSSL_INCLUDE_DIR and OPENSSL_LIB_DIR
+                    if let Some(include_dir) = get_target_env_var("OPENSSL_INCLUDE_DIR") {
+                        cc.include(&include_dir);
+                    }
+                    if let Some(openssl_lib_dir) = get_target_env_var("OPENSSL_LIB_DIR") {
+                        println!(
+                            "cargo:rustc-link-search=native={}",
+                            PathBuf::from(openssl_lib_dir).display()
+                        );
+                    }
                 }
 
                 enable_crypto = true;
