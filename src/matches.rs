@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Match {
+    // base offset of the memory block in which the match occurred.
+    pub base: usize,
     /// Offset of the match within the scanning area.
     pub offset: usize,
     /// Length of the file. Can be useful if the matcher string has not a fixed length.
