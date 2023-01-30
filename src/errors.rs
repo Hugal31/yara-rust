@@ -93,7 +93,7 @@ impl StdError for CompileErrors {
 impl fmt::Display for CompileErrors {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for error in &self.errors {
-            writeln!(f, "{}", error)?;
+            writeln!(f, "{error}")?;
         }
 
         Ok(())
@@ -119,7 +119,7 @@ impl fmt::Display for CompileError {
             }
         )?;
         if let Some(filename) = &self.filename {
-            write!(f, "in {} ", filename)?;
+            write!(f, "in {filename} ")?;
         }
         write!(f, "at line {}: {}", self.line, self.message)
     }
