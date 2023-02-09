@@ -45,10 +45,10 @@
 //! [Yara-doc]: https://yara.readthedocs.io/en/stable/gettingstarted.html
 //! [polydet]: https://github.com/Polydet/polydet/
 
-pub use internals::ConfigName;
 use internals::{get_configuration, set_configuration};
+pub use internals::{ConfigName, YrObject, YrObjectValue};
 
-pub use crate::compiler::Compiler;
+pub use crate::compiler::{Compiler, CompilerVariableValue};
 pub use crate::errors::*;
 pub use crate::flags::ScanFlags;
 use crate::initialize::InitializationToken;

@@ -1,6 +1,9 @@
+use std::collections::HashMap;
+
 use yara::{
     CallbackMsg, CallbackReturn, CompileErrorLevel, Compiler, ConfigName, Error, MemoryBlock,
     MemoryBlockIterator, MemoryBlockIteratorSized, Metadata, MetadataValue, Rules, ScanFlags, Yara,
+    YrObjectValue,
 };
 
 const RULES: &str = r#"
@@ -604,4 +607,61 @@ fn test_callback_rule_not_matching() {
     matching_rules.sort();
     assert_eq!(matching_rules, &["is_ok", "re_is_ok"]);
     assert_eq!(not_matching_rules, &["is_awesome"]);
+}
+
+#[test]
+fn test_callback_module_imported() {
+    let rules = get_default_rules();
+    let mut found_module = false;
+
+    rules
+        .scan_mem_callback(b"", 1, |callback_msg| {
+            if let CallbackMsg::ModuleImported(module) = callback_msg {
+                found_module = true;
+                assert_eq!(module.identifier().unwrap(), b"pe");
+                if let YrObjectValue::Structure(obj) = module.value() {
+                    // Convert the vec to a hashmap to ease the tests.
+                    let obj: HashMap<_, _> = obj
+                        .into_iter()
+                        .map(|v| (v.identifier().unwrap().to_vec(), v))
+                        .collect();
+
+                    // Do a few tests on the values in the pe module, to check we parse correctly
+                    // different values.
+                    assert!(matches!(
+                        obj.get(b"IMPORT_STANDARD".as_slice()).unwrap().value(),
+                        YrObjectValue::Integer(1)
+                    ));
+                    assert!(matches!(
+                        obj.get(b"section_index".as_slice()).unwrap().value(),
+                        YrObjectValue::Function
+                    ));
+                    assert!(matches!(
+                        obj.get(b"dll_name".as_slice()).unwrap().value(),
+                        YrObjectValue::Undefined
+                    ));
+                    assert!(matches!(
+                        obj.get(b"version_info".as_slice()).unwrap().value(),
+                        YrObjectValue::Dictionary(_)
+                    ));
+                    assert!(matches!(
+                        obj.get(b"sections".as_slice()).unwrap().value(),
+                        YrObjectValue::Array(_)
+                    ));
+                    assert!(obj.get(b"non_existing_key".as_slice()).is_none());
+                } else {
+                    panic!(
+                        "the returned module on a ModuleImported callback msg should \
+                        be of type structure"
+                    );
+                }
+            }
+            CallbackReturn::Continue
+        })
+        .expect("should scan");
+
+    assert!(
+        found_module,
+        "should have add a ModuleImported callback msg"
+    );
 }
