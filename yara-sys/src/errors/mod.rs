@@ -11,6 +11,7 @@ use crate::ERROR_CORRUPT_FILE;
 use crate::ERROR_COULD_NOT_ATTACH_TO_PROCESS;
 use crate::ERROR_COULD_NOT_MAP_FILE;
 use crate::ERROR_COULD_NOT_OPEN_FILE;
+use crate::ERROR_COULD_NOT_READ_PROCESS_MEMORY;
 use crate::ERROR_INSUFFICIENT_MEMORY;
 use crate::ERROR_INTERNAL_FATAL_ERROR;
 use crate::ERROR_INVALID_FILE;
@@ -32,6 +33,8 @@ pub enum Error {
     CouldNotMapFile,
     /// File could not be opened
     CouldNotOpenFile,
+    /// The memory of a process could not be read
+    CouldNotReadProcessMemory,
     /// Insufficient memory to complete the operation
     InsufficientMemory,
     /// Internal fatal error
@@ -72,6 +75,7 @@ impl Error {
             ERROR_SYNTAX_ERROR => SyntaxError,
             ERROR_TOO_MANY_MATCHES => TooManyMatches,
             ERROR_UNSUPPORTED_FILE_VERSION => UnsupportedFileVersion,
+            ERROR_COULD_NOT_READ_PROCESS_MEMORY => CouldNotReadProcessMemory,
             _ => Unknown(code),
         })
     }
@@ -95,6 +99,7 @@ impl From<Error> for &'static str {
             CouldNotAttach => "Could not attach to process",
             CouldNotMapFile => "File could not be mapped into memory",
             CouldNotOpenFile => "File could not be opened",
+            CouldNotReadProcessMemory => "Process memory could not be read",
             InsufficientMemory => "Insufficient memory to complete the operation",
             InternalFatalError => "Internal fatal error",
             InvalidFile => "File is not a valid rules file",
