@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.17.0](https://github.com/Hugal31/yara-rust/compare/v0.16.2...v0.17.0) (2023-02-13)
+
+
+### Features
+
+* add CouldNotReadProcessMemory error ([dbb795b](https://github.com/Hugal31/yara-rust/commit/dbb795befeea551b306d69122a85ccee7c6ba342))
+* add helpers to get module values on scans ([05e8e3d](https://github.com/Hugal31/yara-rust/commit/05e8e3d6447652434884e358e606081f21e0b4ac))
+* add include path to openssl in vendored mode ([47f1cae](https://github.com/Hugal31/yara-rust/commit/47f1caeef44d17735d1e8db16a70f77649bea57a))
+* add musl support ([a45bfe0](https://github.com/Hugal31/yara-rust/commit/a45bfe0d460c901da902d8e7dace6d318b7115b9))
+* Enable or disable env flags replace to cargo feature ([e37cbd3](https://github.com/Hugal31/yara-rust/commit/e37cbd3f701b2cd75301dc6c5a5c6dc039dca49b))
+* update saved bindings following build.rs changes ([23685e2](https://github.com/Hugal31/yara-rust/commit/23685e222160e068a54302300caf5b4787c94379))
+
+
+### Bug Fixes
+
+* add base offset for scanning memory chunks ([1e88d7e](https://github.com/Hugal31/yara-rust/commit/1e88d7e0e609305658b1aada72255ec30d838f3e))
+* clippy warnings ([4937de7](https://github.com/Hugal31/yara-rust/commit/4937de79f9181ed53859a21737cc693d4ab6115a))
+
 ## [0.16.2](https://github.com/Hugal31/yara-rust/compare/v0.16.1...v0.16.2) (2022-10-18)
 
 
