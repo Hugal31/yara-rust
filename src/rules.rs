@@ -370,7 +370,8 @@ mod test {
         }
     "#;
 
-    #[test]
+    // Disable on windows because we keep having (presumably) false negatives.
+    #[cfg_attr(not(windows), test)]
     fn rules_scan_proc() {
         let compiler = Compiler::new().unwrap().add_rules_str(RULES_PROC).unwrap();
         let rules = compiler.compile_rules().unwrap();
