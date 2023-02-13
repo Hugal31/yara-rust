@@ -40,7 +40,6 @@ mod build {
 
     use super::cargo_rerun_if_env_changed;
     use super::get_target_env_var;
-    use super::is_enable;
 
     enum CryptoLib {
         OpenSSL,
@@ -179,45 +178,45 @@ mod build {
             CryptoLib::None => {}
         }
 
-        if is_enable("YARA_ENABLE_HASH", true) && enable_crypto {
+        if cfg!(feature = "module-hash") && enable_crypto {
             cc.define("HASH_MODULE", "1");
         } else {
             exclude.push(basedir.join("modules").join("hash").join("hash.c"));
         }
-        if is_enable("YARA_ENABLE_PROFILING", false) {
+        if cfg!(feature = "profiling") {
             cc.define("YR_PROFILING_ENABLED", "1");
         }
-        if is_enable("YARA_ENABLE_MAGIC", false) {
+        if cfg!(feature = "module-magic") {
             cc.define("MAGIC_MODULE", "1");
             println!("cargo:rustc-link-lib=dylib=magic");
         } else {
             exclude.push(basedir.join("modules").join("magic").join("magic.c"));
         }
-        if is_enable("YARA_ENABLE_CUCKOO", false) {
+        if cfg!(feature = "module-cuckoo") {
             cc.define("CUCKOO_MODULE", "1");
             println!("cargo:rustc-link-lib=dylib=jansson");
         } else {
             exclude.push(basedir.join("modules").join("cuckoo").join("cuckoo.c"));
         }
-        if is_enable("YARA_ENABLE_DOTNET", true) {
+        if cfg!(feature = "module-dotnet") {
             cc.define("DOTNET_MODULE", "1");
         } else {
             exclude.push(basedir.join("modules").join("dotnet").join("dotnet.c"));
         }
-        if is_enable("YARA_ENABLE_DEX", true) {
+        if cfg!(feature = "module-dex") {
             cc.define("DEX_MODULE", "1");
-            if is_enable("YARA_ENABLE_DEX_DEBUG", false) {
+            if cfg!(feature = "module-debug-dex") {
                 cc.define("DEBUG_DEX_MODULE", "1");
             }
         } else {
             exclude.push(basedir.join("modules").join("dex").join("dex.c"));
         }
-        if is_enable("YARA_ENABLE_MACHO", true) {
+        if cfg!(feature = "module-macho") {
             cc.define("MACHO_MODULE", "1");
         } else {
             exclude.push(basedir.join("modules").join("macho").join("macho.c"));
         }
-        if is_enable("YARA_ENABLE_NDEBUG", true) {
+        if cfg!(feature = "ndebug") {
             cc.define("NDEBUG", "1");
         }
 
@@ -250,15 +249,6 @@ mod build {
         let include_dir = basedir.join("include");
         let lib_dir = std::env::var("OUT_DIR").unwrap();
 
-        cargo_rerun_if_env_changed("YARA_ENABLE_PROFILING");
-        cargo_rerun_if_env_changed("YARA_ENABLE_NDEBUG");
-        cargo_rerun_if_env_changed("YARA_ENABLE_HASH");
-        cargo_rerun_if_env_changed("YARA_ENABLE_MAGIC");
-        cargo_rerun_if_env_changed("YARA_ENABLE_CUCKOO");
-        cargo_rerun_if_env_changed("YARA_ENABLE_DOTNET");
-        cargo_rerun_if_env_changed("YARA_ENABLE_DEX");
-        cargo_rerun_if_env_changed("YARA_ENABLE_DEX_DEBUG");
-        cargo_rerun_if_env_changed("YARA_ENABLE_MACHO");
         cargo_rerun_if_env_changed("YARA_DEBUG_VERBOSITY");
         cargo_rerun_if_env_changed("OPENSSL_LIB_DIR");
         cargo_rerun_if_env_changed("YARA_LIBRARY_PATH");

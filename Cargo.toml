@@ -14,10 +14,20 @@ categories = ["api-bindings"]
 edition = "2018"
 
 [features]
-default = ["bindgen"]
+default = ["bindgen", 'module-dotnet', 'module-dex', 'module-macho', 'module-hash', 'ndebug']
 bindgen = ["yara-sys/bindgen"]
 bundled-4_2_3 = ["yara-sys/bundled-4_2_3"]
 vendored = ["yara-sys/vendored"]
+module-cuckoo = ["yara-sys/module-cuckoo"]
+module-magic = ["yara-sys/module-magic"]
+module-macho = ["yara-sys/module-macho"]
+module-dex = ["yara-sys/module-dex"]
+module-debug-dex = ["yara-sys/module-debug-dex"]
+module-dotnet = ["yara-sys/module-dotnet"]
+module-hash = ["yara-sys/module-hash"]
+profiling = ["yara-sys/profiling"]
+ndebug = ["yara-sys/ndebug"]
+
 
 [dependencies]
 bitflags = "1.3"
