@@ -26,17 +26,22 @@ version on your system!
   - x86_64-unknown-linux-gnu
   - x86_64-unknown-linux-musl
 
-You can specify the location of Yara:
+## Link on already compiled libyara
 
-- The path of the Yara library by setting the `YARA_LIBRARY_PATH` environment
-  variable.
-- The path of the Yara headers by setting the `YARA_INCLUDE_DIR` environment
-  variable, if you use the `bindgen` feature.
+This is the default, when the `vendored` option is disabled.
+You can specify the following environment variables:
 
+- `YARA_LIBRARY_PATH` specifies the directoy containing the Yara library binary.
+- `YARA_INCLUDE_DIR` specifies the directory containing the Yara include files,
+  if you use the `bindgen` feature.
+- `LIBYARA_STATIC` can be set to `1` to link statically against Yara (a .a or
+  .lib file must be present).
 
 ## Compile options for libyara v4.2.3
 
-Needed to enable `vendored` feature.
+When using the `vendored` feature, Yara will be automatically built and linked
+statically with yara-sys.
+You can set the following features change how Yara is built:
 
 ### Features:
 - `module-cuckoo`: enable [cuckoo](https://yara.readthedocs.io/en/stable/modules/cuckoo.html) module (depends on [Jansson](https://digip.org/jansson/) for parsing JSON).
