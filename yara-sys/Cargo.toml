@@ -12,9 +12,18 @@ links = "yara"
 edition = "2018"
 
 [features]
-default = ["bindgen"]
+default = ["bindgen", 'module-dotnet', 'module-dex', 'module-macho', 'module-hash', 'ndebug']
 bundled-4_2_3 = []
 vendored = ["cc", "globwalk", "fs_extra"]
+module-cuckoo = []
+module-magic = []
+module-macho = []
+module-dex = []
+module-debug-dex = []
+module-dotnet = []
+module-hash = []
+profiling = []
+ndebug = []
 
 [build-dependencies]
 bindgen = { version = "0.60", optional = true, default-features = false, features = [ "logging", "runtime", "which-rustfmt" ] }
