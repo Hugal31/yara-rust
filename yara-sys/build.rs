@@ -363,7 +363,8 @@ mod bindings {
             .opaque_type("YR_AC_.*")
             .opaque_type("YR_ATOMS_CONFIG")
             .opaque_type("YR_FIXUP")
-            .opaque_type("YR_LOOP_CONTEXT");
+            .opaque_type("YR_LOOP_CONTEXT")
+            .size_t_is_usize(false);
 
         if let Some(yara_include_dir) =
             get_target_env_var("YARA_INCLUDE_DIR").filter(|dir| !dir.is_empty())
