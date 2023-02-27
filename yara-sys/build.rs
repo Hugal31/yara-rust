@@ -123,6 +123,9 @@ mod build {
             cc.define("POSIX", "");
         };
 
+        #[cfg(target_endian = "big")]
+        cc.define("WORDS_BIGENDIAN", "");
+
         let mut enable_crypto = false;
         match get_crypto_lib() {
             CryptoLib::OpenSSL => {
