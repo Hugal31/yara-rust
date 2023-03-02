@@ -34,8 +34,9 @@ You can specify the following environment variables:
 - `YARA_LIBRARY_PATH` specifies the directoy containing the Yara library binary.
 - `YARA_INCLUDE_DIR` specifies the directory containing the Yara include files,
   if you use the `bindgen` feature.
-- `LIBYARA_STATIC` can be set to `1` to link statically against Yara (a .a or
-  .lib file must be present).
+
+You can also specify the `yara-static` feature to link Yara statically
+rather than dynamically.
 
 ## Compile options for libyara v4.2.3
 
