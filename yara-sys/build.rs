@@ -24,14 +24,6 @@ pub fn get_target_env_var(env_var: &str) -> Option<String> {
         .ok()
 }
 
-pub fn is_enable(env_var: &str, default: bool) -> bool {
-    match get_target_env_var(env_var).as_deref() {
-        Some("0") => false,
-        Some(_) => true,
-        None => default,
-    }
-}
-
 #[cfg(feature = "vendored")]
 mod build {
     use fs_extra::dir::{copy, CopyOptions};
@@ -130,7 +122,7 @@ mod build {
         match get_crypto_lib() {
             CryptoLib::OpenSSL => {
                 // If OPENSSL_DIR is set, use it to extrapolate lib and include dir
-                if let Some(openssl_dir) = get_target_env_var("OPENSSL_DIR") {
+                if let Some(openssl_dir) = get_target_env_var("YARA_OPENSSL_DIR") {
                     let openssl_dir = PathBuf::from(openssl_dir);
 
                     cc.include(openssl_dir.join("include"));
@@ -140,10 +132,10 @@ mod build {
                     );
                 } else {
                     // Otherwise, retrieve OPENSSL_INCLUDE_DIR and OPENSSL_LIB_DIR
-                    if let Some(include_dir) = get_target_env_var("OPENSSL_INCLUDE_DIR") {
+                    if let Some(include_dir) = get_target_env_var("YARA_OPENSSL_INCLUDE_DIR") {
                         cc.include(&include_dir);
                     }
-                    if let Some(openssl_lib_dir) = get_target_env_var("OPENSSL_LIB_DIR") {
+                    if let Some(openssl_lib_dir) = get_target_env_var("YARA_OPENSSL_LIB_DIR") {
                         println!(
                             "cargo:rustc-link-search=native={}",
                             PathBuf::from(openssl_lib_dir).display()
@@ -163,6 +155,9 @@ mod build {
                     println!("cargo:rustc-link-lib=dylib=libcrypto");
                     println!("cargo:rustc-link-lib=dylib=Crypt32");
                     println!("cargo:rustc-link-lib=dylib=Ws2_32")
+                } else if cfg!(feature = "openssl-static") {
+                    println!("cargo:rustc-link-lib=static=ssl");
+                    println!("cargo:rustc-link-lib=static=crypto");
                 } else {
                     println!("cargo:rustc-link-lib=dylib=ssl");
                     println!("cargo:rustc-link-lib=dylib=crypto");
@@ -253,7 +248,9 @@ mod build {
         let lib_dir = std::env::var("OUT_DIR").unwrap();
 
         cargo_rerun_if_env_changed("YARA_DEBUG_VERBOSITY");
-        cargo_rerun_if_env_changed("OPENSSL_LIB_DIR");
+        cargo_rerun_if_env_changed("YARA_OPENSSL_DIR");
+        cargo_rerun_if_env_changed("YARA_OPENSSL_LIB_DIR");
+        cargo_rerun_if_env_changed("YARA_OPENSSL_INCLUDE_DIR");
         cargo_rerun_if_env_changed("YARA_LIBRARY_PATH");
 
         println!("cargo:rustc-link-search=native={lib_dir}");
@@ -270,19 +267,15 @@ mod build {
 mod build {
     use super::cargo_rerun_if_env_changed;
     use super::get_target_env_var;
-    use super::is_enable;
 
     /// Tell cargo to tell rustc to link the system yara
     /// shared library.
     pub fn build_and_link() {
-        let kind = if is_enable("LIBYARA_STATIC", false) {
-            "static"
+        if cfg!(feature = "yara-static") {
+            println!("cargo:rustc-link-lib=static=yara");
         } else {
-            "dylib"
-        };
-        println!("cargo:rustc-link-lib={}=yara", kind);
-        cargo_rerun_if_env_changed("LIBYARA_STATIC");
-        cargo_rerun_if_env_changed("YARA_LIBRARY_PATH");
+            println!("cargo:rustc-link-lib=dylib=yara");
+        }
 
         // Add the environment variable YARA_LIBRARY_PATH to the library search path.
         if let Some(yara_library_path) =
@@ -290,6 +283,7 @@ mod build {
         {
             println!("cargo:rustc-link-search=native={}", yara_library_path);
         }
+        cargo_rerun_if_env_changed("YARA_LIBRARY_PATH");
     }
 }
 

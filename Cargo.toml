@@ -27,7 +27,8 @@ module-dotnet = ["yara-sys/module-dotnet"]
 module-hash = ["yara-sys/module-hash"]
 profiling = ["yara-sys/profiling"]
 ndebug = ["yara-sys/ndebug"]
-
+openssl-static = ["yara-sys/openssl-static"]
+yara-static = ["yara-sys/yara-static"]
 
 [dependencies]
 bitflags = "1.3"
