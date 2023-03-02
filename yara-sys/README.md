@@ -54,10 +54,13 @@ You can set the following features change how Yara is built:
 - `profiling`: enable rules profiling support.
 - `ndebug`: enable `NDEBUG`.
 
-### ENV variables
+### ENV variables 
 - `YARA_CRYPTO_LIB` - which crypto lib to use for the hash and pe modules. Header files must be available during compilation, and the lib must be installed on the target platform. Recognized values: `OpenSSL`, `Wincrypt`, `CommonCrypto` or `disable`. (default: will choose based on target os)
 - `YARA_DEBUG_VERBOSITY` - Set debug level information on runtime (default: **0**)
-- `OPENSSL_LIB_DIR` - path to OpenSSL library directory
+- `YARA_OPENSSL_STATIC` - If enabled, the `libyara` will statically link to OpenSSL rather than dynamically link.
+- `YARA_OPENSSL_DIR` - If specified, the directory of an OpenSSL installation. The directory should contain `lib` and `include` subdirectories containing the libraries and headers respectively.
+- `YARA_OPENSSL_LIB_DIR` and `YARA_OPENSSL_INCLUDE_DIR` - If specified, the directories containing the OpenSSL libraries and headers respectively. This can be used if the OpenSSL installation is split in a nonstandard directory layout.
+
 
 Each of these variables can also be supplied with certain prefixes and suffixes,
 in the following prioritized order:
