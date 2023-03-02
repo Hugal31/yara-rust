@@ -164,14 +164,12 @@ mod build {
                     println!("cargo:rustc-link-lib=dylib=libcrypto");
                     println!("cargo:rustc-link-lib=dylib=Crypt32");
                     println!("cargo:rustc-link-lib=dylib=Ws2_32")
+                } else if is_enable("YARA_OPENSSL_STATIC", false) {
+                    println!("cargo:rustc-link-lib=static=ssl");
+                    println!("cargo:rustc-link-lib=static=crypto");
                 } else {
-                    if is_enable("YARA_OPENSSL_STATIC", false) {
-                        println!("cargo:rustc-link-lib=static=ssl");
-                        println!("cargo:rustc-link-lib=static=crypto");
-                    } else {
-                        println!("cargo:rustc-link-lib=dylib=ssl");
-                        println!("cargo:rustc-link-lib=dylib=crypto");
-                    }
+                    println!("cargo:rustc-link-lib=dylib=ssl");
+                    println!("cargo:rustc-link-lib=dylib=crypto");
                 }
             }
             CryptoLib::Wincrypt => {
