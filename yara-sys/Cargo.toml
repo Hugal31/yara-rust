@@ -24,6 +24,8 @@ module-dotnet = []
 module-hash = []
 profiling = []
 ndebug = []
+openssl-static = []
+yara-static = []
 
 [build-dependencies]
 bindgen = { version = "0.64", optional = true, default-features = false, features = [ "logging", "runtime", "which-rustfmt" ] }
