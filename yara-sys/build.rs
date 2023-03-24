@@ -74,6 +74,21 @@ mod build {
 
     pub fn build_and_link() {
         let old_basedir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("yara");
+        // check the yara source folder is not empty
+        if old_basedir
+            .read_dir()
+            .unwrap_or_else(|e| {
+                panic!(
+                    "can't open yara submodule folder {}: {}",
+                    old_basedir.display(),
+                    e
+                )
+            })
+            .count()
+            == 0
+        {
+            panic!("yara submodule folder {} is empty, please initialize it with `git submodule init && git submodule update`", old_basedir.display());
+        }
         let out_dir = std::env::var("OUT_DIR").map(PathBuf::from).unwrap();
         let basedir = out_dir.join("yara");
         if !basedir.exists() {
