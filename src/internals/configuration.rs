@@ -38,6 +38,18 @@ pub fn set_max_match_data(value: u32) -> Result<(), YaraError> {
     }
 }
 
+/// Set the maximum size of chunks scanned from a process memory.
+///
+/// This is mapped to the YR_CONFIG_MAX_PROCESS_MEMORY_CHUNK property.
+pub fn set_max_process_memory_chunk(value: u64) -> Result<(), YaraError> {
+    unsafe {
+        set_cfg(
+            yara_sys::_YR_CONFIG_NAME_YR_CONFIG_MAX_PROCESS_MEMORY_CHUNK,
+            &value as *const u64 as *mut c_void,
+        )
+    }
+}
+
 /// Get the stack size.
 ///
 /// This is mapped to the YR_CONFIG_STACK_SIZE property.
@@ -57,6 +69,13 @@ pub fn get_max_strings_per_rule() -> Result<u32, YaraError> {
 /// This is mapped to the YR_CONFIG_MAX_MATCH_DATA property.
 pub fn get_max_match_data() -> Result<u32, YaraError> {
     unsafe { get_cfg(yara_sys::_YR_CONFIG_NAME_YR_CONFIG_MAX_MATCH_DATA) }
+}
+
+/// Get the maximum size of chunks scanned from a process memory.
+///
+/// This is mapped to the YR_CONFIG_MAX_PROCESS_MEMORY_CHUNK property.
+pub fn get_max_process_memory_chunk() -> Result<u64, YaraError> {
+    unsafe { get_cfg(yara_sys::_YR_CONFIG_NAME_YR_CONFIG_MAX_PROCESS_MEMORY_CHUNK) }
 }
 
 /// Safety:

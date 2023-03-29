@@ -66,6 +66,14 @@ fn test_configuration() {
     let yara = Yara::new().expect("Should be Ok");
     assert_eq!(Ok(()), yara.set_configuration_stack_size(100));
     assert_eq!(Ok(100), yara.get_configuration_stack_size());
+    assert_eq!(
+        Ok(()),
+        yara.set_configuration_max_process_memory_chunk(u64::MAX)
+    );
+    assert_eq!(
+        Ok(u64::MAX),
+        yara.get_configuration_max_process_memory_chunk()
+    );
 }
 
 #[test]

@@ -156,6 +156,11 @@ impl Yara {
         configuration::set_max_match_data(value)
     }
 
+    /// Set the maximum size of chunks scanned from a process memory.
+    pub fn set_configuration_max_process_memory_chunk(&self, value: u64) -> Result<(), YaraError> {
+        configuration::set_max_process_memory_chunk(value)
+    }
+
     /// Get the configured stack size.
     pub fn get_configuration_stack_size(&self) -> Result<u32, YaraError> {
         configuration::get_stack_size()
@@ -169,6 +174,11 @@ impl Yara {
     /// Get the maximum number of bytes to allow per yara match.
     pub fn get_configuration_max_match_data(&self) -> Result<u32, YaraError> {
         configuration::get_max_match_data()
+    }
+
+    /// Get the maximum size of chunks scanned from a process memory.
+    pub fn get_configuration_max_process_memory_chunk(&self) -> Result<u64, YaraError> {
+        configuration::get_max_process_memory_chunk()
     }
 
     /// Create and initialize the library.
