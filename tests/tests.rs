@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use yara::{
-    CallbackMsg, CallbackReturn, CompileErrorLevel, Compiler, ConfigName, Error, MemoryBlock,
+    CallbackMsg, CallbackReturn, CompileErrorLevel, Compiler, Error, MemoryBlock,
     MemoryBlockIterator, MemoryBlockIteratorSized, Metadata, MetadataValue, Rules, ScanFlags, Yara,
     YrObjectValue,
 };
@@ -64,8 +64,8 @@ fn test_initialize() {
 #[test]
 fn test_configuration() {
     let yara = Yara::new().expect("Should be Ok");
-    assert_eq!(Ok(()), yara.set_configuration(ConfigName::StackSize, 100));
-    assert_eq!(Ok(100), yara.get_configuration(ConfigName::StackSize));
+    assert_eq!(Ok(()), yara.set_configuration_stack_size(100));
+    assert_eq!(Ok(100), yara.get_configuration_stack_size());
 }
 
 #[test]
