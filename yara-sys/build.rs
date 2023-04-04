@@ -273,6 +273,10 @@ mod build {
     pub fn build_and_link() {
         if cfg!(feature = "yara-static") {
             println!("cargo:rustc-link-lib=static=yara");
+        } else if std::env::var("CARGO_CFG_TARGET_ENV").unwrap() == "musl" {
+            panic!(
+                "musl target does not support dynamic linking, please use feature `yara-static`"
+            );
         } else {
             println!("cargo:rustc-link-lib=dylib=yara");
         }
