@@ -225,7 +225,6 @@ mod build {
         let walker = globwalk::GlobWalkerBuilder::from_patterns(&basedir, &["**/*.c", "!proc/*"])
             .build()
             .unwrap()
-            .into_iter()
             .filter_map(Result::ok)
             .filter(|e| !exclude.contains(&e.path().to_path_buf()));
         for entry in walker {
