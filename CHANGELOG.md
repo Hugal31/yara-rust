@@ -2,8 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.18.0](https://github.com/Hugal31/yara-rust/compare/v0.17.0...v0.18.0) (2023-04-05)
+
+### ⚠ BREAKING CHANGES
+
+* move static linking env flags to cargo feature ([882a89a](https://github.com/Hugal31/yara-rust/commit/882a89af928935d2e77e031e1c7d340d967b2569))
+* rework `Yara::set_configuration` to remove enum ([755d4e5](https://github.com/Hugal31/yara-rust/commit/755d4e5d7c68889b8d753373c2212b35b5dbc617))
+
+### Features
+
+* add configuration for `YR_CONFIG_MAX_PROCESS_MEMORY_CHUNK` ([a984dfa](https://github.com/Hugal31/yara-rust/commit/a984dfaf77e3ae306c8c679a8156a2037fe91adf))
+* add option to static linking with openssl ([8ffd99a](https://github.com/Hugal31/yara-rust/commit/8ffd99a07fa5a40d46cc403baeb99ca8bb6a74d2))
+* show an explicit error when submodule was not cloned ([193d06c](https://github.com/Hugal31/yara-rust/commit/193d06cf242d3418ef9e42c4537d04552854d2d0))
+
+
+### Bug Fixes
+
+* prevent dynamic linking when targetting musl ([49a6817](https://github.com/Hugal31/yara-rust/commit/49a68177fb16ce6418fae373953d4aa1eb27efc7))
+* properly compile YARA on big-endian arch ([754d902](https://github.com/Hugal31/yara-rust/commit/754d9023add667be20b8271bf5de76656c7aefa8))
+
 ## [0.17.0](https://github.com/Hugal31/yara-rust/compare/v0.16.2...v0.17.0) (2023-02-13)
 
+### ⚠ BREAKING CHANGES
+
+* enable or disable env flags replace to cargo feature ([e37cbd3](https://github.com/Hugal31/yara-rust/commit/e37cbd3f701b2cd75301dc6c5a5c6dc039dca49b))
 
 ### Features
 
@@ -11,7 +33,6 @@ All notable changes to this project will be documented in this file. See [standa
 * add helpers to get module values on scans ([05e8e3d](https://github.com/Hugal31/yara-rust/commit/05e8e3d6447652434884e358e606081f21e0b4ac))
 * add include path to openssl in vendored mode ([47f1cae](https://github.com/Hugal31/yara-rust/commit/47f1caeef44d17735d1e8db16a70f77649bea57a))
 * add musl support ([a45bfe0](https://github.com/Hugal31/yara-rust/commit/a45bfe0d460c901da902d8e7dace6d318b7115b9))
-* Enable or disable env flags replace to cargo feature ([e37cbd3](https://github.com/Hugal31/yara-rust/commit/e37cbd3f701b2cd75301dc6c5a5c6dc039dca49b))
 * update saved bindings following build.rs changes ([23685e2](https://github.com/Hugal31/yara-rust/commit/23685e222160e068a54302300caf5b4787c94379))
 
 
