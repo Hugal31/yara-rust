@@ -45,8 +45,8 @@
 //! [Yara-doc]: https://yara.readthedocs.io/en/stable/gettingstarted.html
 //! [polydet]: https://github.com/Polydet/polydet/
 
-use internals::{get_configuration, set_configuration};
-pub use internals::{ConfigName, YrObject, YrObjectValue};
+use internals::configuration;
+pub use internals::{YrObject, YrObjectValue};
 
 pub use crate::compiler::{Compiler, CompilerVariableValue};
 pub use crate::errors::*;
@@ -141,14 +141,44 @@ impl Yara {
         InitializationToken::new().map(|token| Yara { _token: token })
     }
 
-    /// Set the configuration variable
-    pub fn set_configuration(&self, name: ConfigName, value: u32) -> Result<(), YaraError> {
-        set_configuration(name, value)
+    /// Set the stack size.
+    pub fn set_configuration_stack_size(&self, value: u32) -> Result<(), YaraError> {
+        configuration::set_stack_size(value)
     }
 
-    /// Get the configuration variable
-    pub fn get_configuration(&self, name: ConfigName) -> Result<u32, YaraError> {
-        get_configuration(name)
+    /// Set the maximum number of strings to allow per yara rule.
+    pub fn set_configuration_max_strings_per_rule(&self, value: u32) -> Result<(), YaraError> {
+        configuration::set_max_strings_per_rule(value)
+    }
+
+    /// Set the maximum number of bytes to allow per yara match.
+    pub fn set_configuration_max_match_data(&self, value: u32) -> Result<(), YaraError> {
+        configuration::set_max_match_data(value)
+    }
+
+    /// Set the maximum size of chunks scanned from a process memory.
+    pub fn set_configuration_max_process_memory_chunk(&self, value: u64) -> Result<(), YaraError> {
+        configuration::set_max_process_memory_chunk(value)
+    }
+
+    /// Get the configured stack size.
+    pub fn get_configuration_stack_size(&self) -> Result<u32, YaraError> {
+        configuration::get_stack_size()
+    }
+
+    /// Get the maximum number of strings to allow per yara rule.
+    pub fn get_configuration_max_strings_per_rule(&self) -> Result<u32, YaraError> {
+        configuration::get_max_strings_per_rule()
+    }
+
+    /// Get the maximum number of bytes to allow per yara match.
+    pub fn get_configuration_max_match_data(&self) -> Result<u32, YaraError> {
+        configuration::get_max_match_data()
+    }
+
+    /// Get the maximum size of chunks scanned from a process memory.
+    pub fn get_configuration_max_process_memory_chunk(&self) -> Result<u64, YaraError> {
+        configuration::get_max_process_memory_chunk()
     }
 
     /// Create and initialize the library.

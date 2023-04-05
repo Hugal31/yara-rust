@@ -6,7 +6,6 @@ pub use yara_sys;
 use crate::errors::*;
 
 pub use self::compiler::*;
-pub use self::configuration::*;
 pub use self::iterator::*;
 pub use self::object::*;
 pub use self::rules::*;
@@ -17,7 +16,7 @@ pub mod meta;
 pub mod string;
 
 mod compiler;
-mod configuration;
+pub mod configuration;
 mod iterator;
 mod object;
 mod rules;
