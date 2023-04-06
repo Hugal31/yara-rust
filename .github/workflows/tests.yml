@@ -73,9 +73,9 @@ jobs:
         - name: Test
           env:
             YARA_CRYPTO_LIB: ${{ matrix.cryptolib }}
-            INCLUDE: C:\Program Files\OpenSSL-Win64\include
-            LIBRARY: C:\Program Files\OpenSSL-Win64\lib
-            LIB: C:\Program Files\OpenSSL-Win64\lib
+            INCLUDE: \bin\include
+            LIBRARY: \bin\lib
+            LIB: \bin\lib
           # Skip tests containing "proc", they seem to fail randomly on the pipeline.
           run: cargo test --verbose --no-default-features --features ${{ matrix.features }},module-hash,module-dotnet,module-dex,module-macho,ndebug -- --skip proc
 
