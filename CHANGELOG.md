@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.19.0](https://github.com/Hugal31/yara-rust/compare/v0.18.0...v0.19.0) (2023-04-06)
+
+### ⚠ BREAKING CHANGES
+
+* change bundled bindings and vendored Yara version to 4.3.0 ([c2c30a9](https://github.com/Hugal31/yara-rust/commit/c2c30a997d7953b175ce41914a2e897fd6785421))
+
+### Features
+
+* update vendored Yara to 4.3.0 ([b77105](https://github.com/Hugal31/yara-rust/commit/b7710552452f418f677428464de4791cb4e5f30a))
+* update bundled bindings to `bundled_4_3_0` ([ce8e481](https://github.com/Hugal31/yara-rust/commit/ce8e481109bcd9ce6235290eb70b97a5a8311836))
+
+### Bug Fixes
+
+* not exactly from our side, but Yara pre-4.3.0 had memory alignment issues (see [#112]https://github.com/Hugal31/yara-rust/issues/112).
+
 ## [0.18.0](https://github.com/Hugal31/yara-rust/compare/v0.17.0...v0.18.0) (2023-04-05)
 
 ### ⚠ BREAKING CHANGES
