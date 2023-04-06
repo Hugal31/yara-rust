@@ -101,6 +101,7 @@ pub const ERROR_DUPLICATED_MODIFIER: u32 = 60;
 pub const ERROR_BLOCK_NOT_READY: u32 = 61;
 pub const ERROR_INVALID_PERCENTAGE: u32 = 62;
 pub const ERROR_IDENTIFIER_MATCHES_WILDCARD: u32 = 63;
+pub const ERROR_INVALID_VALUE: u32 = 64;
 pub const CALLBACK_MSG_RULE_MATCHING: u32 = 1;
 pub const CALLBACK_MSG_RULE_NOT_MATCHING: u32 = 2;
 pub const CALLBACK_MSG_SCAN_FINISHED: u32 = 3;
@@ -124,304 +125,368 @@ pub const OBJECT_TYPE_ARRAY: u32 = 4;
 pub const OBJECT_TYPE_FUNCTION: u32 = 5;
 pub const OBJECT_TYPE_DICTIONARY: u32 = 6;
 pub const OBJECT_TYPE_FLOAT: u32 = 7;
-pub type jmp_buf = [::std::os::raw::c_int; 37usize];
-pub type __int64_t = ::std::os::raw::c_longlong;
-pub type __darwin_size_t = ::std::os::raw::c_ulong;
-pub type __darwin_off_t = __int64_t;
-pub type size_t = __darwin_size_t;
-pub type fpos_t = __darwin_off_t;
+pub type __jmp_buf = [::std::os::raw::c_long; 8usize];
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct __sbuf {
-    pub _base: *mut ::std::os::raw::c_uchar,
-    pub _size: ::std::os::raw::c_int,
+pub struct __sigset_t {
+    pub __val: [::std::os::raw::c_ulong; 16usize],
 }
 #[test]
-fn bindgen_test_layout___sbuf() {
-    const UNINIT: ::std::mem::MaybeUninit<__sbuf> = ::std::mem::MaybeUninit::uninit();
+fn bindgen_test_layout___sigset_t() {
+    const UNINIT: ::std::mem::MaybeUninit<__sigset_t> = ::std::mem::MaybeUninit::uninit();
     let ptr = UNINIT.as_ptr();
     assert_eq!(
-        ::std::mem::size_of::<__sbuf>(),
-        16usize,
-        concat!("Size of: ", stringify!(__sbuf))
+        ::std::mem::size_of::<__sigset_t>(),
+        128usize,
+        concat!("Size of: ", stringify!(__sigset_t))
     );
     assert_eq!(
-        ::std::mem::align_of::<__sbuf>(),
+        ::std::mem::align_of::<__sigset_t>(),
         8usize,
-        concat!("Alignment of ", stringify!(__sbuf))
+        concat!("Alignment of ", stringify!(__sigset_t))
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._base) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr).__val) as usize - ptr as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sbuf),
+            stringify!(__sigset_t),
             "::",
-            stringify!(_base)
-        )
-    );
-    assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._size) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(__sbuf),
-            "::",
-            stringify!(_size)
+            stringify!(__val)
         )
     );
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct __sFILEX {
+pub struct __jmp_buf_tag {
+    pub __jmpbuf: __jmp_buf,
+    pub __mask_was_saved: ::std::os::raw::c_int,
+    pub __saved_mask: __sigset_t,
+}
+#[test]
+fn bindgen_test_layout___jmp_buf_tag() {
+    const UNINIT: ::std::mem::MaybeUninit<__jmp_buf_tag> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<__jmp_buf_tag>(),
+        200usize,
+        concat!("Size of: ", stringify!(__jmp_buf_tag))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<__jmp_buf_tag>(),
+        8usize,
+        concat!("Alignment of ", stringify!(__jmp_buf_tag))
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).__jmpbuf) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(__jmp_buf_tag),
+            "::",
+            stringify!(__jmpbuf)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).__mask_was_saved) as usize - ptr as usize },
+        64usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(__jmp_buf_tag),
+            "::",
+            stringify!(__mask_was_saved)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).__saved_mask) as usize - ptr as usize },
+        72usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(__jmp_buf_tag),
+            "::",
+            stringify!(__saved_mask)
+        )
+    );
+}
+pub type jmp_buf = [__jmp_buf_tag; 1usize];
+pub type size_t = ::std::os::raw::c_ulong;
+pub type __off_t = ::std::os::raw::c_long;
+pub type __off64_t = ::std::os::raw::c_long;
+pub type __time_t = ::std::os::raw::c_long;
+pub type __suseconds_t = ::std::os::raw::c_long;
+pub type __syscall_slong_t = ::std::os::raw::c_long;
+pub type FILE = _IO_FILE;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _IO_marker {
     _unused: [u8; 0],
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct __sFILE {
-    pub _p: *mut ::std::os::raw::c_uchar,
-    pub _r: ::std::os::raw::c_int,
-    pub _w: ::std::os::raw::c_int,
-    pub _flags: ::std::os::raw::c_short,
-    pub _file: ::std::os::raw::c_short,
-    pub _bf: __sbuf,
-    pub _lbfsize: ::std::os::raw::c_int,
-    pub _cookie: *mut ::std::os::raw::c_void,
-    pub _close: ::std::option::Option<
-        unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int,
-    >,
-    pub _read: ::std::option::Option<
-        unsafe extern "C" fn(
-            arg1: *mut ::std::os::raw::c_void,
-            arg2: *mut ::std::os::raw::c_char,
-            arg3: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >,
-    pub _seek: ::std::option::Option<
-        unsafe extern "C" fn(
-            arg1: *mut ::std::os::raw::c_void,
-            arg2: fpos_t,
-            arg3: ::std::os::raw::c_int,
-        ) -> fpos_t,
-    >,
-    pub _write: ::std::option::Option<
-        unsafe extern "C" fn(
-            arg1: *mut ::std::os::raw::c_void,
-            arg2: *const ::std::os::raw::c_char,
-            arg3: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >,
-    pub _ub: __sbuf,
-    pub _extra: *mut __sFILEX,
-    pub _ur: ::std::os::raw::c_int,
-    pub _ubuf: [::std::os::raw::c_uchar; 3usize],
-    pub _nbuf: [::std::os::raw::c_uchar; 1usize],
-    pub _lb: __sbuf,
-    pub _blksize: ::std::os::raw::c_int,
-    pub _offset: fpos_t,
+pub struct _IO_codecvt {
+    _unused: [u8; 0],
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _IO_wide_data {
+    _unused: [u8; 0],
+}
+pub type _IO_lock_t = ::std::os::raw::c_void;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _IO_FILE {
+    pub _flags: ::std::os::raw::c_int,
+    pub _IO_read_ptr: *mut ::std::os::raw::c_char,
+    pub _IO_read_end: *mut ::std::os::raw::c_char,
+    pub _IO_read_base: *mut ::std::os::raw::c_char,
+    pub _IO_write_base: *mut ::std::os::raw::c_char,
+    pub _IO_write_ptr: *mut ::std::os::raw::c_char,
+    pub _IO_write_end: *mut ::std::os::raw::c_char,
+    pub _IO_buf_base: *mut ::std::os::raw::c_char,
+    pub _IO_buf_end: *mut ::std::os::raw::c_char,
+    pub _IO_save_base: *mut ::std::os::raw::c_char,
+    pub _IO_backup_base: *mut ::std::os::raw::c_char,
+    pub _IO_save_end: *mut ::std::os::raw::c_char,
+    pub _markers: *mut _IO_marker,
+    pub _chain: *mut _IO_FILE,
+    pub _fileno: ::std::os::raw::c_int,
+    pub _flags2: ::std::os::raw::c_int,
+    pub _old_offset: __off_t,
+    pub _cur_column: ::std::os::raw::c_ushort,
+    pub _vtable_offset: ::std::os::raw::c_schar,
+    pub _shortbuf: [::std::os::raw::c_char; 1usize],
+    pub _lock: *mut _IO_lock_t,
+    pub _offset: __off64_t,
+    pub _codecvt: *mut _IO_codecvt,
+    pub _wide_data: *mut _IO_wide_data,
+    pub _freeres_list: *mut _IO_FILE,
+    pub _freeres_buf: *mut ::std::os::raw::c_void,
+    pub __pad5: size_t,
+    pub _mode: ::std::os::raw::c_int,
+    pub _unused2: [::std::os::raw::c_char; 20usize],
 }
 #[test]
-fn bindgen_test_layout___sFILE() {
-    const UNINIT: ::std::mem::MaybeUninit<__sFILE> = ::std::mem::MaybeUninit::uninit();
+fn bindgen_test_layout__IO_FILE() {
+    const UNINIT: ::std::mem::MaybeUninit<_IO_FILE> = ::std::mem::MaybeUninit::uninit();
     let ptr = UNINIT.as_ptr();
     assert_eq!(
-        ::std::mem::size_of::<__sFILE>(),
-        152usize,
-        concat!("Size of: ", stringify!(__sFILE))
+        ::std::mem::size_of::<_IO_FILE>(),
+        216usize,
+        concat!("Size of: ", stringify!(_IO_FILE))
     );
     assert_eq!(
-        ::std::mem::align_of::<__sFILE>(),
+        ::std::mem::align_of::<_IO_FILE>(),
         8usize,
-        concat!("Alignment of ", stringify!(__sFILE))
-    );
-    assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._p) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(__sFILE),
-            "::",
-            stringify!(_p)
-        )
-    );
-    assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._r) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(__sFILE),
-            "::",
-            stringify!(_r)
-        )
-    );
-    assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._w) as usize - ptr as usize },
-        12usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(__sFILE),
-            "::",
-            stringify!(_w)
-        )
+        concat!("Alignment of ", stringify!(_IO_FILE))
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._flags) as usize - ptr as usize },
-        16usize,
+        0usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sFILE),
+            stringify!(_IO_FILE),
             "::",
             stringify!(_flags)
         )
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._file) as usize - ptr as usize },
-        18usize,
+        unsafe { ::std::ptr::addr_of!((*ptr)._IO_read_ptr) as usize - ptr as usize },
+        8usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sFILE),
+            stringify!(_IO_FILE),
             "::",
-            stringify!(_file)
+            stringify!(_IO_read_ptr)
         )
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._bf) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr)._IO_read_end) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_read_end)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._IO_read_base) as usize - ptr as usize },
         24usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sFILE),
+            stringify!(_IO_FILE),
             "::",
-            stringify!(_bf)
+            stringify!(_IO_read_base)
         )
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._lbfsize) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr)._IO_write_base) as usize - ptr as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_write_base)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._IO_write_ptr) as usize - ptr as usize },
         40usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sFILE),
+            stringify!(_IO_FILE),
             "::",
-            stringify!(_lbfsize)
+            stringify!(_IO_write_ptr)
         )
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._cookie) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr)._IO_write_end) as usize - ptr as usize },
         48usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sFILE),
+            stringify!(_IO_FILE),
             "::",
-            stringify!(_cookie)
+            stringify!(_IO_write_end)
         )
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._close) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr)._IO_buf_base) as usize - ptr as usize },
         56usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sFILE),
+            stringify!(_IO_FILE),
             "::",
-            stringify!(_close)
+            stringify!(_IO_buf_base)
         )
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._read) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr)._IO_buf_end) as usize - ptr as usize },
         64usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sFILE),
+            stringify!(_IO_FILE),
             "::",
-            stringify!(_read)
+            stringify!(_IO_buf_end)
         )
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._seek) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr)._IO_save_base) as usize - ptr as usize },
         72usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sFILE),
+            stringify!(_IO_FILE),
             "::",
-            stringify!(_seek)
+            stringify!(_IO_save_base)
         )
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._write) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr)._IO_backup_base) as usize - ptr as usize },
         80usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sFILE),
+            stringify!(_IO_FILE),
             "::",
-            stringify!(_write)
+            stringify!(_IO_backup_base)
         )
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._ub) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr)._IO_save_end) as usize - ptr as usize },
         88usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sFILE),
+            stringify!(_IO_FILE),
             "::",
-            stringify!(_ub)
+            stringify!(_IO_save_end)
         )
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._extra) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr)._markers) as usize - ptr as usize },
+        96usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_markers)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._chain) as usize - ptr as usize },
         104usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sFILE),
+            stringify!(_IO_FILE),
             "::",
-            stringify!(_extra)
+            stringify!(_chain)
         )
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._ur) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr)._fileno) as usize - ptr as usize },
         112usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sFILE),
+            stringify!(_IO_FILE),
             "::",
-            stringify!(_ur)
+            stringify!(_fileno)
         )
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._ubuf) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr)._flags2) as usize - ptr as usize },
         116usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sFILE),
+            stringify!(_IO_FILE),
             "::",
-            stringify!(_ubuf)
+            stringify!(_flags2)
         )
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._nbuf) as usize - ptr as usize },
-        119usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(__sFILE),
-            "::",
-            stringify!(_nbuf)
-        )
-    );
-    assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._lb) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr)._old_offset) as usize - ptr as usize },
         120usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sFILE),
+            stringify!(_IO_FILE),
             "::",
-            stringify!(_lb)
+            stringify!(_old_offset)
         )
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr)._blksize) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr)._cur_column) as usize - ptr as usize },
+        128usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_cur_column)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._vtable_offset) as usize - ptr as usize },
+        130usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_vtable_offset)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._shortbuf) as usize - ptr as usize },
+        131usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_shortbuf)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._lock) as usize - ptr as usize },
         136usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sFILE),
+            stringify!(_IO_FILE),
             "::",
-            stringify!(_blksize)
+            stringify!(_lock)
         )
     );
     assert_eq!(
@@ -429,13 +494,164 @@ fn bindgen_test_layout___sFILE() {
         144usize,
         concat!(
             "Offset of field: ",
-            stringify!(__sFILE),
+            stringify!(_IO_FILE),
             "::",
             stringify!(_offset)
         )
     );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._codecvt) as usize - ptr as usize },
+        152usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_codecvt)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._wide_data) as usize - ptr as usize },
+        160usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_wide_data)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._freeres_list) as usize - ptr as usize },
+        168usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_freeres_list)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._freeres_buf) as usize - ptr as usize },
+        176usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_freeres_buf)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).__pad5) as usize - ptr as usize },
+        184usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(__pad5)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._mode) as usize - ptr as usize },
+        192usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_mode)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused2) as usize - ptr as usize },
+        196usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_unused2)
+        )
+    );
 }
-pub type FILE = __sFILE;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct timeval {
+    pub tv_sec: __time_t,
+    pub tv_usec: __suseconds_t,
+}
+#[test]
+fn bindgen_test_layout_timeval() {
+    const UNINIT: ::std::mem::MaybeUninit<timeval> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<timeval>(),
+        16usize,
+        concat!("Size of: ", stringify!(timeval))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<timeval>(),
+        8usize,
+        concat!("Alignment of ", stringify!(timeval))
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tv_sec) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(timeval),
+            "::",
+            stringify!(tv_sec)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tv_usec) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(timeval),
+            "::",
+            stringify!(tv_usec)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct timespec {
+    pub tv_sec: __time_t,
+    pub tv_nsec: __syscall_slong_t,
+}
+#[test]
+fn bindgen_test_layout_timespec() {
+    const UNINIT: ::std::mem::MaybeUninit<timespec> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<timespec>(),
+        16usize,
+        concat!("Size of: ", stringify!(timespec))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<timespec>(),
+        8usize,
+        concat!("Alignment of ", stringify!(timespec))
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tv_sec) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(timespec),
+            "::",
+            stringify!(tv_sec)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tv_nsec) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(timespec),
+            "::",
+            stringify!(tv_nsec)
+        )
+    );
+}
 pub type YR_STREAM_READ_FUNC = ::std::option::Option<
     unsafe extern "C" fn(
         ptr: *mut ::std::os::raw::c_void,
@@ -907,57 +1123,54 @@ fn bindgen_test_layout__YR_HASH_TABLE() {
 }
 pub type YR_HASH_TABLE = _YR_HASH_TABLE;
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct mach_timebase_info {
-    pub numer: u32,
-    pub denom: u32,
+#[derive(Copy, Clone)]
+pub struct _YR_STOPWATCH {
+    pub __bindgen_anon_1: _YR_STOPWATCH__bindgen_ty_1,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union _YR_STOPWATCH__bindgen_ty_1 {
+    pub tv_start: timeval,
+    pub ts_start: timespec,
 }
 #[test]
-fn bindgen_test_layout_mach_timebase_info() {
-    const UNINIT: ::std::mem::MaybeUninit<mach_timebase_info> = ::std::mem::MaybeUninit::uninit();
+fn bindgen_test_layout__YR_STOPWATCH__bindgen_ty_1() {
+    const UNINIT: ::std::mem::MaybeUninit<_YR_STOPWATCH__bindgen_ty_1> =
+        ::std::mem::MaybeUninit::uninit();
     let ptr = UNINIT.as_ptr();
     assert_eq!(
-        ::std::mem::size_of::<mach_timebase_info>(),
+        ::std::mem::size_of::<_YR_STOPWATCH__bindgen_ty_1>(),
+        16usize,
+        concat!("Size of: ", stringify!(_YR_STOPWATCH__bindgen_ty_1))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<_YR_STOPWATCH__bindgen_ty_1>(),
         8usize,
-        concat!("Size of: ", stringify!(mach_timebase_info))
+        concat!("Alignment of ", stringify!(_YR_STOPWATCH__bindgen_ty_1))
     );
     assert_eq!(
-        ::std::mem::align_of::<mach_timebase_info>(),
-        4usize,
-        concat!("Alignment of ", stringify!(mach_timebase_info))
-    );
-    assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr).numer) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr).tv_start) as usize - ptr as usize },
         0usize,
         concat!(
             "Offset of field: ",
-            stringify!(mach_timebase_info),
+            stringify!(_YR_STOPWATCH__bindgen_ty_1),
             "::",
-            stringify!(numer)
+            stringify!(tv_start)
         )
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr).denom) as usize - ptr as usize },
-        4usize,
+        unsafe { ::std::ptr::addr_of!((*ptr).ts_start) as usize - ptr as usize },
+        0usize,
         concat!(
             "Offset of field: ",
-            stringify!(mach_timebase_info),
+            stringify!(_YR_STOPWATCH__bindgen_ty_1),
             "::",
-            stringify!(denom)
+            stringify!(ts_start)
         )
     );
 }
-pub type mach_timebase_info_data_t = mach_timebase_info;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct _YR_STOPWATCH {
-    pub timebase: mach_timebase_info_data_t,
-    pub start: u64,
-}
 #[test]
 fn bindgen_test_layout__YR_STOPWATCH() {
-    const UNINIT: ::std::mem::MaybeUninit<_YR_STOPWATCH> = ::std::mem::MaybeUninit::uninit();
-    let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<_YR_STOPWATCH>(),
         16usize,
@@ -967,26 +1180,6 @@ fn bindgen_test_layout__YR_STOPWATCH() {
         ::std::mem::align_of::<_YR_STOPWATCH>(),
         8usize,
         concat!("Alignment of ", stringify!(_YR_STOPWATCH))
-    );
-    assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr).timebase) as usize - ptr as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_YR_STOPWATCH),
-            "::",
-            stringify!(timebase)
-        )
-    );
-    assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr).start) as usize - ptr as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(_YR_STOPWATCH),
-            "::",
-            stringify!(start)
-        )
     );
 }
 pub type YR_STOPWATCH = _YR_STOPWATCH;
@@ -2578,6 +2771,7 @@ pub struct YR_MATCH {
     pub next: *mut YR_MATCH,
     pub chain_length: i32,
     pub is_private: bool,
+    pub xor_key: u8,
 }
 #[test]
 fn bindgen_test_layout_YR_MATCH() {
@@ -2681,6 +2875,16 @@ fn bindgen_test_layout_YR_MATCH() {
             stringify!(YR_MATCH),
             "::",
             stringify!(is_private)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).xor_key) as usize - ptr as usize },
+        53usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_MATCH),
+            "::",
+            stringify!(xor_key)
         )
     );
 }
@@ -3205,7 +3409,7 @@ pub type YR_CALLBACK_FUNC = ::std::option::Option<
     ) -> ::std::os::raw::c_int,
 >;
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Copy, Clone)]
 pub struct YR_SCAN_CONTEXT {
     pub file_size: u64,
     pub entry_point: u64,
@@ -4290,9 +4494,115 @@ fn bindgen_test_layout_YR_INT_ENUM_ITERATOR() {
     );
 }
 #[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct YR_STRING_SET_ITERATOR {
+    pub count: i64,
+    pub index: i64,
+    pub strings: [*mut YR_STRING; 1usize],
+}
+#[test]
+fn bindgen_test_layout_YR_STRING_SET_ITERATOR() {
+    const UNINIT: ::std::mem::MaybeUninit<YR_STRING_SET_ITERATOR> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<YR_STRING_SET_ITERATOR>(),
+        24usize,
+        concat!("Size of: ", stringify!(YR_STRING_SET_ITERATOR))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<YR_STRING_SET_ITERATOR>(),
+        8usize,
+        concat!("Alignment of ", stringify!(YR_STRING_SET_ITERATOR))
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_STRING_SET_ITERATOR),
+            "::",
+            stringify!(count)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).index) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_STRING_SET_ITERATOR),
+            "::",
+            stringify!(index)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).strings) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_STRING_SET_ITERATOR),
+            "::",
+            stringify!(strings)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct YR_TEXT_STRING_SET_ITERATOR {
+    pub count: i64,
+    pub index: i64,
+    pub strings: [*mut SIZED_STRING; 1usize],
+}
+#[test]
+fn bindgen_test_layout_YR_TEXT_STRING_SET_ITERATOR() {
+    const UNINIT: ::std::mem::MaybeUninit<YR_TEXT_STRING_SET_ITERATOR> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<YR_TEXT_STRING_SET_ITERATOR>(),
+        24usize,
+        concat!("Size of: ", stringify!(YR_TEXT_STRING_SET_ITERATOR))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<YR_TEXT_STRING_SET_ITERATOR>(),
+        8usize,
+        concat!("Alignment of ", stringify!(YR_TEXT_STRING_SET_ITERATOR))
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_TEXT_STRING_SET_ITERATOR),
+            "::",
+            stringify!(count)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).index) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_TEXT_STRING_SET_ITERATOR),
+            "::",
+            stringify!(index)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).strings) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_TEXT_STRING_SET_ITERATOR),
+            "::",
+            stringify!(strings)
+        )
+    );
+}
+#[repr(C)]
 #[derive(Copy, Clone)]
 pub struct YR_ITERATOR {
-    pub next_func_idx: ::std::os::raw::c_int,
+    pub next_func_idx: u8,
     pub __bindgen_anon_1: YR_ITERATOR__bindgen_ty_1,
 }
 #[repr(C)]
@@ -4302,6 +4612,8 @@ pub union YR_ITERATOR__bindgen_ty_1 {
     pub dict_it: YR_DICT_ITERATOR,
     pub int_range_it: YR_INT_RANGE_ITERATOR,
     pub int_enum_it: YR_INT_ENUM_ITERATOR,
+    pub string_set_it: YR_STRING_SET_ITERATOR,
+    pub text_string_set_it: YR_TEXT_STRING_SET_ITERATOR,
 }
 #[test]
 fn bindgen_test_layout_YR_ITERATOR__bindgen_ty_1() {
@@ -4356,6 +4668,26 @@ fn bindgen_test_layout_YR_ITERATOR__bindgen_ty_1() {
             stringify!(YR_ITERATOR__bindgen_ty_1),
             "::",
             stringify!(int_enum_it)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).string_set_it) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_ITERATOR__bindgen_ty_1),
+            "::",
+            stringify!(string_set_it)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).text_string_set_it) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_ITERATOR__bindgen_ty_1),
+            "::",
+            stringify!(text_string_set_it)
         )
     );
 }
@@ -4485,7 +4817,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<_YR_COMPILER>(),
-        10344usize,
+        10392usize,
         concat!("Size of: ", stringify!(_YR_COMPILER))
     );
     assert_eq!(
@@ -4615,7 +4947,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).automaton) as usize - ptr as usize },
-        208usize,
+        256usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4625,7 +4957,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).rules_table) as usize - ptr as usize },
-        216usize,
+        264usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4635,7 +4967,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).objects_table) as usize - ptr as usize },
-        224usize,
+        272usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4645,7 +4977,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).strings_table) as usize - ptr as usize },
-        232usize,
+        280usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4655,7 +4987,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).wildcard_identifiers_table) as usize - ptr as usize },
-        240usize,
+        288usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4665,7 +4997,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).sz_table) as usize - ptr as usize },
-        248usize,
+        296usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4675,7 +5007,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).fixup_stack_head) as usize - ptr as usize },
-        256usize,
+        304usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4685,7 +5017,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).num_namespaces) as usize - ptr as usize },
-        264usize,
+        312usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4695,7 +5027,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).loop_) as usize - ptr as usize },
-        272usize,
+        320usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4705,7 +5037,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).loop_index) as usize - ptr as usize },
-        624usize,
+        672usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4715,7 +5047,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).loop_for_of_var_index) as usize - ptr as usize },
-        628usize,
+        676usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4725,7 +5057,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).file_name_stack) as usize - ptr as usize },
-        632usize,
+        680usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4735,7 +5067,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).file_name_stack_ptr) as usize - ptr as usize },
-        760usize,
+        808usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4745,7 +5077,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).last_error_extra_info) as usize - ptr as usize },
-        764usize,
+        812usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4755,7 +5087,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).lex_buf) as usize - ptr as usize },
-        1020usize,
+        1068usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4765,7 +5097,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).lex_buf_ptr) as usize - ptr as usize },
-        9216usize,
+        9264usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4775,7 +5107,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).lex_buf_len) as usize - ptr as usize },
-        9224usize,
+        9272usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4785,7 +5117,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).include_base_dir) as usize - ptr as usize },
-        9226usize,
+        9274usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4795,7 +5127,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).user_data) as usize - ptr as usize },
-        10256usize,
+        10304usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4805,7 +5137,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).incl_clbk_user_data) as usize - ptr as usize },
-        10264usize,
+        10312usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4815,7 +5147,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).re_ast_clbk_user_data) as usize - ptr as usize },
-        10272usize,
+        10320usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4825,7 +5157,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).callback) as usize - ptr as usize },
-        10280usize,
+        10328usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4835,7 +5167,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).include_callback) as usize - ptr as usize },
-        10288usize,
+        10336usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4845,7 +5177,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).include_free) as usize - ptr as usize },
-        10296usize,
+        10344usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4855,7 +5187,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).re_ast_callback) as usize - ptr as usize },
-        10304usize,
+        10352usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -4865,7 +5197,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).atoms_config) as usize - ptr as usize },
-        10312usize,
+        10360usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),

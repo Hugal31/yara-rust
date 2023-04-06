@@ -133,7 +133,11 @@ mod build {
         #[cfg(target_endian = "big")]
         cc.define("WORDS_BIGENDIAN", "");
 
+        cc.define("BUCKETS_128", "1");
+        cc.define("CHECKSUM_1B", "1");
+
         let mut enable_crypto = false;
+        let mut use_authenticode = false;
         match get_crypto_lib() {
             CryptoLib::OpenSSL => {
                 // If OPENSSL_DIR is set, use it to extrapolate lib and include dir
@@ -159,6 +163,7 @@ mod build {
                 }
 
                 enable_crypto = true;
+                use_authenticode = true;
                 cc.define("HAVE_LIBCRYPTO", "1");
                 if std::env::var("CARGO_CFG_TARGET_FAMILY")
                     .ok()
@@ -189,6 +194,21 @@ mod build {
                 println!("cargo:rustc-link-lib=dylib=System");
             }
             CryptoLib::None => {}
+        }
+
+        if !use_authenticode {
+            // authenticode parser part of the PE module only works with OpenSSL.
+            let dir = basedir
+                .join("modules")
+                .join("pe")
+                .join("authenticode-parser");
+            let walker = globwalk::GlobWalkerBuilder::from_patterns(dir, &["*.c"])
+                .build()
+                .unwrap()
+                .filter_map(Result::ok);
+            for entry in walker {
+                exclude.push(entry.path().to_path_buf());
+            }
         }
 
         if cfg!(feature = "module-hash") && enable_crypto {
@@ -305,14 +325,14 @@ mod build {
     }
 }
 
-#[cfg(feature = "bundled-4_2_3")]
+#[cfg(feature = "bundled-4_3_0")]
 mod bindings {
     use std::env;
     use std::fs;
     use std::path::PathBuf;
 
     pub fn add_bindings() {
-        let binding_file = format!("yara-4.2.3-{}.rs", env::var("TARGET").unwrap());
+        let binding_file = format!("yara-4.3.0-{}.rs", env::var("TARGET").unwrap());
         let binding_path = PathBuf::from("bindings").join(binding_file);
         let out_dir = env::var("OUT_DIR").expect("$OUT_DIR should be defined");
         let out_path = PathBuf::from(out_dir).join("bindings.rs");
@@ -328,7 +348,7 @@ mod bindings {
     }
 }
 
-#[cfg(not(feature = "bundled-4_2_3"))]
+#[cfg(not(feature = "bundled-4_3_0"))]
 mod bindings {
     use std::env;
     use std::path::PathBuf;

@@ -2854,6 +2854,7 @@ pub const ERROR_DUPLICATED_MODIFIER: u32 = 60;
 pub const ERROR_BLOCK_NOT_READY: u32 = 61;
 pub const ERROR_INVALID_PERCENTAGE: u32 = 62;
 pub const ERROR_IDENTIFIER_MATCHES_WILDCARD: u32 = 63;
+pub const ERROR_INVALID_VALUE: u32 = 64;
 pub const CALLBACK_MSG_RULE_MATCHING: u32 = 1;
 pub const CALLBACK_MSG_RULE_NOT_MATCHING: u32 = 2;
 pub const CALLBACK_MSG_SCAN_FINISHED: u32 = 3;
@@ -5174,6 +5175,7 @@ pub struct YR_MATCH {
     pub next: *mut YR_MATCH,
     pub chain_length: i32,
     pub is_private: bool,
+    pub xor_key: u8,
 }
 #[test]
 fn bindgen_test_layout_YR_MATCH() {
@@ -5277,6 +5279,16 @@ fn bindgen_test_layout_YR_MATCH() {
             stringify!(YR_MATCH),
             "::",
             stringify!(is_private)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).xor_key) as usize - ptr as usize },
+        53usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_MATCH),
+            "::",
+            stringify!(xor_key)
         )
     );
 }
@@ -6886,9 +6898,115 @@ fn bindgen_test_layout_YR_INT_ENUM_ITERATOR() {
     );
 }
 #[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct YR_STRING_SET_ITERATOR {
+    pub count: i64,
+    pub index: i64,
+    pub strings: [*mut YR_STRING; 1usize],
+}
+#[test]
+fn bindgen_test_layout_YR_STRING_SET_ITERATOR() {
+    const UNINIT: ::std::mem::MaybeUninit<YR_STRING_SET_ITERATOR> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<YR_STRING_SET_ITERATOR>(),
+        24usize,
+        concat!("Size of: ", stringify!(YR_STRING_SET_ITERATOR))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<YR_STRING_SET_ITERATOR>(),
+        8usize,
+        concat!("Alignment of ", stringify!(YR_STRING_SET_ITERATOR))
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_STRING_SET_ITERATOR),
+            "::",
+            stringify!(count)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).index) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_STRING_SET_ITERATOR),
+            "::",
+            stringify!(index)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).strings) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_STRING_SET_ITERATOR),
+            "::",
+            stringify!(strings)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct YR_TEXT_STRING_SET_ITERATOR {
+    pub count: i64,
+    pub index: i64,
+    pub strings: [*mut SIZED_STRING; 1usize],
+}
+#[test]
+fn bindgen_test_layout_YR_TEXT_STRING_SET_ITERATOR() {
+    const UNINIT: ::std::mem::MaybeUninit<YR_TEXT_STRING_SET_ITERATOR> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<YR_TEXT_STRING_SET_ITERATOR>(),
+        24usize,
+        concat!("Size of: ", stringify!(YR_TEXT_STRING_SET_ITERATOR))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<YR_TEXT_STRING_SET_ITERATOR>(),
+        8usize,
+        concat!("Alignment of ", stringify!(YR_TEXT_STRING_SET_ITERATOR))
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_TEXT_STRING_SET_ITERATOR),
+            "::",
+            stringify!(count)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).index) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_TEXT_STRING_SET_ITERATOR),
+            "::",
+            stringify!(index)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).strings) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_TEXT_STRING_SET_ITERATOR),
+            "::",
+            stringify!(strings)
+        )
+    );
+}
+#[repr(C)]
 #[derive(Copy, Clone)]
 pub struct YR_ITERATOR {
-    pub next_func_idx: ::std::os::raw::c_int,
+    pub next_func_idx: u8,
     pub __bindgen_anon_1: YR_ITERATOR__bindgen_ty_1,
 }
 #[repr(C)]
@@ -6898,6 +7016,8 @@ pub union YR_ITERATOR__bindgen_ty_1 {
     pub dict_it: YR_DICT_ITERATOR,
     pub int_range_it: YR_INT_RANGE_ITERATOR,
     pub int_enum_it: YR_INT_ENUM_ITERATOR,
+    pub string_set_it: YR_STRING_SET_ITERATOR,
+    pub text_string_set_it: YR_TEXT_STRING_SET_ITERATOR,
 }
 #[test]
 fn bindgen_test_layout_YR_ITERATOR__bindgen_ty_1() {
@@ -6952,6 +7072,26 @@ fn bindgen_test_layout_YR_ITERATOR__bindgen_ty_1() {
             stringify!(YR_ITERATOR__bindgen_ty_1),
             "::",
             stringify!(int_enum_it)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).string_set_it) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_ITERATOR__bindgen_ty_1),
+            "::",
+            stringify!(string_set_it)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).text_string_set_it) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_ITERATOR__bindgen_ty_1),
+            "::",
+            stringify!(text_string_set_it)
         )
     );
 }
