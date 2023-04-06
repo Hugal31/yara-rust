@@ -56,13 +56,13 @@ jobs:
         os: [ windows-2019 ]
         features: [ "vendored,bundled-4_3_0" ]
         rust: [ stable ]
-        cryptolib: [ "OpenSSL", "WinCrypt", "disabled" ]
+        cryptolib: [ "WinCrypt", "disabled" ]
 
     runs-on: ${{ matrix.os }}
     steps:
         - name: Install OpenSSL
           if: ${{ matrix.cryptolib == 'OpenSSL' }}
-          run: vcpkg install openssl-windows:x64-windows
+          run: choco install openssl
         - uses: actions/checkout@v3
           with:
             submodules: true
