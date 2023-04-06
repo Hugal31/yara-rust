@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* not exactly from our side, but Yara pre-4.3.0 had memory alignment issues (see [#112]https://github.com/Hugal31/yara-rust/issues/112).
+* not exactly from our side, but Yara pre-4.3.0 had memory alignment issues (see #112).
 
 ## [0.18.0](https://github.com/Hugal31/yara-rust/compare/v0.17.0...v0.18.0) (2023-04-05)
 
