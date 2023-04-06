@@ -62,7 +62,7 @@ jobs:
     steps:
         - name: Install OpenSSL
           if: ${{ matrix.cryptolib == 'OpenSSL' }}
-          run: choco install openssl
+          run: vcpkg install openssl-windows:x64-windows
         - uses: actions/checkout@v3
           with:
             submodules: true
@@ -73,9 +73,6 @@ jobs:
         - name: Test
           env:
             YARA_CRYPTO_LIB: ${{ matrix.cryptolib }}
-            INCLUDE: \bin\include
-            LIBRARY: \bin\lib
-            LIB: \bin\lib
           # Skip tests containing "proc", they seem to fail randomly on the pipeline.
           run: cargo test --verbose --no-default-features --features ${{ matrix.features }},module-hash,module-dotnet,module-dex,module-macho,ndebug -- --skip proc
 
