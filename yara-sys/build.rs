@@ -35,6 +35,7 @@ mod build {
 
     enum CryptoLib {
         OpenSSL,
+        BoringSSL,
         Wincrypt,
         CommonCrypto,
         None,
@@ -46,6 +47,7 @@ mod build {
             .as_deref()
         {
             Some("openssl") => CryptoLib::OpenSSL,
+            Some("boringssl") => CryptoLib::BoringSSL,
             Some("wincrypt") => CryptoLib::Wincrypt,
             Some("commoncrypto") => CryptoLib::CommonCrypto,
             Some(_) => CryptoLib::None,
@@ -61,6 +63,49 @@ mod build {
                     }
                 }
             }
+        }
+    }
+
+    fn handle_openssl(cc: &mut cc::Build) {
+        // If OPENSSL_DIR is set, use it to extrapolate lib and include dir
+        if let Some(openssl_dir) = get_target_env_var("YARA_OPENSSL_DIR") {
+            let openssl_dir = PathBuf::from(openssl_dir);
+
+            cc.include(openssl_dir.join("include"));
+            println!(
+                "cargo:rustc-link-search=native={}",
+                openssl_dir.join("lib").display()
+            );
+        } else {
+            // Otherwise, retrieve OPENSSL_INCLUDE_DIR and OPENSSL_LIB_DIR
+            if let Some(include_dir) = get_target_env_var("YARA_OPENSSL_INCLUDE_DIR") {
+                cc.include(&include_dir);
+            }
+            if let Some(openssl_lib_dir) = get_target_env_var("YARA_OPENSSL_LIB_DIR") {
+                println!(
+                    "cargo:rustc-link-search=native={}",
+                    PathBuf::from(openssl_lib_dir).display()
+                );
+            }
+        }
+
+        cc.define("HAVE_LIBCRYPTO", "1");
+        if std::env::var("CARGO_CFG_TARGET_FAMILY")
+            .ok()
+            .unwrap()
+            .as_str()
+            == "windows"
+        {
+            println!("cargo:rustc-link-lib=dylib=libssl");
+            println!("cargo:rustc-link-lib=dylib=libcrypto");
+            println!("cargo:rustc-link-lib=dylib=Crypt32");
+            println!("cargo:rustc-link-lib=dylib=Ws2_32")
+        } else if cfg!(feature = "openssl-static") {
+            println!("cargo:rustc-link-lib=static=ssl");
+            println!("cargo:rustc-link-lib=static=crypto");
+        } else {
+            println!("cargo:rustc-link-lib=dylib=ssl");
+            println!("cargo:rustc-link-lib=dylib=crypto");
         }
     }
 
@@ -140,48 +185,17 @@ mod build {
         let mut use_authenticode = false;
         match get_crypto_lib() {
             CryptoLib::OpenSSL => {
-                // If OPENSSL_DIR is set, use it to extrapolate lib and include dir
-                if let Some(openssl_dir) = get_target_env_var("YARA_OPENSSL_DIR") {
-                    let openssl_dir = PathBuf::from(openssl_dir);
-
-                    cc.include(openssl_dir.join("include"));
-                    println!(
-                        "cargo:rustc-link-search=native={}",
-                        openssl_dir.join("lib").display()
-                    );
-                } else {
-                    // Otherwise, retrieve OPENSSL_INCLUDE_DIR and OPENSSL_LIB_DIR
-                    if let Some(include_dir) = get_target_env_var("YARA_OPENSSL_INCLUDE_DIR") {
-                        cc.include(&include_dir);
-                    }
-                    if let Some(openssl_lib_dir) = get_target_env_var("YARA_OPENSSL_LIB_DIR") {
-                        println!(
-                            "cargo:rustc-link-search=native={}",
-                            PathBuf::from(openssl_lib_dir).display()
-                        );
-                    }
-                }
-
                 enable_crypto = true;
                 use_authenticode = true;
-                cc.define("HAVE_LIBCRYPTO", "1");
-                if std::env::var("CARGO_CFG_TARGET_FAMILY")
-                    .ok()
-                    .unwrap()
-                    .as_str()
-                    == "windows"
-                {
-                    println!("cargo:rustc-link-lib=dylib=libssl");
-                    println!("cargo:rustc-link-lib=dylib=libcrypto");
-                    println!("cargo:rustc-link-lib=dylib=Crypt32");
-                    println!("cargo:rustc-link-lib=dylib=Ws2_32")
-                } else if cfg!(feature = "openssl-static") {
-                    println!("cargo:rustc-link-lib=static=ssl");
-                    println!("cargo:rustc-link-lib=static=crypto");
-                } else {
-                    println!("cargo:rustc-link-lib=dylib=ssl");
-                    println!("cargo:rustc-link-lib=dylib=crypto");
-                }
+                handle_openssl(&mut cc);
+            }
+            CryptoLib::BoringSSL => {
+                enable_crypto = true;
+                // This is required by YARA to distinguish OpenSSL from BoringSSL.
+                cc.define("BORINGSSL", "1");
+                // Do not enable authenticode, this needs OpenSSL.
+                use_authenticode = false;
+                handle_openssl(&mut cc);
             }
             CryptoLib::Wincrypt => {
                 enable_crypto = true;
@@ -286,6 +300,7 @@ mod build {
         cargo_rerun_if_env_changed("YARA_OPENSSL_LIB_DIR");
         cargo_rerun_if_env_changed("YARA_OPENSSL_INCLUDE_DIR");
         cargo_rerun_if_env_changed("YARA_LIBRARY_PATH");
+        cargo_rerun_if_env_changed("YARA_CRYPTO_LIB");
 
         println!("cargo:rustc-link-search=native={lib_dir}");
         println!("cargo:rustc-link-lib=static=yara");
