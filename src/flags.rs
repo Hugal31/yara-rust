@@ -6,7 +6,7 @@ use yara_sys::{
 
 bitflags! {
     /// A wrapper around yara scanning flags
-    #[derive(Default)]
+    #[derive(Default, Debug, Clone, Copy, Eq, PartialEq)]
     pub struct ScanFlags: i32 {
         /// SCAN_FLAGS_FAST_MODE
         const FAST_MODE = SCAN_FLAGS_FAST_MODE as i32;
