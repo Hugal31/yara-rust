@@ -44,16 +44,14 @@ jobs:
       - name: Set LIBCLANG_PATH
         if: matrix.os == 'windows-latest'
         run: echo "LIBCLANG_PATH=$((gcm clang).source -replace "clang.exe")" >> $env:GITHUB_ENV
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: true
       - name: Install rust toolchain
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
           toolchain: stable
-          target: ${{ matrix.target }}
-          override: true
+          targets: ${{ matrix.target }}
       - name: Generate bindings
         shell: bash
         run: |
@@ -66,4 +64,3 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: ./out/yara-${{ matrix.target }}.rs
-
