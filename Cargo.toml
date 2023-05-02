@@ -16,7 +16,7 @@ edition = "2018"
 [features]
 default = ["bindgen", 'module-dotnet', 'module-dex', 'module-macho', 'module-hash', 'ndebug']
 bindgen = ["yara-sys/bindgen"]
-bundled-4_3_0 = ["yara-sys/bundled-4_3_0"]
+bundled-4_3_1 = ["yara-sys/bundled-4_3_1"]
 vendored = ["yara-sys/vendored"]
 module-cuckoo = ["yara-sys/module-cuckoo"]
 module-magic = ["yara-sys/module-magic"]
@@ -48,4 +48,4 @@ default-features = false
 
 [package.metadata.docs.rs]
 no-default-features = true
-features = ["bundled-4_3_0"]
+features = ["bundled-4_3_1"]
