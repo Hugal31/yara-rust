@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.20.0](https://github.com/Hugal31/yara-rust/compare/v0.19.0...v0.20.0) (2023-05-12)
+
+### ⚠ BREAKING CHANGES
+
+* change bundled bindings and vendored Yara version to 4.3.1 ([9d972f3](https://github.com/Hugal31/yara-rust/commit/9d972f3ad8269e7fd1763377da68e13eaa8bb75e))
+
+### Features
+
+* handle BoringSSL as crypto lib in yara-sys ([049ddcf](https://github.com/Hugal31/yara-rust/commit/049ddcf0199ee49e1d5ded17515610dffdc44e1b))
+* upgrade yara up to 4.3.1 ([9d972f3](https://github.com/Hugal31/yara-rust/commit/9d972f3ad8269e7fd1763377da68e13eaa8bb75e))
+
 ## [0.19.0](https://github.com/Hugal31/yara-rust/compare/v0.18.0...v0.19.0) (2023-04-06)
 
 ### ⚠ BREAKING CHANGES
