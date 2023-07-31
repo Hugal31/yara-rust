@@ -31,7 +31,7 @@ version on your system!
 This is the default, when the `vendored` option is disabled.
 You can specify the following environment variables:
 
-- `YARA_LIBRARY_PATH` specifies the directoy containing the Yara library binary.
+- `YARA_LIBRARY_PATH` specifies the directory containing the Yara library binary.
 - `YARA_INCLUDE_DIR` specifies the directory containing the Yara include files,
   if you use the `bindgen` feature.
 
