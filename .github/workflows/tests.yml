@@ -80,7 +80,7 @@ jobs:
   build-macos:
     strategy:
       matrix:
-        os: [ macos-10.15 ]
+        os: [ macos-latest ]
         features: [ "vendored,bindgen", "vendored,bundled-4_3_1" ]
         rust: [ stable, nightly ]
         cryptolib: [ "OpenSSL", "CommonCrypto", "disabled" ]
