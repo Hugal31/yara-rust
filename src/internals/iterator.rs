@@ -96,7 +96,7 @@ impl<'a> SafeYrMemoryBlockIterator<'a> {
     pub fn new(iterator: YR_MEMORY_BLOCK_ITERATOR) -> Self {
         Self {
             iterator,
-            _marker: PhantomData::default(),
+            _marker: PhantomData,
         }
     }
 }

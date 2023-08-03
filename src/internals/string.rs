@@ -21,7 +21,7 @@ impl<'a> From<&'a yara_sys::YR_RULE> for YrStringIterator<'a> {
     fn from(rule: &'a yara_sys::YR_RULE) -> YrStringIterator<'a> {
         YrStringIterator {
             head: rule.get_strings(),
-            _marker: marker::PhantomData::default(),
+            _marker: marker::PhantomData,
         }
     }
 }
