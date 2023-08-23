@@ -216,12 +216,11 @@ mod build {
                 .join("modules")
                 .join("pe")
                 .join("authenticode-parser");
-            let walker = globwalk::GlobWalkerBuilder::from_patterns(dir, &["*.c"])
-                .build()
+            for entry in glob::glob(&format!("{}/*.c", dir.display()))
                 .unwrap()
-                .filter_map(Result::ok);
-            for entry in walker {
-                exclude.push(entry.path().to_path_buf());
+                .flatten()
+            {
+                exclude.push(entry);
             }
         }
 
@@ -271,13 +270,19 @@ mod build {
             get_target_env_var("YARA_DEBUG_VERBOSITY").unwrap_or_else(|| "0".to_string());
         cc.define("YR_DEBUG_VERBOSITY", verbosity.as_str());
 
-        let walker = globwalk::GlobWalkerBuilder::from_patterns(&basedir, &["**/*.c", "!proc/*"])
-            .build()
+        for entry in glob::glob(&format!("{}/proc/*", basedir.display()))
             .unwrap()
-            .filter_map(Result::ok)
-            .filter(|e| !exclude.contains(&e.path().to_path_buf()));
-        for entry in walker {
-            cc.file(entry.path());
+            .flatten()
+        {
+            exclude.push(entry);
+        }
+        for entry in glob::glob(&format!("{}/**/*.c", basedir.display()))
+            .unwrap()
+            .flatten()
+        {
+            if !exclude.contains(&entry) {
+                cc.file(entry);
+            }
         }
 
         // Unfortunately, YARA compilation produces lots of warnings
