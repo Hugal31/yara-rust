@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.21.0](https://github.com/Hugal31/yara-rust/compare/v0.20.0...v0.21.0) (2023-09-07)
+
+
+### Features
+
+* Exposed yara_sys::Error ([07ad2c6](https://github.com/Hugal31/yara-rust/commit/07ad2c65e010a171e44aa2070a4fc55f5dca97d3))
+* remove unused features of bindgen ([1dc6b44](https://github.com/Hugal31/yara-rust/commit/1dc6b4485c4c8e7c339e434a614a25a1deaac2c5))
+* replace globwalk with glob in yara-sys build.rs ([90d977c](https://github.com/Hugal31/yara-rust/commit/90d977ceeab75c73d2d034e8715840d00e4fcdbe))
+
 ## [0.20.0](https://github.com/Hugal31/yara-rust/compare/v0.19.0...v0.20.0) (2023-05-12)
 
 ### ⚠ BREAKING CHANGES
