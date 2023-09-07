@@ -1,6 +1,7 @@
 use std::fmt;
 
 pub use yara_sys::CompileErrorLevel;
+pub use yara_sys::Error as YaraErrorKind;
 
 use std::error::Error as StdError;
 
@@ -55,11 +56,11 @@ pub enum IoErrorKind {
 #[derive(Clone, Copy, Debug, Eq, PartialEq, ThisError)]
 #[error("{kind}")]
 pub struct YaraError {
-    pub kind: yara_sys::Error,
+    pub kind: YaraErrorKind,
 }
 
-impl From<yara_sys::Error> for YaraError {
-    fn from(error: yara_sys::Error) -> Self {
+impl From<YaraErrorKind> for YaraError {
+    fn from(error: YaraErrorKind) -> Self {
         YaraError { kind: error }
     }
 }
@@ -85,7 +86,7 @@ impl StdError for CompileErrors {
     /// Returns the first compile error.
     fn source(&self) -> Option<&(dyn StdError + 'static)> {
         self.iter()
-            .find(|e| e.level == yara_sys::CompileErrorLevel::Error)
+            .find(|e| e.level == CompileErrorLevel::Error)
             .map(|e| e as &dyn StdError)
     }
 }
