@@ -64,3 +64,46 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: ./out/yara-${{ matrix.target }}.rs
+
+  aarch64_bindings:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Generate bindings
+        shell: bash
+        run: |
+          mkdir out
+
+      - uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: aarch64
+          distro: ubuntu_latest
+          githubToken: ${{ github.token }}
+
+          install: |
+            # Install systemd dependecies
+            apt update -q -y
+            apt install -y --no-install-recommends curl ca-certificates llvm-dev libclang-dev clang
+            # Install rustup
+            curl --fail --proto '=https' -o /tmp/rustup-init --tlsv1.2 -sSf https://static.rust-lang.org/rustup/dist/aarch64-unknown-linux-gnu/rustup-init
+            chmod +x /tmp/rustup-init
+            /tmp/rustup-init -y --target aarch64-unknown-linux-gnu --profile minimal
+
+          dockerRunArgs: |
+            --volume "${PWD}:/usr/src/yara/"
+
+          run: |
+            export PATH="$HOME/.cargo/bin:$PATH"
+            cd /usr/src/yara/
+            cargo build --verbose --no-default-features --features vendored,bindgen
+            find . -name 'bindings.rs'
+            cp "$(find . -name bindings.rs)" "./out/yara-aarch64-unknown-linux-gnu.rs"
+            ls ./out
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: ./out/yara-aarch64-unknown-linux-gnu.rs
