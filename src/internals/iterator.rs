@@ -16,18 +16,16 @@ impl<'a> MemoryBlock<'a> {
         Self { base, data }
     }
 
-    fn as_yara(&mut self) -> YR_MEMORY_BLOCK {
-        let fetch_data = if self.data.is_empty() {
-            mem_block_fetch_data_null
-        } else {
-            mem_block_fetch_data
-        };
-
+    fn into_yara(self) -> YR_MEMORY_BLOCK {
         YR_MEMORY_BLOCK {
             base: self.base,
             size: self.data.len() as _,
-            context: self as *mut MemoryBlock as *mut std::os::raw::c_void,
-            fetch_data: Some(fetch_data),
+            context: if self.data.is_empty() {
+                std::ptr::null_mut()
+            } else {
+                self.data.as_ptr() as *const _ as *mut _
+            },
+            fetch_data: Some(mem_block_fetch_data),
         }
     }
 }
@@ -119,10 +117,10 @@ unsafe extern "C" fn mem_block_iterator_first<T: MemoryBlockIterator>(
     iter: *mut YR_MEMORY_BLOCK_ITERATOR,
 ) -> *mut YR_MEMORY_BLOCK {
     let context = &mut *((*iter).context as *mut WrapperMemoryBlockIterator<T>);
-    let mut mem_block = context.iter.first();
-    match mem_block.as_mut() {
+    let mem_block = context.iter.first();
+    match mem_block {
         Some(mem_block) => {
-            context.mem_block.write(mem_block.as_yara());
+            context.mem_block.write(mem_block.into_yara());
             context.mem_block.as_mut_ptr()
         }
         None => ptr::null_mut(),
@@ -134,10 +132,10 @@ unsafe extern "C" fn mem_block_iterator_next<T: MemoryBlockIterator>(
 ) -> *mut YR_MEMORY_BLOCK {
     let context = &mut *((*iter).context as *mut WrapperMemoryBlockIterator<T>);
     let _ = context.mem_block.assume_init();
-    let mut mem_block = context.iter.next();
-    match mem_block.as_mut() {
+    let mem_block = context.iter.next();
+    match mem_block {
         Some(mem_block) => {
-            context.mem_block.write(mem_block.as_yara());
+            context.mem_block.write(mem_block.into_yara());
             context.mem_block.as_mut_ptr()
         }
         None => ptr::null_mut(),
@@ -151,11 +149,6 @@ unsafe extern "C" fn mem_block_iterator_file_size<T: MemoryBlockIteratorSized>(
     context.iter.file_size()
 }
 
-unsafe extern "C" fn mem_block_fetch_data_null(_: *mut YR_MEMORY_BLOCK) -> *const u8 {
-    ptr::null()
-}
-
 unsafe extern "C" fn mem_block_fetch_data(mem_block: *mut YR_MEMORY_BLOCK) -> *const u8 {
-    let mem_block = &mut *((*mem_block).context as *mut MemoryBlock);
-    mem_block.data.as_ptr()
+    (*mem_block).context as *const u8
 }
