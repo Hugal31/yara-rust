@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.22.0](https://github.com/Hugal31/yara-rust/compare/v0.21.0...v0.22.0) (2023-10-30)
+
+
+### Features
+
+* add ScanFlags::PROCESS_MEMORY
+  ([8538674](https://github.com/Hugal31/yara-rust/commit/8538674d7142ec51f2e403571ee07119f62b28c4))
+
+
+### Bug Fixes
+
+* fix UB in the scan mem blocks API
+  ([801ab5f](https://github.com/Hugal31/yara-rust/commit/801ab5f1360ae732bdcacc91a2742c0e8da7ea67))
+
 ## [0.21.0](https://github.com/Hugal31/yara-rust/compare/v0.20.0...v0.21.0) (2023-09-07)
 
 
