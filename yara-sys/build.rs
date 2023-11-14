@@ -110,14 +110,12 @@ mod build {
                 println!("cargo:rustc-link-lib=dylib=libssl");
                 println!("cargo:rustc-link-lib=dylib=libcrypto");
             }
+        } else if cfg!(feature = "openssl-static") {
+            println!("cargo:rustc-link-lib=static=ssl");
+            println!("cargo:rustc-link-lib=static=crypto");
         } else {
-            if cfg!(feature = "openssl-static") {
-                println!("cargo:rustc-link-lib=static=ssl");
-                println!("cargo:rustc-link-lib=static=crypto");
-            } else {
-                println!("cargo:rustc-link-lib=dylib=ssl");
-                println!("cargo:rustc-link-lib=dylib=crypto");
-            }
+            println!("cargo:rustc-link-lib=dylib=ssl");
+            println!("cargo:rustc-link-lib=dylib=crypto");    
         }
     }
 
