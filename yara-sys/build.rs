@@ -96,16 +96,28 @@ mod build {
             .as_str()
             == "windows"
         {
-            println!("cargo:rustc-link-lib=dylib=libssl");
-            println!("cargo:rustc-link-lib=dylib=libcrypto");
             println!("cargo:rustc-link-lib=dylib=Crypt32");
-            println!("cargo:rustc-link-lib=dylib=Ws2_32")
-        } else if cfg!(feature = "openssl-static") {
-            println!("cargo:rustc-link-lib=static=ssl");
-            println!("cargo:rustc-link-lib=static=crypto");
+            println!("cargo:rustc-link-lib=dylib=Ws2_32");
+            if cfg!(feature = "openssl-static") {
+                // since both static and dynamic linking force the linker to use "libssl.lib" and "libcrypto.lib"
+                // make sure you are linking against the static version:
+                // - libssl.lib is actually libssl_static.lib/libsslMT.lib
+                // - libcrypto.lib is actually libcrypto_static.lib/libcryptoMT.lib
+                // SA: https://github.com/Kitware/CMake/blob/32342fa728e636a220f3cbd8380097e8aa7852ad/Modules/FindOpenSSL.cmake#L387-L410
+                println!("cargo:rustc-link-lib=static=libssl");
+                println!("cargo:rustc-link-lib=static=libcrypto");
+            } else {
+                println!("cargo:rustc-link-lib=dylib=libssl");
+                println!("cargo:rustc-link-lib=dylib=libcrypto");
+            }
         } else {
-            println!("cargo:rustc-link-lib=dylib=ssl");
-            println!("cargo:rustc-link-lib=dylib=crypto");
+            if cfg!(feature = "openssl-static") {
+                println!("cargo:rustc-link-lib=static=ssl");
+                println!("cargo:rustc-link-lib=static=crypto");
+            } else {
+                println!("cargo:rustc-link-lib=dylib=ssl");
+                println!("cargo:rustc-link-lib=dylib=crypto");
+            }
         }
     }
 
