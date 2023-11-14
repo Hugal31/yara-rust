@@ -115,7 +115,7 @@ mod build {
             println!("cargo:rustc-link-lib=static=crypto");
         } else {
             println!("cargo:rustc-link-lib=dylib=ssl");
-            println!("cargo:rustc-link-lib=dylib=crypto");    
+            println!("cargo:rustc-link-lib=dylib=crypto");
         }
     }
 
