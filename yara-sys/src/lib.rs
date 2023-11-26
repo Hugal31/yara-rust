@@ -21,6 +21,11 @@ pub mod scan_flags {
     };
 }
 
+extern "C" {
+    pub fn get_rules(ruleset: *mut YR_RULES, rules: *mut *mut YR_RULE, n: usize) -> usize;
+    pub fn get_num_rules(ruleset: *mut YR_RULES) -> usize;
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum MetaType {
     Integer,
@@ -89,6 +94,18 @@ impl YR_RULE {
 
     pub fn get_ns(&self) -> *const YR_NAMESPACE {
         unsafe { self.__bindgen_anon_5.ns }
+    }
+
+    pub fn enable(&mut self) {
+        unsafe {
+            yr_rule_enable(self);
+        }
+    }
+
+    pub fn disable(&mut self) {
+        unsafe {
+            yr_rule_disable(self);
+        }
     }
 }
 

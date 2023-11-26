@@ -8,6 +8,7 @@ use crate::errors::*;
 use crate::internals::meta::MetadataIterator;
 use crate::internals::string::YrStringIterator;
 use crate::{Metadata, Rule, YrString};
+use crate::rules::RulesetRule;
 
 pub fn rules_destroy(rules: *mut yara_sys::YR_RULES) {
     unsafe {
@@ -31,6 +32,30 @@ pub fn scanner_destroy(scanner: *mut yara_sys::YR_SCANNER) {
     unsafe {
         yara_sys::yr_scanner_destroy(scanner);
     }
+}
+
+pub fn get_rules<'a>(ruleset: *mut yara_sys::YR_RULES) -> Vec<RulesetRule<'a>> {
+    let num_rules = unsafe { yara_sys::get_num_rules(ruleset) };
+    let mut rules: Vec<*mut yara_sys::YR_RULE> = Vec::with_capacity(num_rules);
+
+    unsafe {
+        let n = yara_sys::get_rules(ruleset, rules.as_mut_ptr().cast(), num_rules);
+        rules.set_len(n);
+    };
+
+    let mut result: Vec<RulesetRule> = Vec::with_capacity(rules.len());
+    for rule in &rules {
+        let rule_data = Rule::from(unsafe { & **rule });
+        result.push(RulesetRule {
+            inner: *rule,
+            identifier: rule_data.identifier,
+            namespace: rule_data.namespace,
+            tags: rule_data.tags,
+            metadatas: rule_data.metadatas,
+        });
+    }
+
+    result
 }
 
 // TODO Check if non mut
@@ -88,8 +113,8 @@ where
         })
 }
 
-impl<'a> From<(&'a yara_sys::YR_SCAN_CONTEXT, &'a yara_sys::YR_RULE)> for Rule<'a> {
-    fn from((context, rule): (&'a yara_sys::YR_SCAN_CONTEXT, &'a yara_sys::YR_RULE)) -> Self {
+impl<'a> From<&'a yara_sys::YR_RULE> for Rule<'a> {
+    fn from(rule: &'a yara_sys::YR_RULE) -> Self {
         let identifier = unsafe { CStr::from_ptr(rule.get_identifier()) }
             .to_str()
             .unwrap();
@@ -100,9 +125,7 @@ impl<'a> From<(&'a yara_sys::YR_SCAN_CONTEXT, &'a yara_sys::YR_RULE)> for Rule<'
         let tags = TagIterator::from(rule)
             .map(|c| c.to_str().unwrap())
             .collect();
-        let strings = YrStringIterator::from(rule)
-            .map(|s| YrString::from((context, s)))
-            .collect();
+        let strings: Vec<YrString> = Vec::new();
 
         Rule {
             identifier,
@@ -111,6 +134,16 @@ impl<'a> From<(&'a yara_sys::YR_SCAN_CONTEXT, &'a yara_sys::YR_RULE)> for Rule<'
             tags,
             strings,
         }
+    }
+}
+
+impl<'a> From<(&'a yara_sys::YR_SCAN_CONTEXT, &'a yara_sys::YR_RULE)> for Rule<'a> {
+    fn from((context, rule): (&'a yara_sys::YR_SCAN_CONTEXT, &'a yara_sys::YR_RULE)) -> Self {
+        let mut result = Rule::from(rule);
+        result.strings = YrStringIterator::from(rule)
+            .map(|s| YrString::from((context, s)))
+            .collect();
+        result
     }
 }
 
