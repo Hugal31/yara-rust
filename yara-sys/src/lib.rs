@@ -2,6 +2,8 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 
+pub const RULE_FLAGS_NULL: i32 = 0x04;
+
 pub mod errors;
 
 pub use crate::errors::*;
@@ -19,11 +21,6 @@ pub mod scan_flags {
         SCAN_FLAGS_FAST_MODE, SCAN_FLAGS_NO_TRYCATCH, SCAN_FLAGS_PROCESS_MEMORY,
         SCAN_FLAGS_REPORT_RULES_MATCHING, SCAN_FLAGS_REPORT_RULES_NOT_MATCHING,
     };
-}
-
-extern "C" {
-    pub fn get_rules(ruleset: *mut YR_RULES, rules: *mut *mut YR_RULE, n: usize) -> usize;
-    pub fn get_num_rules(ruleset: *mut YR_RULES) -> usize;
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -72,6 +69,12 @@ impl YR_META {
 impl YR_NAMESPACE {
     pub fn get_name(&self) -> *const c_char {
         unsafe { self.__bindgen_anon_1.name }
+    }
+}
+
+impl YR_RULES {
+    pub fn get_rules_table(&self) -> *const YR_RULE {
+        unsafe { self.__bindgen_anon_1.rules_table }
     }
 }
 

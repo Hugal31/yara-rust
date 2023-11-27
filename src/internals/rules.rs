@@ -7,8 +7,8 @@ use std::ptr;
 use crate::errors::*;
 use crate::internals::meta::MetadataIterator;
 use crate::internals::string::YrStringIterator;
-use crate::{Metadata, Rule, YrString};
 use crate::rules::RulesetRule;
+use crate::{Metadata, Rule, YrString};
 
 pub fn rules_destroy(rules: *mut yara_sys::YR_RULES) {
     unsafe {
@@ -35,24 +35,11 @@ pub fn scanner_destroy(scanner: *mut yara_sys::YR_SCANNER) {
 }
 
 pub fn get_rules<'a>(ruleset: *mut yara_sys::YR_RULES) -> Vec<RulesetRule<'a>> {
-    let num_rules = unsafe { yara_sys::get_num_rules(ruleset) };
-    let mut rules: Vec<*mut yara_sys::YR_RULE> = Vec::with_capacity(num_rules);
+    let num_rules = unsafe { (*ruleset).num_rules } as usize;
+    let mut result: Vec<RulesetRule> = Vec::with_capacity(num_rules);
 
-    unsafe {
-        let n = yara_sys::get_rules(ruleset, rules.as_mut_ptr().cast(), num_rules);
-        rules.set_len(n);
-    };
-
-    let mut result: Vec<RulesetRule> = Vec::with_capacity(rules.len());
-    for rule in &rules {
-        let rule_data = Rule::from(unsafe { & **rule });
-        result.push(RulesetRule {
-            inner: *rule,
-            identifier: rule_data.identifier,
-            namespace: rule_data.namespace,
-            tags: rule_data.tags,
-            metadatas: rule_data.metadatas,
-        });
+    for rule in RuleIterator::from(unsafe { &*ruleset }) {
+        result.push(rule);
     }
 
     result
@@ -143,6 +130,53 @@ impl<'a> From<(&'a yara_sys::YR_SCAN_CONTEXT, &'a yara_sys::YR_RULE)> for Rule<'
         result.strings = YrStringIterator::from(rule)
             .map(|s| YrString::from((context, s)))
             .collect();
+        result
+    }
+}
+
+/// Iterate over YR_RULE in a YR_RULES.
+///
+/// # Implementation notes
+///
+/// See `yr_rules_foreach` in Yara.
+pub struct RuleIterator<'a> {
+    head: *const yara_sys::YR_RULE,
+    _marker: marker::PhantomData<&'a yara_sys::YR_RULE>,
+}
+
+impl<'a> From<&'a yara_sys::YR_RULES> for RuleIterator<'a> {
+    fn from(rules: &'a yara_sys::YR_RULES) -> RuleIterator<'a> {
+        RuleIterator {
+            head: rules.get_rules_table(),
+            _marker: marker::PhantomData,
+        }
+    }
+}
+
+impl<'a> Iterator for RuleIterator<'a> {
+    type Item = RulesetRule<'a>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.head.is_null() {
+            return None;
+        }
+
+        let rule = unsafe { *self.head };
+        let mut result: Option<Self::Item> = None;
+
+        if rule.flags & rule.flags == yara_sys::RULE_FLAGS_NULL {
+            self.head = std::ptr::null();
+        } else {
+            let rule_data = Rule::from(unsafe { &*self.head });
+            result = Some(RulesetRule {
+                inner: self.head as *mut yara_sys::YR_RULE,
+                identifier: rule_data.identifier,
+                namespace: rule_data.namespace,
+                tags: rule_data.tags,
+                metadatas: rule_data.metadatas,
+            });
+            self.head = unsafe { self.head.offset(1) };
+        }
         result
     }
 }

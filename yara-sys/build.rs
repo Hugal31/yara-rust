@@ -3,18 +3,6 @@
 fn main() {
     build::build_and_link();
     bindings::add_bindings();
-    println!("cargo:rerun-if-changed=src/get_rules.c");
-
-    let mut cc =  cc::Build::new();
-    cc.file("src/get_rules.c");
-    if let Some(yara_include_dir) = get_target_env_var("YARA_INCLUDE_DIR").filter(|dir| !dir.is_empty()) {
-        cc.include(yara_include_dir);
-    }
-    if let Some(yara_library_path) = get_target_env_var("YARA_LIBRARY_PATH").filter(|path| !path.is_empty()) {
-        println!("cargo:rustc-link-search=native={}", yara_library_path);
-    }
-
-    cc.compile("get_rules");
 }
 
 pub fn cargo_rerun_if_env_changed(env_var: &str) {
@@ -429,7 +417,6 @@ mod bindings {
             .allowlist_type("YR_OBJECT_ARRAY")
             .allowlist_type("YR_OBJECT_DICTIONARY")
             .allowlist_type("YR_RULES")
-            .opaque_type("YR_RULES")
             // XXX: Ideally, YR_COMPILER would be marked as opaque. Unfortunately, because it
             // contains a jmp_buf that is, on x64 windows msvc, aligned on 16-bytes, this generates
             // a u128 array, which triggers many improper_ctypes warnings.
