@@ -30,6 +30,7 @@ impl<T> ::std::fmt::Debug for __IncompleteArrayField<T> {
         fmt.write_str("__IncompleteArrayField")
     }
 }
+pub const RULE_FLAGS_NULL: u32 = 4;
 pub const STRING_FLAGS_LAST_IN_RULE: u32 = 4096;
 pub const META_TYPE_INTEGER: u32 = 1;
 pub const META_TYPE_STRING: u32 = 2;
