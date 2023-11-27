@@ -395,6 +395,7 @@ mod bindings {
             .allowlist_var("META_FLAGS_LAST_IN_RULE")
             .allowlist_var("OBJECT_TYPE_.*")
             .allowlist_var("STRING_FLAGS_LAST_IN_RULE")
+            .allowlist_var("RULE_FLAGS_NULL")
             .allowlist_var("YARA_ERROR_LEVEL_.*")
             .allowlist_var("SCAN_FLAGS_.*")
             .allowlist_var("YR_CONFIG_.*")

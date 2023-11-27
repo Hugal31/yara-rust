@@ -164,7 +164,7 @@ impl<'a> Iterator for RuleIterator<'a> {
         let rule = unsafe { *self.head };
         let mut result: Option<Self::Item> = None;
 
-        if (rule.flags & yara_sys::RULE_FLAGS_NULL) != 0 {
+        if ((rule.flags as u32) & yara_sys::RULE_FLAGS_NULL) != 0 {
             self.head = std::ptr::null();
         } else {
             let rule_data = Rule::from(unsafe { &*self.head });

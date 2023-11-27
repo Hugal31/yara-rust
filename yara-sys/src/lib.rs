@@ -2,8 +2,6 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 
-pub const RULE_FLAGS_NULL: i32 = 0x04;
-
 pub mod errors;
 
 pub use crate::errors::*;
