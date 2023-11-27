@@ -347,7 +347,6 @@ impl<'r> RulesetRule<'r> {
     }
 }
 
-
 /// A rule that matched during a scan.
 
 #[derive(Debug)]
