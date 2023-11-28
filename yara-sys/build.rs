@@ -395,6 +395,7 @@ mod bindings {
             .allowlist_var("META_FLAGS_LAST_IN_RULE")
             .allowlist_var("OBJECT_TYPE_.*")
             .allowlist_var("STRING_FLAGS_LAST_IN_RULE")
+            .allowlist_var("RULE_FLAGS_NULL")
             .allowlist_var("YARA_ERROR_LEVEL_.*")
             .allowlist_var("SCAN_FLAGS_.*")
             .allowlist_var("YR_CONFIG_.*")
@@ -417,7 +418,6 @@ mod bindings {
             .allowlist_type("YR_OBJECT_ARRAY")
             .allowlist_type("YR_OBJECT_DICTIONARY")
             .allowlist_type("YR_RULES")
-            .opaque_type("YR_RULES")
             // XXX: Ideally, YR_COMPILER would be marked as opaque. Unfortunately, because it
             // contains a jmp_buf that is, on x64 windows msvc, aligned on 16-bytes, this generates
             // a u128 array, which triggers many improper_ctypes warnings.

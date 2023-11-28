@@ -72,6 +72,10 @@ impl Rules {
 }
 
 impl Rules {
+    pub fn get_rules(&self) -> Vec<RulesetRule> {
+        internals::get_rules(self.inner)
+    }
+
     /// Create a [`Scanner`](crate::scanner::Scanner) from this set of rules.
     ///
     /// You can create as many scanners as you want, and they each can have
@@ -313,6 +317,33 @@ impl Rules {
 impl Drop for Rules {
     fn drop(&mut self) {
         internals::rules_destroy(self.inner);
+    }
+}
+
+/// A rule contained in a ruleset.
+
+pub struct RulesetRule<'r> {
+    pub(crate) inner: *mut yara_sys::YR_RULE,
+    /// Name of the rule.
+    pub identifier: &'r str,
+    /// Namespace of the rule.
+    pub namespace: &'r str,
+    /// Metadatas of the rule.
+    pub metadatas: Vec<Metadata<'r>>,
+    /// Tags of the rule.
+    pub tags: Vec<&'r str>,
+}
+
+impl<'r> RulesetRule<'r> {
+    pub fn enable(&mut self) {
+        unsafe {
+            (*self.inner).enable();
+        }
+    }
+    pub fn disable(&mut self) {
+        unsafe {
+            (*self.inner).disable();
+        }
     }
 }
 

@@ -70,6 +70,12 @@ impl YR_NAMESPACE {
     }
 }
 
+impl YR_RULES {
+    pub fn get_rules_table(&self) -> *const YR_RULE {
+        unsafe { self.__bindgen_anon_1.rules_table }
+    }
+}
+
 impl YR_RULE {
     pub fn get_identifier(&self) -> *const c_char {
         unsafe { self.__bindgen_anon_1.identifier }
@@ -89,6 +95,18 @@ impl YR_RULE {
 
     pub fn get_ns(&self) -> *const YR_NAMESPACE {
         unsafe { self.__bindgen_anon_5.ns }
+    }
+
+    pub fn enable(&mut self) {
+        unsafe {
+            yr_rule_enable(self);
+        }
+    }
+
+    pub fn disable(&mut self) {
+        unsafe {
+            yr_rule_disable(self);
+        }
     }
 }
 
