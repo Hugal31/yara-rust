@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.24.0](https://github.com/Hugal31/yara-rust/compare/v0.23.0...v0.24.0) (2023-11-29)
+
+### Features
+
+* allow to iterate over the ruleset before scanning ([e62b7c6](https://github.com/Hugal31/yara-rust/commit/e62b7c6c82379acf3627cf946610e44ae6054629))
+
 ## [0.23.0](https://github.com/Hugal31/yara-rust/compare/v0.22.0...v0.22.1) (2023-11-17)
+
+### Features
 
 * **yara-sys**: add support of static linking with OpenSSL on Windows
 
