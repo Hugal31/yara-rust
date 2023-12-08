@@ -17,6 +17,7 @@ pub enum CallbackMsg<'r> {
     ModuleImported(YrObject<'r>),
     TooManyMatches(YrString<'r>),
     ScanFinished,
+    ConsoleLog(&'r CStr),
     UnknownMsg,
 }
 
@@ -50,6 +51,10 @@ impl<'r> CallbackMsg<'r> {
                 TooManyMatches(YrString::from((context, yr_string)))
             }
             yara_sys::CALLBACK_MSG_SCAN_FINISHED => ScanFinished,
+            yara_sys::CALLBACK_MSG_CONSOLE_LOG => {
+                let msg = unsafe { CStr::from_ptr(message_data as *const i8) };
+                ConsoleLog(msg)
+            }
             _ => UnknownMsg,
         }
     }

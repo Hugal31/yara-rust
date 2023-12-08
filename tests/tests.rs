@@ -259,6 +259,28 @@ fn test_scan_mem_blocks_sized() {
 }
 
 #[test]
+fn test_scan_mem_console_log() {
+    let rule = r#"
+import "console"
+rule log {
+  condition:
+    console.log("value: ", 12)
+}"#;
+    let rules = compile(rule);
+    let mut logs = Vec::new();
+    let callback = |message| {
+        if let CallbackMsg::ConsoleLog(log) = message {
+            logs.push(log.to_string_lossy().to_string());
+        }
+        CallbackReturn::Continue
+    };
+
+    let result = rules.scan_mem_callback(b"", 10, callback);
+    assert!(result.is_ok());
+    assert_eq!(&logs, &["value: 12"]);
+}
+
+#[test]
 fn test_scan_fast_mode() {
     let test_mem = b"
 I love Rust!
