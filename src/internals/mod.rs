@@ -1,6 +1,5 @@
 use std::sync::Mutex;
 
-use lazy_static::lazy_static;
 pub use yara_sys;
 
 use crate::errors::*;
@@ -23,9 +22,7 @@ mod rules;
 mod scan;
 mod stream;
 
-lazy_static! {
-    static ref INIT_MUTEX: Mutex<()> = Mutex::new(());
-}
+static INIT_MUTEX: Mutex<()> = Mutex::new(());
 
 /// Initialize the Yara library
 ///

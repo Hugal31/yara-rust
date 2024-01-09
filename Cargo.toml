@@ -11,7 +11,8 @@ readme = "README.md"
 repository = "https://github.com/Hugal31/yara-rust"
 keywords = ["yara"]
 categories = ["api-bindings"]
-edition = "2018"
+edition = "2021"
+rust-version = "1.63"
 
 [features]
 default = ["bindgen", 'module-dotnet', 'module-dex', 'module-macho', 'module-hash', 'ndebug']
@@ -33,7 +34,6 @@ yara-static = ["yara-sys/yara-static"]
 [dependencies]
 bitflags = "2.2"
 thiserror = "1.0"
-lazy_static = "1.4"
 serde = { version = "1.0", features = ["derive"], optional = true }
 
 [dev-dependencies]
