@@ -1,0 +1,41 @@
+[package]
+name = "yara-sys"
+version = "0.24.0"
+authors = ["Hugo Laloge <hugo.laloge@gmail.com>"]
+license = "MIT OR Apache-2.0"
+description = "Native bindings to the libyara library"
+readme = "README.md"
+repository = "https://github.com/Hugal31/yara-rust"
+keywords = ["yara", "ffi"]
+categories = ["external-ffi-bindings"]
+links = "yara"
+edition = "2018"
+
+[features]
+default = ["bindgen", 'module-dotnet', 'module-dex', 'module-macho', 'module-hash', 'ndebug']
+bundled-4_3_1 = []
+vendored = ["cc", "glob", "fs_extra"]
+module-cuckoo = []
+module-magic = []
+module-macho = []
+module-dex = []
+module-debug-dex = []
+module-dotnet = []
+module-hash = []
+profiling = []
+ndebug = []
+openssl-static = []
+yara-static = []
+
+[build-dependencies]
+bindgen = { version = "0.68", optional = true, default-features = false, features = [ "runtime" ] }
+cc = { version = "1.0", optional = true }
+glob = { version = "0.3", optional = true }
+fs_extra = { version = "1.2", optional = true }
+
+[dependencies]
+yara = { version = "0.24.0", path = ".." }
+
+[package.metadata.docs.rs]
+no-default-features = true
+features = ["bundled-4_3_1"]
