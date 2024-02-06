@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.25.0](https://github.com/Hugal31/yara-rust/compare/v0.24.0...v0.25.0) (2024-02-06)
+
+### Features
+
+* handle `CALLBACK_MSG_CONSOLE_LOG` callback type ([6cdad52](https://github.com/Hugal31/yara-rust/commit/6cdad5245a0e1d32b30d4c1cc4c0812bd9c7d6b9))
+* implemented MemoryBlockIterator for Box ([88ea4c6](https://github.com/Hugal31/yara-rust/commit/88ea4c61808934fc0f9fc0742c8b338e799046a0))
+* implemented MemoryBlockIterator for &mut T ([8d78f8c](https://github.com/Hugal31/yara-rust/commit/8d78f8c7fe7250485306817533efd97681e224cf))
+
+### ⚠ BREAKING CHANGES
+
+* upgrade Rust edition to 2021 and minimal Rust version to 1.63 ([9ee48d9](https://github.com/Hugal31/yara-rust/commit/9ee48d99b48bd18638715ecfa145e649e17e0e89))
+
 ## [0.24.0](https://github.com/Hugal31/yara-rust/compare/v0.23.0...v0.24.0) (2023-11-29)
 
 ### Features
