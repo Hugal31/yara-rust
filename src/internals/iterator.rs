@@ -48,11 +48,33 @@ where
     }
 }
 
+impl<T> MemoryBlockIterator for &mut T
+where
+    T: MemoryBlockIterator,
+{
+    fn first(&mut self) -> Option<MemoryBlock> {
+        (**self).first()
+    }
+
+    fn next(&mut self) -> Option<MemoryBlock> {
+        (**self).next()
+    }
+}
+
 pub trait MemoryBlockIteratorSized: MemoryBlockIterator {
     fn file_size(&mut self) -> u64;
 }
 
 impl<T> MemoryBlockIteratorSized for Box<T>
+where
+    T: MemoryBlockIteratorSized,
+{
+    fn file_size(&mut self) -> u64 {
+        (**self).file_size()
+    }
+}
+
+impl<T> MemoryBlockIteratorSized for &mut T
 where
     T: MemoryBlockIteratorSized,
 {
