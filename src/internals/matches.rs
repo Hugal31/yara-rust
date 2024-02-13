@@ -44,7 +44,13 @@ impl<'a> From<&'a yara_sys::YR_MATCH> for Match {
             base: m.base as usize,
             offset: m.offset as usize,
             length: m.match_length as usize,
-            data: Vec::from(unsafe { slice::from_raw_parts(m.data, m.data_length as usize) }),
+            // Data can be null, notably when the match is empty, which can happen
+            // in some edge cases when using regexes.
+            data: if m.data.is_null() {
+                Vec::new()
+            } else {
+                Vec::from(unsafe { slice::from_raw_parts(m.data, m.data_length as usize) })
+            },
         }
     }
 }
