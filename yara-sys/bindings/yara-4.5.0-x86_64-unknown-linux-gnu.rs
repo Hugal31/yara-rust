@@ -103,6 +103,8 @@ pub const ERROR_BLOCK_NOT_READY: u32 = 61;
 pub const ERROR_INVALID_PERCENTAGE: u32 = 62;
 pub const ERROR_IDENTIFIER_MATCHES_WILDCARD: u32 = 63;
 pub const ERROR_INVALID_VALUE: u32 = 64;
+pub const ERROR_TOO_SLOW_SCANNING: u32 = 65;
+pub const ERROR_UNKNOWN_ESCAPE_SEQUENCE: u32 = 66;
 pub const CALLBACK_MSG_RULE_MATCHING: u32 = 1;
 pub const CALLBACK_MSG_RULE_NOT_MATCHING: u32 = 2;
 pub const CALLBACK_MSG_SCAN_FINISHED: u32 = 3;
@@ -110,6 +112,7 @@ pub const CALLBACK_MSG_IMPORT_MODULE: u32 = 4;
 pub const CALLBACK_MSG_MODULE_IMPORTED: u32 = 5;
 pub const CALLBACK_MSG_TOO_MANY_MATCHES: u32 = 6;
 pub const CALLBACK_MSG_CONSOLE_LOG: u32 = 7;
+pub const CALLBACK_MSG_TOO_SLOW_SCANNING: u32 = 8;
 pub const CALLBACK_CONTINUE: u32 = 0;
 pub const CALLBACK_ABORT: u32 = 1;
 pub const CALLBACK_ERROR: u32 = 2;
@@ -150,10 +153,10 @@ fn bindgen_test_layout___sigset_t() {
         unsafe { ::std::ptr::addr_of!((*ptr).__val) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(__sigset_t),
-        "::",
-        stringify!(__val)
+            "Offset of field: ",
+            stringify!(__sigset_t),
+            "::",
+            stringify!(__val)
         )
     );
 }
@@ -182,30 +185,30 @@ fn bindgen_test_layout___jmp_buf_tag() {
         unsafe { ::std::ptr::addr_of!((*ptr).__jmpbuf) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(__jmp_buf_tag),
-        "::",
-        stringify!(__jmpbuf)
+            "Offset of field: ",
+            stringify!(__jmp_buf_tag),
+            "::",
+            stringify!(__jmpbuf)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).__mask_was_saved) as usize - ptr as usize },
         64usize,
         concat!(
-        "Offset of field: ",
-        stringify!(__jmp_buf_tag),
-        "::",
-        stringify!(__mask_was_saved)
+            "Offset of field: ",
+            stringify!(__jmp_buf_tag),
+            "::",
+            stringify!(__mask_was_saved)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).__saved_mask) as usize - ptr as usize },
         72usize,
         concat!(
-        "Offset of field: ",
-        stringify!(__jmp_buf_tag),
-        "::",
-        stringify!(__saved_mask)
+            "Offset of field: ",
+            stringify!(__jmp_buf_tag),
+            "::",
+            stringify!(__saved_mask)
         )
     );
 }
@@ -284,290 +287,290 @@ fn bindgen_test_layout__IO_FILE() {
         unsafe { ::std::ptr::addr_of!((*ptr)._flags) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_flags)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_flags)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._IO_read_ptr) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_IO_read_ptr)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_read_ptr)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._IO_read_end) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_IO_read_end)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_read_end)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._IO_read_base) as usize - ptr as usize },
         24usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_IO_read_base)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_read_base)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._IO_write_base) as usize - ptr as usize },
         32usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_IO_write_base)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_write_base)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._IO_write_ptr) as usize - ptr as usize },
         40usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_IO_write_ptr)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_write_ptr)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._IO_write_end) as usize - ptr as usize },
         48usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_IO_write_end)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_write_end)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._IO_buf_base) as usize - ptr as usize },
         56usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_IO_buf_base)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_buf_base)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._IO_buf_end) as usize - ptr as usize },
         64usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_IO_buf_end)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_buf_end)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._IO_save_base) as usize - ptr as usize },
         72usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_IO_save_base)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_save_base)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._IO_backup_base) as usize - ptr as usize },
         80usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_IO_backup_base)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_backup_base)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._IO_save_end) as usize - ptr as usize },
         88usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_IO_save_end)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_IO_save_end)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._markers) as usize - ptr as usize },
         96usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_markers)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_markers)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._chain) as usize - ptr as usize },
         104usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_chain)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_chain)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._fileno) as usize - ptr as usize },
         112usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_fileno)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_fileno)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._flags2) as usize - ptr as usize },
         116usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_flags2)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_flags2)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._old_offset) as usize - ptr as usize },
         120usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_old_offset)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_old_offset)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._cur_column) as usize - ptr as usize },
         128usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_cur_column)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_cur_column)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._vtable_offset) as usize - ptr as usize },
         130usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_vtable_offset)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_vtable_offset)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._shortbuf) as usize - ptr as usize },
         131usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_shortbuf)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_shortbuf)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._lock) as usize - ptr as usize },
         136usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_lock)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_lock)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._offset) as usize - ptr as usize },
         144usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_offset)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_offset)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._codecvt) as usize - ptr as usize },
         152usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_codecvt)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_codecvt)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._wide_data) as usize - ptr as usize },
         160usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_wide_data)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_wide_data)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._freeres_list) as usize - ptr as usize },
         168usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_freeres_list)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_freeres_list)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._freeres_buf) as usize - ptr as usize },
         176usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_freeres_buf)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_freeres_buf)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).__pad5) as usize - ptr as usize },
         184usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(__pad5)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(__pad5)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._mode) as usize - ptr as usize },
         192usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_mode)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_mode)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr)._unused2) as usize - ptr as usize },
         196usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_IO_FILE),
-        "::",
-        stringify!(_unused2)
+            "Offset of field: ",
+            stringify!(_IO_FILE),
+            "::",
+            stringify!(_unused2)
         )
     );
 }
@@ -595,20 +598,20 @@ fn bindgen_test_layout_timeval() {
         unsafe { ::std::ptr::addr_of!((*ptr).tv_sec) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(timeval),
-        "::",
-        stringify!(tv_sec)
+            "Offset of field: ",
+            stringify!(timeval),
+            "::",
+            stringify!(tv_sec)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).tv_usec) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(timeval),
-        "::",
-        stringify!(tv_usec)
+            "Offset of field: ",
+            stringify!(timeval),
+            "::",
+            stringify!(tv_usec)
         )
     );
 }
@@ -636,20 +639,20 @@ fn bindgen_test_layout_timespec() {
         unsafe { ::std::ptr::addr_of!((*ptr).tv_sec) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(timespec),
-        "::",
-        stringify!(tv_sec)
+            "Offset of field: ",
+            stringify!(timespec),
+            "::",
+            stringify!(tv_sec)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).tv_nsec) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(timespec),
-        "::",
-        stringify!(tv_nsec)
+            "Offset of field: ",
+            stringify!(timespec),
+            "::",
+            stringify!(tv_nsec)
         )
     );
 }
@@ -694,30 +697,30 @@ fn bindgen_test_layout__YR_STREAM() {
         unsafe { ::std::ptr::addr_of!((*ptr).user_data) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_STREAM),
-        "::",
-        stringify!(user_data)
+            "Offset of field: ",
+            stringify!(_YR_STREAM),
+            "::",
+            stringify!(user_data)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).read) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_STREAM),
-        "::",
-        stringify!(read)
+            "Offset of field: ",
+            stringify!(_YR_STREAM),
+            "::",
+            stringify!(read)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).write) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_STREAM),
-        "::",
-        stringify!(write)
+            "Offset of field: ",
+            stringify!(_YR_STREAM),
+            "::",
+            stringify!(write)
         )
     );
 }
@@ -747,20 +750,20 @@ fn bindgen_test_layout_YR_ARENA_REF() {
         unsafe { ::std::ptr::addr_of!((*ptr).buffer_id) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ARENA_REF),
-        "::",
-        stringify!(buffer_id)
+            "Offset of field: ",
+            stringify!(YR_ARENA_REF),
+            "::",
+            stringify!(buffer_id)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).offset) as usize - ptr as usize },
         4usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ARENA_REF),
-        "::",
-        stringify!(offset)
+            "Offset of field: ",
+            stringify!(YR_ARENA_REF),
+            "::",
+            stringify!(offset)
         )
     );
 }
@@ -789,30 +792,30 @@ fn bindgen_test_layout_YR_ARENA_BUFFER() {
         unsafe { ::std::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ARENA_BUFFER),
-        "::",
-        stringify!(data)
+            "Offset of field: ",
+            stringify!(YR_ARENA_BUFFER),
+            "::",
+            stringify!(data)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ARENA_BUFFER),
-        "::",
-        stringify!(size)
+            "Offset of field: ",
+            stringify!(YR_ARENA_BUFFER),
+            "::",
+            stringify!(size)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).used) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ARENA_BUFFER),
-        "::",
-        stringify!(used)
+            "Offset of field: ",
+            stringify!(YR_ARENA_BUFFER),
+            "::",
+            stringify!(used)
         )
     );
 }
@@ -841,30 +844,30 @@ fn bindgen_test_layout_YR_RELOC() {
         unsafe { ::std::ptr::addr_of!((*ptr).buffer_id) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RELOC),
-        "::",
-        stringify!(buffer_id)
+            "Offset of field: ",
+            stringify!(YR_RELOC),
+            "::",
+            stringify!(buffer_id)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).offset) as usize - ptr as usize },
         4usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RELOC),
-        "::",
-        stringify!(offset)
+            "Offset of field: ",
+            stringify!(YR_RELOC),
+            "::",
+            stringify!(offset)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).next) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RELOC),
-        "::",
-        stringify!(next)
+            "Offset of field: ",
+            stringify!(YR_RELOC),
+            "::",
+            stringify!(next)
         )
     );
 }
@@ -896,60 +899,60 @@ fn bindgen_test_layout_YR_ARENA() {
         unsafe { ::std::ptr::addr_of!((*ptr).xrefs) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ARENA),
-        "::",
-        stringify!(xrefs)
+            "Offset of field: ",
+            stringify!(YR_ARENA),
+            "::",
+            stringify!(xrefs)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).num_buffers) as usize - ptr as usize },
         4usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ARENA),
-        "::",
-        stringify!(num_buffers)
+            "Offset of field: ",
+            stringify!(YR_ARENA),
+            "::",
+            stringify!(num_buffers)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).buffers) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ARENA),
-        "::",
-        stringify!(buffers)
+            "Offset of field: ",
+            stringify!(YR_ARENA),
+            "::",
+            stringify!(buffers)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).initial_buffer_size) as usize - ptr as usize },
         392usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ARENA),
-        "::",
-        stringify!(initial_buffer_size)
+            "Offset of field: ",
+            stringify!(YR_ARENA),
+            "::",
+            stringify!(initial_buffer_size)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).reloc_list_head) as usize - ptr as usize },
         400usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ARENA),
-        "::",
-        stringify!(reloc_list_head)
+            "Offset of field: ",
+            stringify!(YR_ARENA),
+            "::",
+            stringify!(reloc_list_head)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).reloc_list_tail) as usize - ptr as usize },
         408usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ARENA),
-        "::",
-        stringify!(reloc_list_tail)
+            "Offset of field: ",
+            stringify!(YR_ARENA),
+            "::",
+            stringify!(reloc_list_tail)
         )
     );
 }
@@ -978,30 +981,30 @@ fn bindgen_test_layout__SIZED_STRING() {
         unsafe { ::std::ptr::addr_of!((*ptr).length) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_SIZED_STRING),
-        "::",
-        stringify!(length)
+            "Offset of field: ",
+            stringify!(_SIZED_STRING),
+            "::",
+            stringify!(length)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).flags) as usize - ptr as usize },
         4usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_SIZED_STRING),
-        "::",
-        stringify!(flags)
+            "Offset of field: ",
+            stringify!(_SIZED_STRING),
+            "::",
+            stringify!(flags)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).c_string) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_SIZED_STRING),
-        "::",
-        stringify!(c_string)
+            "Offset of field: ",
+            stringify!(_SIZED_STRING),
+            "::",
+            stringify!(c_string)
         )
     );
 }
@@ -1033,50 +1036,50 @@ fn bindgen_test_layout__YR_HASH_TABLE_ENTRY() {
         unsafe { ::std::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_HASH_TABLE_ENTRY),
-        "::",
-        stringify!(key)
+            "Offset of field: ",
+            stringify!(_YR_HASH_TABLE_ENTRY),
+            "::",
+            stringify!(key)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).key_length) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_HASH_TABLE_ENTRY),
-        "::",
-        stringify!(key_length)
+            "Offset of field: ",
+            stringify!(_YR_HASH_TABLE_ENTRY),
+            "::",
+            stringify!(key_length)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).ns) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_HASH_TABLE_ENTRY),
-        "::",
-        stringify!(ns)
+            "Offset of field: ",
+            stringify!(_YR_HASH_TABLE_ENTRY),
+            "::",
+            stringify!(ns)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).value) as usize - ptr as usize },
         24usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_HASH_TABLE_ENTRY),
-        "::",
-        stringify!(value)
+            "Offset of field: ",
+            stringify!(_YR_HASH_TABLE_ENTRY),
+            "::",
+            stringify!(value)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).next) as usize - ptr as usize },
         32usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_HASH_TABLE_ENTRY),
-        "::",
-        stringify!(next)
+            "Offset of field: ",
+            stringify!(_YR_HASH_TABLE_ENTRY),
+            "::",
+            stringify!(next)
         )
     );
 }
@@ -1105,20 +1108,20 @@ fn bindgen_test_layout__YR_HASH_TABLE() {
         unsafe { ::std::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_HASH_TABLE),
-        "::",
-        stringify!(size)
+            "Offset of field: ",
+            stringify!(_YR_HASH_TABLE),
+            "::",
+            stringify!(size)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).buckets) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_HASH_TABLE),
-        "::",
-        stringify!(buckets)
+            "Offset of field: ",
+            stringify!(_YR_HASH_TABLE),
+            "::",
+            stringify!(buckets)
         )
     );
 }
@@ -1153,20 +1156,20 @@ fn bindgen_test_layout__YR_STOPWATCH__bindgen_ty_1() {
         unsafe { ::std::ptr::addr_of!((*ptr).tv_start) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_STOPWATCH__bindgen_ty_1),
-        "::",
-        stringify!(tv_start)
+            "Offset of field: ",
+            stringify!(_YR_STOPWATCH__bindgen_ty_1),
+            "::",
+            stringify!(tv_start)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).ts_start) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_STOPWATCH__bindgen_ty_1),
-        "::",
-        stringify!(ts_start)
+            "Offset of field: ",
+            stringify!(_YR_STOPWATCH__bindgen_ty_1),
+            "::",
+            stringify!(ts_start)
         )
     );
 }
@@ -1221,20 +1224,20 @@ fn bindgen_test_layout_YR_NAMESPACE__bindgen_ty_1() {
         unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_NAMESPACE__bindgen_ty_1),
-        "::",
-        stringify!(name)
+            "Offset of field: ",
+            stringify!(YR_NAMESPACE__bindgen_ty_1),
+            "::",
+            stringify!(name)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).name_) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_NAMESPACE__bindgen_ty_1),
-        "::",
-        stringify!(name_)
+            "Offset of field: ",
+            stringify!(YR_NAMESPACE__bindgen_ty_1),
+            "::",
+            stringify!(name_)
         )
     );
 }
@@ -1256,10 +1259,10 @@ fn bindgen_test_layout_YR_NAMESPACE() {
         unsafe { ::std::ptr::addr_of!((*ptr).idx) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_NAMESPACE),
-        "::",
-        stringify!(idx)
+            "Offset of field: ",
+            stringify!(YR_NAMESPACE),
+            "::",
+            stringify!(idx)
         )
     );
 }
@@ -1297,20 +1300,20 @@ fn bindgen_test_layout_YR_META__bindgen_ty_1() {
         unsafe { ::std::ptr::addr_of!((*ptr).identifier) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_META__bindgen_ty_1),
-        "::",
-        stringify!(identifier)
+            "Offset of field: ",
+            stringify!(YR_META__bindgen_ty_1),
+            "::",
+            stringify!(identifier)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).identifier_) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_META__bindgen_ty_1),
-        "::",
-        stringify!(identifier_)
+            "Offset of field: ",
+            stringify!(YR_META__bindgen_ty_1),
+            "::",
+            stringify!(identifier_)
         )
     );
 }
@@ -1339,20 +1342,20 @@ fn bindgen_test_layout_YR_META__bindgen_ty_2() {
         unsafe { ::std::ptr::addr_of!((*ptr).string) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_META__bindgen_ty_2),
-        "::",
-        stringify!(string)
+            "Offset of field: ",
+            stringify!(YR_META__bindgen_ty_2),
+            "::",
+            stringify!(string)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).string_) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_META__bindgen_ty_2),
-        "::",
-        stringify!(string_)
+            "Offset of field: ",
+            stringify!(YR_META__bindgen_ty_2),
+            "::",
+            stringify!(string_)
         )
     );
 }
@@ -1374,30 +1377,30 @@ fn bindgen_test_layout_YR_META() {
         unsafe { ::std::ptr::addr_of!((*ptr).integer) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_META),
-        "::",
-        stringify!(integer)
+            "Offset of field: ",
+            stringify!(YR_META),
+            "::",
+            stringify!(integer)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).type_) as usize - ptr as usize },
         24usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_META),
-        "::",
-        stringify!(type_)
+            "Offset of field: ",
+            stringify!(YR_META),
+            "::",
+            stringify!(type_)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).flags) as usize - ptr as usize },
         28usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_META),
-        "::",
-        stringify!(flags)
+            "Offset of field: ",
+            stringify!(YR_META),
+            "::",
+            stringify!(flags)
         )
     );
 }
@@ -1440,20 +1443,20 @@ fn bindgen_test_layout_YR_STRING__bindgen_ty_1() {
         unsafe { ::std::ptr::addr_of!((*ptr).string) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRING__bindgen_ty_1),
-        "::",
-        stringify!(string)
+            "Offset of field: ",
+            stringify!(YR_STRING__bindgen_ty_1),
+            "::",
+            stringify!(string)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).string_) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRING__bindgen_ty_1),
-        "::",
-        stringify!(string_)
+            "Offset of field: ",
+            stringify!(YR_STRING__bindgen_ty_1),
+            "::",
+            stringify!(string_)
         )
     );
 }
@@ -1482,20 +1485,20 @@ fn bindgen_test_layout_YR_STRING__bindgen_ty_2() {
         unsafe { ::std::ptr::addr_of!((*ptr).chained_to) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRING__bindgen_ty_2),
-        "::",
-        stringify!(chained_to)
+            "Offset of field: ",
+            stringify!(YR_STRING__bindgen_ty_2),
+            "::",
+            stringify!(chained_to)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).chained_to_) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRING__bindgen_ty_2),
-        "::",
-        stringify!(chained_to_)
+            "Offset of field: ",
+            stringify!(YR_STRING__bindgen_ty_2),
+            "::",
+            stringify!(chained_to_)
         )
     );
 }
@@ -1524,20 +1527,20 @@ fn bindgen_test_layout_YR_STRING__bindgen_ty_3() {
         unsafe { ::std::ptr::addr_of!((*ptr).identifier) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRING__bindgen_ty_3),
-        "::",
-        stringify!(identifier)
+            "Offset of field: ",
+            stringify!(YR_STRING__bindgen_ty_3),
+            "::",
+            stringify!(identifier)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).identifier_) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRING__bindgen_ty_3),
-        "::",
-        stringify!(identifier_)
+            "Offset of field: ",
+            stringify!(YR_STRING__bindgen_ty_3),
+            "::",
+            stringify!(identifier_)
         )
     );
 }
@@ -1559,70 +1562,70 @@ fn bindgen_test_layout_YR_STRING() {
         unsafe { ::std::ptr::addr_of!((*ptr).flags) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRING),
-        "::",
-        stringify!(flags)
+            "Offset of field: ",
+            stringify!(YR_STRING),
+            "::",
+            stringify!(flags)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).idx) as usize - ptr as usize },
         4usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRING),
-        "::",
-        stringify!(idx)
+            "Offset of field: ",
+            stringify!(YR_STRING),
+            "::",
+            stringify!(idx)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).fixed_offset) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRING),
-        "::",
-        stringify!(fixed_offset)
+            "Offset of field: ",
+            stringify!(YR_STRING),
+            "::",
+            stringify!(fixed_offset)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).rule_idx) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRING),
-        "::",
-        stringify!(rule_idx)
+            "Offset of field: ",
+            stringify!(YR_STRING),
+            "::",
+            stringify!(rule_idx)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).length) as usize - ptr as usize },
         20usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRING),
-        "::",
-        stringify!(length)
+            "Offset of field: ",
+            stringify!(YR_STRING),
+            "::",
+            stringify!(length)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).chain_gap_min) as usize - ptr as usize },
         40usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRING),
-        "::",
-        stringify!(chain_gap_min)
+            "Offset of field: ",
+            stringify!(YR_STRING),
+            "::",
+            stringify!(chain_gap_min)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).chain_gap_max) as usize - ptr as usize },
         44usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRING),
-        "::",
-        stringify!(chain_gap_max)
+            "Offset of field: ",
+            stringify!(YR_STRING),
+            "::",
+            stringify!(chain_gap_max)
         )
     );
 }
@@ -1631,6 +1634,7 @@ fn bindgen_test_layout_YR_STRING() {
 pub struct YR_RULE {
     pub flags: i32,
     pub num_atoms: i32,
+    pub required_strings: u32,
     pub __bindgen_anon_1: YR_RULE__bindgen_ty_1,
     pub __bindgen_anon_2: YR_RULE__bindgen_ty_2,
     pub __bindgen_anon_3: YR_RULE__bindgen_ty_3,
@@ -1662,20 +1666,20 @@ fn bindgen_test_layout_YR_RULE__bindgen_ty_1() {
         unsafe { ::std::ptr::addr_of!((*ptr).identifier) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULE__bindgen_ty_1),
-        "::",
-        stringify!(identifier)
+            "Offset of field: ",
+            stringify!(YR_RULE__bindgen_ty_1),
+            "::",
+            stringify!(identifier)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).identifier_) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULE__bindgen_ty_1),
-        "::",
-        stringify!(identifier_)
+            "Offset of field: ",
+            stringify!(YR_RULE__bindgen_ty_1),
+            "::",
+            stringify!(identifier_)
         )
     );
 }
@@ -1704,20 +1708,20 @@ fn bindgen_test_layout_YR_RULE__bindgen_ty_2() {
         unsafe { ::std::ptr::addr_of!((*ptr).tags) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULE__bindgen_ty_2),
-        "::",
-        stringify!(tags)
+            "Offset of field: ",
+            stringify!(YR_RULE__bindgen_ty_2),
+            "::",
+            stringify!(tags)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).tags_) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULE__bindgen_ty_2),
-        "::",
-        stringify!(tags_)
+            "Offset of field: ",
+            stringify!(YR_RULE__bindgen_ty_2),
+            "::",
+            stringify!(tags_)
         )
     );
 }
@@ -1746,20 +1750,20 @@ fn bindgen_test_layout_YR_RULE__bindgen_ty_3() {
         unsafe { ::std::ptr::addr_of!((*ptr).metas) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULE__bindgen_ty_3),
-        "::",
-        stringify!(metas)
+            "Offset of field: ",
+            stringify!(YR_RULE__bindgen_ty_3),
+            "::",
+            stringify!(metas)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).metas_) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULE__bindgen_ty_3),
-        "::",
-        stringify!(metas_)
+            "Offset of field: ",
+            stringify!(YR_RULE__bindgen_ty_3),
+            "::",
+            stringify!(metas_)
         )
     );
 }
@@ -1788,20 +1792,20 @@ fn bindgen_test_layout_YR_RULE__bindgen_ty_4() {
         unsafe { ::std::ptr::addr_of!((*ptr).strings) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULE__bindgen_ty_4),
-        "::",
-        stringify!(strings)
+            "Offset of field: ",
+            stringify!(YR_RULE__bindgen_ty_4),
+            "::",
+            stringify!(strings)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).strings_) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULE__bindgen_ty_4),
-        "::",
-        stringify!(strings_)
+            "Offset of field: ",
+            stringify!(YR_RULE__bindgen_ty_4),
+            "::",
+            stringify!(strings_)
         )
     );
 }
@@ -1830,20 +1834,20 @@ fn bindgen_test_layout_YR_RULE__bindgen_ty_5() {
         unsafe { ::std::ptr::addr_of!((*ptr).ns) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULE__bindgen_ty_5),
-        "::",
-        stringify!(ns)
+            "Offset of field: ",
+            stringify!(YR_RULE__bindgen_ty_5),
+            "::",
+            stringify!(ns)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).ns_) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULE__bindgen_ty_5),
-        "::",
-        stringify!(ns_)
+            "Offset of field: ",
+            stringify!(YR_RULE__bindgen_ty_5),
+            "::",
+            stringify!(ns_)
         )
     );
 }
@@ -1853,7 +1857,7 @@ fn bindgen_test_layout_YR_RULE() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<YR_RULE>(),
-        48usize,
+        56usize,
         concat!("Size of: ", stringify!(YR_RULE))
     );
     assert_eq!(
@@ -1865,20 +1869,30 @@ fn bindgen_test_layout_YR_RULE() {
         unsafe { ::std::ptr::addr_of!((*ptr).flags) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULE),
-        "::",
-        stringify!(flags)
+            "Offset of field: ",
+            stringify!(YR_RULE),
+            "::",
+            stringify!(flags)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).num_atoms) as usize - ptr as usize },
         4usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULE),
-        "::",
-        stringify!(num_atoms)
+            "Offset of field: ",
+            stringify!(YR_RULE),
+            "::",
+            stringify!(num_atoms)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).required_strings) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULE),
+            "::",
+            stringify!(required_strings)
         )
     );
 }
@@ -1910,38 +1924,38 @@ fn bindgen_test_layout_YR_EXTERNAL_VARIABLE__bindgen_ty_1() {
         ::std::mem::align_of::<YR_EXTERNAL_VARIABLE__bindgen_ty_1>(),
         8usize,
         concat!(
-        "Alignment of ",
-        stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_1)
+            "Alignment of ",
+            stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_1)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).i) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_1),
-        "::",
-        stringify!(i)
+            "Offset of field: ",
+            stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_1),
+            "::",
+            stringify!(i)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).f) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_1),
-        "::",
-        stringify!(f)
+            "Offset of field: ",
+            stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_1),
+            "::",
+            stringify!(f)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).s) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_1),
-        "::",
-        stringify!(s)
+            "Offset of field: ",
+            stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_1),
+            "::",
+            stringify!(s)
         )
     );
 }
@@ -1965,28 +1979,28 @@ fn bindgen_test_layout_YR_EXTERNAL_VARIABLE__bindgen_ty_2() {
         ::std::mem::align_of::<YR_EXTERNAL_VARIABLE__bindgen_ty_2>(),
         8usize,
         concat!(
-        "Alignment of ",
-        stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_2)
+            "Alignment of ",
+            stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_2)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).identifier) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_2),
-        "::",
-        stringify!(identifier)
+            "Offset of field: ",
+            stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_2),
+            "::",
+            stringify!(identifier)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).identifier_) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_2),
-        "::",
-        stringify!(identifier_)
+            "Offset of field: ",
+            stringify!(YR_EXTERNAL_VARIABLE__bindgen_ty_2),
+            "::",
+            stringify!(identifier_)
         )
     );
 }
@@ -2008,20 +2022,20 @@ fn bindgen_test_layout_YR_EXTERNAL_VARIABLE() {
         unsafe { ::std::ptr::addr_of!((*ptr).type_) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_EXTERNAL_VARIABLE),
-        "::",
-        stringify!(type_)
+            "Offset of field: ",
+            stringify!(YR_EXTERNAL_VARIABLE),
+            "::",
+            stringify!(type_)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).value) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_EXTERNAL_VARIABLE),
-        "::",
-        stringify!(value)
+            "Offset of field: ",
+            stringify!(YR_EXTERNAL_VARIABLE),
+            "::",
+            stringify!(value)
         )
     );
 }
@@ -2161,30 +2175,30 @@ fn bindgen_test_layout_RE_NODE__bindgen_ty_1() {
         unsafe { ::std::ptr::addr_of!((*ptr).value) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_NODE__bindgen_ty_1),
-        "::",
-        stringify!(value)
+            "Offset of field: ",
+            stringify!(RE_NODE__bindgen_ty_1),
+            "::",
+            stringify!(value)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_NODE__bindgen_ty_1),
-        "::",
-        stringify!(count)
+            "Offset of field: ",
+            stringify!(RE_NODE__bindgen_ty_1),
+            "::",
+            stringify!(count)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).start) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_NODE__bindgen_ty_1),
-        "::",
-        stringify!(start)
+            "Offset of field: ",
+            stringify!(RE_NODE__bindgen_ty_1),
+            "::",
+            stringify!(start)
         )
     );
 }
@@ -2213,20 +2227,20 @@ fn bindgen_test_layout_RE_NODE__bindgen_ty_2() {
         unsafe { ::std::ptr::addr_of!((*ptr).mask) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_NODE__bindgen_ty_2),
-        "::",
-        stringify!(mask)
+            "Offset of field: ",
+            stringify!(RE_NODE__bindgen_ty_2),
+            "::",
+            stringify!(mask)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).end) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_NODE__bindgen_ty_2),
-        "::",
-        stringify!(end)
+            "Offset of field: ",
+            stringify!(RE_NODE__bindgen_ty_2),
+            "::",
+            stringify!(end)
         )
     );
 }
@@ -2248,90 +2262,90 @@ fn bindgen_test_layout_RE_NODE() {
         unsafe { ::std::ptr::addr_of!((*ptr).type_) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_NODE),
-        "::",
-        stringify!(type_)
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(type_)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).greedy) as usize - ptr as usize },
         12usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_NODE),
-        "::",
-        stringify!(greedy)
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(greedy)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).re_class) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_NODE),
-        "::",
-        stringify!(re_class)
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(re_class)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).children_head) as usize - ptr as usize },
         24usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_NODE),
-        "::",
-        stringify!(children_head)
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(children_head)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).children_tail) as usize - ptr as usize },
         32usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_NODE),
-        "::",
-        stringify!(children_tail)
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(children_tail)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).prev_sibling) as usize - ptr as usize },
         40usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_NODE),
-        "::",
-        stringify!(prev_sibling)
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(prev_sibling)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).next_sibling) as usize - ptr as usize },
         48usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_NODE),
-        "::",
-        stringify!(next_sibling)
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(next_sibling)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).forward_code_ref) as usize - ptr as usize },
         56usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_NODE),
-        "::",
-        stringify!(forward_code_ref)
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(forward_code_ref)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).backward_code_ref) as usize - ptr as usize },
         64usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_NODE),
-        "::",
-        stringify!(backward_code_ref)
+            "Offset of field: ",
+            stringify!(RE_NODE),
+            "::",
+            stringify!(backward_code_ref)
         )
     );
 }
@@ -2359,20 +2373,20 @@ fn bindgen_test_layout_RE_CLASS() {
         unsafe { ::std::ptr::addr_of!((*ptr).negated) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_CLASS),
-        "::",
-        stringify!(negated)
+            "Offset of field: ",
+            stringify!(RE_CLASS),
+            "::",
+            stringify!(negated)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).bitmap) as usize - ptr as usize },
         1usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_CLASS),
-        "::",
-        stringify!(bitmap)
+            "Offset of field: ",
+            stringify!(RE_CLASS),
+            "::",
+            stringify!(bitmap)
         )
     );
 }
@@ -2400,20 +2414,20 @@ fn bindgen_test_layout_RE_AST() {
         unsafe { ::std::ptr::addr_of!((*ptr).flags) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_AST),
-        "::",
-        stringify!(flags)
+            "Offset of field: ",
+            stringify!(RE_AST),
+            "::",
+            stringify!(flags)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).root_node) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_AST),
-        "::",
-        stringify!(root_node)
+            "Offset of field: ",
+            stringify!(RE_AST),
+            "::",
+            stringify!(root_node)
         )
     );
 }
@@ -2475,60 +2489,60 @@ fn bindgen_test_layout_RE_FIBER() {
         unsafe { ::std::ptr::addr_of!((*ptr).ip) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_FIBER),
-        "::",
-        stringify!(ip)
+            "Offset of field: ",
+            stringify!(RE_FIBER),
+            "::",
+            stringify!(ip)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).sp) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_FIBER),
-        "::",
-        stringify!(sp)
+            "Offset of field: ",
+            stringify!(RE_FIBER),
+            "::",
+            stringify!(sp)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).rc) as usize - ptr as usize },
         12usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_FIBER),
-        "::",
-        stringify!(rc)
+            "Offset of field: ",
+            stringify!(RE_FIBER),
+            "::",
+            stringify!(rc)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).prev) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_FIBER),
-        "::",
-        stringify!(prev)
+            "Offset of field: ",
+            stringify!(RE_FIBER),
+            "::",
+            stringify!(prev)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).next) as usize - ptr as usize },
         24usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_FIBER),
-        "::",
-        stringify!(next)
+            "Offset of field: ",
+            stringify!(RE_FIBER),
+            "::",
+            stringify!(next)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).stack) as usize - ptr as usize },
         32usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_FIBER),
-        "::",
-        stringify!(stack)
+            "Offset of field: ",
+            stringify!(RE_FIBER),
+            "::",
+            stringify!(stack)
         )
     );
 }
@@ -2556,20 +2570,20 @@ fn bindgen_test_layout_RE_FIBER_LIST() {
         unsafe { ::std::ptr::addr_of!((*ptr).head) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_FIBER_LIST),
-        "::",
-        stringify!(head)
+            "Offset of field: ",
+            stringify!(RE_FIBER_LIST),
+            "::",
+            stringify!(head)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).tail) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_FIBER_LIST),
-        "::",
-        stringify!(tail)
+            "Offset of field: ",
+            stringify!(RE_FIBER_LIST),
+            "::",
+            stringify!(tail)
         )
     );
 }
@@ -2597,20 +2611,20 @@ fn bindgen_test_layout_RE_FIBER_POOL() {
         unsafe { ::std::ptr::addr_of!((*ptr).fiber_count) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_FIBER_POOL),
-        "::",
-        stringify!(fiber_count)
+            "Offset of field: ",
+            stringify!(RE_FIBER_POOL),
+            "::",
+            stringify!(fiber_count)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).fibers) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_FIBER_POOL),
-        "::",
-        stringify!(fibers)
+            "Offset of field: ",
+            stringify!(RE_FIBER_POOL),
+            "::",
+            stringify!(fibers)
         )
     );
 }
@@ -2641,40 +2655,40 @@ fn bindgen_test_layout_RE_FAST_EXEC_POSITION() {
         unsafe { ::std::ptr::addr_of!((*ptr).round) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_FAST_EXEC_POSITION),
-        "::",
-        stringify!(round)
+            "Offset of field: ",
+            stringify!(RE_FAST_EXEC_POSITION),
+            "::",
+            stringify!(round)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).input) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_FAST_EXEC_POSITION),
-        "::",
-        stringify!(input)
+            "Offset of field: ",
+            stringify!(RE_FAST_EXEC_POSITION),
+            "::",
+            stringify!(input)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).prev) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_FAST_EXEC_POSITION),
-        "::",
-        stringify!(prev)
+            "Offset of field: ",
+            stringify!(RE_FAST_EXEC_POSITION),
+            "::",
+            stringify!(prev)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).next) as usize - ptr as usize },
         24usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_FAST_EXEC_POSITION),
-        "::",
-        stringify!(next)
+            "Offset of field: ",
+            stringify!(RE_FAST_EXEC_POSITION),
+            "::",
+            stringify!(next)
         )
     );
 }
@@ -2702,10 +2716,10 @@ fn bindgen_test_layout_RE_FAST_EXEC_POSITION_POOL() {
         unsafe { ::std::ptr::addr_of!((*ptr).head) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(RE_FAST_EXEC_POSITION_POOL),
-        "::",
-        stringify!(head)
+            "Offset of field: ",
+            stringify!(RE_FAST_EXEC_POSITION_POOL),
+            "::",
+            stringify!(head)
         )
     );
 }
@@ -2734,30 +2748,30 @@ fn bindgen_test_layout_YR_MATCHES() {
         unsafe { ::std::ptr::addr_of!((*ptr).head) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MATCHES),
-        "::",
-        stringify!(head)
+            "Offset of field: ",
+            stringify!(YR_MATCHES),
+            "::",
+            stringify!(head)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).tail) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MATCHES),
-        "::",
-        stringify!(tail)
+            "Offset of field: ",
+            stringify!(YR_MATCHES),
+            "::",
+            stringify!(tail)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MATCHES),
-        "::",
-        stringify!(count)
+            "Offset of field: ",
+            stringify!(YR_MATCHES),
+            "::",
+            stringify!(count)
         )
     );
 }
@@ -2793,100 +2807,100 @@ fn bindgen_test_layout_YR_MATCH() {
         unsafe { ::std::ptr::addr_of!((*ptr).base) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MATCH),
-        "::",
-        stringify!(base)
+            "Offset of field: ",
+            stringify!(YR_MATCH),
+            "::",
+            stringify!(base)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).offset) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MATCH),
-        "::",
-        stringify!(offset)
+            "Offset of field: ",
+            stringify!(YR_MATCH),
+            "::",
+            stringify!(offset)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).match_length) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MATCH),
-        "::",
-        stringify!(match_length)
+            "Offset of field: ",
+            stringify!(YR_MATCH),
+            "::",
+            stringify!(match_length)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).data_length) as usize - ptr as usize },
         20usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MATCH),
-        "::",
-        stringify!(data_length)
+            "Offset of field: ",
+            stringify!(YR_MATCH),
+            "::",
+            stringify!(data_length)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
         24usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MATCH),
-        "::",
-        stringify!(data)
+            "Offset of field: ",
+            stringify!(YR_MATCH),
+            "::",
+            stringify!(data)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).prev) as usize - ptr as usize },
         32usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MATCH),
-        "::",
-        stringify!(prev)
+            "Offset of field: ",
+            stringify!(YR_MATCH),
+            "::",
+            stringify!(prev)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).next) as usize - ptr as usize },
         40usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MATCH),
-        "::",
-        stringify!(next)
+            "Offset of field: ",
+            stringify!(YR_MATCH),
+            "::",
+            stringify!(next)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).chain_length) as usize - ptr as usize },
         48usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MATCH),
-        "::",
-        stringify!(chain_length)
+            "Offset of field: ",
+            stringify!(YR_MATCH),
+            "::",
+            stringify!(chain_length)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).is_private) as usize - ptr as usize },
         52usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MATCH),
-        "::",
-        stringify!(is_private)
+            "Offset of field: ",
+            stringify!(YR_MATCH),
+            "::",
+            stringify!(is_private)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).xor_key) as usize - ptr as usize },
         53usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MATCH),
-        "::",
-        stringify!(xor_key)
+            "Offset of field: ",
+            stringify!(YR_MATCH),
+            "::",
+            stringify!(xor_key)
         )
     );
 }
@@ -2920,6 +2934,7 @@ pub struct YR_RULES {
     pub ac_match_pool: *mut YR_AC_MATCH,
     pub ac_match_table: *mut u32,
     pub code_start: *const u8,
+    pub no_required_strings: *mut ::std::os::raw::c_ulong,
     pub num_rules: u32,
     pub num_strings: u32,
     pub num_namespaces: u32,
@@ -2949,20 +2964,20 @@ fn bindgen_test_layout_YR_RULES__bindgen_ty_1() {
         unsafe { ::std::ptr::addr_of!((*ptr).rules_table) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES__bindgen_ty_1),
-        "::",
-        stringify!(rules_table)
+            "Offset of field: ",
+            stringify!(YR_RULES__bindgen_ty_1),
+            "::",
+            stringify!(rules_table)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).rules_list_head) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES__bindgen_ty_1),
-        "::",
-        stringify!(rules_list_head)
+            "Offset of field: ",
+            stringify!(YR_RULES__bindgen_ty_1),
+            "::",
+            stringify!(rules_list_head)
         )
     );
 }
@@ -2991,20 +3006,20 @@ fn bindgen_test_layout_YR_RULES__bindgen_ty_2() {
         unsafe { ::std::ptr::addr_of!((*ptr).strings_table) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES__bindgen_ty_2),
-        "::",
-        stringify!(strings_table)
+            "Offset of field: ",
+            stringify!(YR_RULES__bindgen_ty_2),
+            "::",
+            stringify!(strings_table)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).strings_list_head) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES__bindgen_ty_2),
-        "::",
-        stringify!(strings_list_head)
+            "Offset of field: ",
+            stringify!(YR_RULES__bindgen_ty_2),
+            "::",
+            stringify!(strings_list_head)
         )
     );
 }
@@ -3033,20 +3048,20 @@ fn bindgen_test_layout_YR_RULES__bindgen_ty_3() {
         unsafe { ::std::ptr::addr_of!((*ptr).ext_vars_table) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES__bindgen_ty_3),
-        "::",
-        stringify!(ext_vars_table)
+            "Offset of field: ",
+            stringify!(YR_RULES__bindgen_ty_3),
+            "::",
+            stringify!(ext_vars_table)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).externals_list_head) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES__bindgen_ty_3),
-        "::",
-        stringify!(externals_list_head)
+            "Offset of field: ",
+            stringify!(YR_RULES__bindgen_ty_3),
+            "::",
+            stringify!(externals_list_head)
         )
     );
 }
@@ -3056,7 +3071,7 @@ fn bindgen_test_layout_YR_RULES() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<YR_RULES>(),
-        80usize,
+        88usize,
         concat!("Size of: ", stringify!(YR_RULES))
     );
     assert_eq!(
@@ -3068,80 +3083,90 @@ fn bindgen_test_layout_YR_RULES() {
         unsafe { ::std::ptr::addr_of!((*ptr).arena) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES),
-        "::",
-        stringify!(arena)
+            "Offset of field: ",
+            stringify!(YR_RULES),
+            "::",
+            stringify!(arena)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).ac_transition_table) as usize - ptr as usize },
         32usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES),
-        "::",
-        stringify!(ac_transition_table)
+            "Offset of field: ",
+            stringify!(YR_RULES),
+            "::",
+            stringify!(ac_transition_table)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).ac_match_pool) as usize - ptr as usize },
         40usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES),
-        "::",
-        stringify!(ac_match_pool)
+            "Offset of field: ",
+            stringify!(YR_RULES),
+            "::",
+            stringify!(ac_match_pool)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).ac_match_table) as usize - ptr as usize },
         48usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES),
-        "::",
-        stringify!(ac_match_table)
+            "Offset of field: ",
+            stringify!(YR_RULES),
+            "::",
+            stringify!(ac_match_table)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).code_start) as usize - ptr as usize },
         56usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES),
-        "::",
-        stringify!(code_start)
+            "Offset of field: ",
+            stringify!(YR_RULES),
+            "::",
+            stringify!(code_start)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).no_required_strings) as usize - ptr as usize },
+        64usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULES),
+            "::",
+            stringify!(no_required_strings)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).num_rules) as usize - ptr as usize },
-        64usize,
+        72usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES),
-        "::",
-        stringify!(num_rules)
+            "Offset of field: ",
+            stringify!(YR_RULES),
+            "::",
+            stringify!(num_rules)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).num_strings) as usize - ptr as usize },
-        68usize,
+        76usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES),
-        "::",
-        stringify!(num_strings)
+            "Offset of field: ",
+            stringify!(YR_RULES),
+            "::",
+            stringify!(num_strings)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).num_namespaces) as usize - ptr as usize },
-        72usize,
+        80usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES),
-        "::",
-        stringify!(num_namespaces)
+            "Offset of field: ",
+            stringify!(YR_RULES),
+            "::",
+            stringify!(num_namespaces)
         )
     );
 }
@@ -3175,40 +3200,40 @@ fn bindgen_test_layout_YR_RULES_STATS() {
         unsafe { ::std::ptr::addr_of!((*ptr).num_rules) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES_STATS),
-        "::",
-        stringify!(num_rules)
+            "Offset of field: ",
+            stringify!(YR_RULES_STATS),
+            "::",
+            stringify!(num_rules)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).num_strings) as usize - ptr as usize },
         4usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES_STATS),
-        "::",
-        stringify!(num_strings)
+            "Offset of field: ",
+            stringify!(YR_RULES_STATS),
+            "::",
+            stringify!(num_strings)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).ac_matches) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES_STATS),
-        "::",
-        stringify!(ac_matches)
+            "Offset of field: ",
+            stringify!(YR_RULES_STATS),
+            "::",
+            stringify!(ac_matches)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).ac_root_match_list_length) as usize - ptr as usize },
         12usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES_STATS),
-        "::",
-        stringify!(ac_root_match_list_length)
+            "Offset of field: ",
+            stringify!(YR_RULES_STATS),
+            "::",
+            stringify!(ac_root_match_list_length)
         )
     );
     assert_eq!(
@@ -3217,40 +3242,40 @@ fn bindgen_test_layout_YR_RULES_STATS() {
         },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES_STATS),
-        "::",
-        stringify!(ac_average_match_list_length)
+            "Offset of field: ",
+            stringify!(YR_RULES_STATS),
+            "::",
+            stringify!(ac_average_match_list_length)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).top_ac_match_list_lengths) as usize - ptr as usize },
         20usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES_STATS),
-        "::",
-        stringify!(top_ac_match_list_lengths)
+            "Offset of field: ",
+            stringify!(YR_RULES_STATS),
+            "::",
+            stringify!(top_ac_match_list_lengths)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).ac_match_list_length_pctls) as usize - ptr as usize },
         420usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES_STATS),
-        "::",
-        stringify!(ac_match_list_length_pctls)
+            "Offset of field: ",
+            stringify!(YR_RULES_STATS),
+            "::",
+            stringify!(ac_match_list_length_pctls)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).ac_tables_size) as usize - ptr as usize },
         824usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULES_STATS),
-        "::",
-        stringify!(ac_tables_size)
+            "Offset of field: ",
+            stringify!(YR_RULES_STATS),
+            "::",
+            stringify!(ac_tables_size)
         )
     );
 }
@@ -3279,30 +3304,30 @@ fn bindgen_test_layout_YR_PROFILING_INFO() {
         unsafe { ::std::ptr::addr_of!((*ptr).atom_matches) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_PROFILING_INFO),
-        "::",
-        stringify!(atom_matches)
+            "Offset of field: ",
+            stringify!(YR_PROFILING_INFO),
+            "::",
+            stringify!(atom_matches)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).match_time) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_PROFILING_INFO),
-        "::",
-        stringify!(match_time)
+            "Offset of field: ",
+            stringify!(YR_PROFILING_INFO),
+            "::",
+            stringify!(match_time)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).exec_time) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_PROFILING_INFO),
-        "::",
-        stringify!(exec_time)
+            "Offset of field: ",
+            stringify!(YR_PROFILING_INFO),
+            "::",
+            stringify!(exec_time)
         )
     );
 }
@@ -3331,30 +3356,30 @@ fn bindgen_test_layout_YR_RULE_PROFILING_INFO() {
         unsafe { ::std::ptr::addr_of!((*ptr).rule) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULE_PROFILING_INFO),
-        "::",
-        stringify!(rule)
+            "Offset of field: ",
+            stringify!(YR_RULE_PROFILING_INFO),
+            "::",
+            stringify!(rule)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).cost) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_RULE_PROFILING_INFO),
-        "::",
-        stringify!(cost)
+            "Offset of field: ",
+            stringify!(YR_RULE_PROFILING_INFO),
+            "::",
+            stringify!(cost)
         )
     );
 }
 pub type YR_MEMORY_BLOCK_FETCH_DATA_FUNC =
-::std::option::Option<unsafe extern "C" fn(self_: *mut YR_MEMORY_BLOCK) -> *const u8>;
+    ::std::option::Option<unsafe extern "C" fn(self_: *mut YR_MEMORY_BLOCK) -> *const u8>;
 pub type YR_MEMORY_BLOCK_ITERATOR_FUNC = ::std::option::Option<
     unsafe extern "C" fn(self_: *mut YR_MEMORY_BLOCK_ITERATOR) -> *mut YR_MEMORY_BLOCK,
 >;
 pub type YR_MEMORY_BLOCK_ITERATOR_SIZE_FUNC =
-::std::option::Option<unsafe extern "C" fn(self_: *mut YR_MEMORY_BLOCK_ITERATOR) -> u64>;
+    ::std::option::Option<unsafe extern "C" fn(self_: *mut YR_MEMORY_BLOCK_ITERATOR) -> u64>;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct YR_MEMORY_BLOCK {
@@ -3381,40 +3406,40 @@ fn bindgen_test_layout_YR_MEMORY_BLOCK() {
         unsafe { ::std::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MEMORY_BLOCK),
-        "::",
-        stringify!(size)
+            "Offset of field: ",
+            stringify!(YR_MEMORY_BLOCK),
+            "::",
+            stringify!(size)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).base) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MEMORY_BLOCK),
-        "::",
-        stringify!(base)
+            "Offset of field: ",
+            stringify!(YR_MEMORY_BLOCK),
+            "::",
+            stringify!(base)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).context) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MEMORY_BLOCK),
-        "::",
-        stringify!(context)
+            "Offset of field: ",
+            stringify!(YR_MEMORY_BLOCK),
+            "::",
+            stringify!(context)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).fetch_data) as usize - ptr as usize },
         24usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MEMORY_BLOCK),
-        "::",
-        stringify!(fetch_data)
+            "Offset of field: ",
+            stringify!(YR_MEMORY_BLOCK),
+            "::",
+            stringify!(fetch_data)
         )
     );
 }
@@ -3446,50 +3471,50 @@ fn bindgen_test_layout_YR_MEMORY_BLOCK_ITERATOR() {
         unsafe { ::std::ptr::addr_of!((*ptr).context) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MEMORY_BLOCK_ITERATOR),
-        "::",
-        stringify!(context)
+            "Offset of field: ",
+            stringify!(YR_MEMORY_BLOCK_ITERATOR),
+            "::",
+            stringify!(context)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).first) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MEMORY_BLOCK_ITERATOR),
-        "::",
-        stringify!(first)
+            "Offset of field: ",
+            stringify!(YR_MEMORY_BLOCK_ITERATOR),
+            "::",
+            stringify!(first)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).next) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MEMORY_BLOCK_ITERATOR),
-        "::",
-        stringify!(next)
+            "Offset of field: ",
+            stringify!(YR_MEMORY_BLOCK_ITERATOR),
+            "::",
+            stringify!(next)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).file_size) as usize - ptr as usize },
         24usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MEMORY_BLOCK_ITERATOR),
-        "::",
-        stringify!(file_size)
+            "Offset of field: ",
+            stringify!(YR_MEMORY_BLOCK_ITERATOR),
+            "::",
+            stringify!(file_size)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).last_error) as usize - ptr as usize },
         32usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_MEMORY_BLOCK_ITERATOR),
-        "::",
-        stringify!(last_error)
+            "Offset of field: ",
+            stringify!(YR_MEMORY_BLOCK_ITERATOR),
+            "::",
+            stringify!(last_error)
         )
     );
 }
@@ -3524,6 +3549,7 @@ pub struct YR_SCAN_CONTEXT {
     pub strings_temp_disabled: *mut ::std::os::raw::c_ulong,
     pub matches: *mut YR_MATCHES,
     pub unconfirmed_matches: *mut YR_MATCHES,
+    pub required_eval: *mut ::std::os::raw::c_ulong,
     pub profiling_info: *mut YR_PROFILING_INFO,
 }
 #[test]
@@ -3532,7 +3558,7 @@ fn bindgen_test_layout_YR_SCAN_CONTEXT() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<YR_SCAN_CONTEXT>(),
-        184usize,
+        192usize,
         concat!("Size of: ", stringify!(YR_SCAN_CONTEXT))
     );
     assert_eq!(
@@ -3544,210 +3570,220 @@ fn bindgen_test_layout_YR_SCAN_CONTEXT() {
         unsafe { ::std::ptr::addr_of!((*ptr).file_size) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(file_size)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(file_size)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).entry_point) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(entry_point)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(entry_point)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).flags) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(flags)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(flags)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).canary) as usize - ptr as usize },
         20usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(canary)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(canary)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).timeout) as usize - ptr as usize },
         24usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(timeout)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(timeout)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).user_data) as usize - ptr as usize },
         32usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(user_data)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(user_data)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).callback) as usize - ptr as usize },
         40usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(callback)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(callback)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).rules) as usize - ptr as usize },
         48usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(rules)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(rules)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).last_error_string) as usize - ptr as usize },
         56usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(last_error_string)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(last_error_string)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).iterator) as usize - ptr as usize },
         64usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(iterator)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(iterator)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).objects_table) as usize - ptr as usize },
         72usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(objects_table)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(objects_table)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).matches_notebook) as usize - ptr as usize },
         80usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(matches_notebook)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(matches_notebook)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).stopwatch) as usize - ptr as usize },
         88usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(stopwatch)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(stopwatch)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).re_fiber_pool) as usize - ptr as usize },
         104usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(re_fiber_pool)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(re_fiber_pool)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).re_fast_exec_position_pool) as usize - ptr as usize },
         128usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(re_fast_exec_position_pool)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(re_fast_exec_position_pool)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).rule_matches_flags) as usize - ptr as usize },
         136usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(rule_matches_flags)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(rule_matches_flags)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).ns_unsatisfied_flags) as usize - ptr as usize },
         144usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(ns_unsatisfied_flags)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(ns_unsatisfied_flags)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).strings_temp_disabled) as usize - ptr as usize },
         152usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(strings_temp_disabled)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(strings_temp_disabled)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).matches) as usize - ptr as usize },
         160usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(matches)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(matches)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).unconfirmed_matches) as usize - ptr as usize },
         168usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(unconfirmed_matches)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(unconfirmed_matches)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).required_eval) as usize - ptr as usize },
+        176usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(required_eval)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).profiling_info) as usize - ptr as usize },
-        176usize,
+        184usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_SCAN_CONTEXT),
-        "::",
-        stringify!(profiling_info)
+            "Offset of field: ",
+            stringify!(YR_SCAN_CONTEXT),
+            "::",
+            stringify!(profiling_info)
         )
     );
 }
@@ -3781,80 +3817,80 @@ fn bindgen_test_layout_YR_VALUE() {
         unsafe { ::std::ptr::addr_of!((*ptr).i) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_VALUE),
-        "::",
-        stringify!(i)
+            "Offset of field: ",
+            stringify!(YR_VALUE),
+            "::",
+            stringify!(i)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).d) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_VALUE),
-        "::",
-        stringify!(d)
+            "Offset of field: ",
+            stringify!(YR_VALUE),
+            "::",
+            stringify!(d)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).p) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_VALUE),
-        "::",
-        stringify!(p)
+            "Offset of field: ",
+            stringify!(YR_VALUE),
+            "::",
+            stringify!(p)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).o) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_VALUE),
-        "::",
-        stringify!(o)
+            "Offset of field: ",
+            stringify!(YR_VALUE),
+            "::",
+            stringify!(o)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).s) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_VALUE),
-        "::",
-        stringify!(s)
+            "Offset of field: ",
+            stringify!(YR_VALUE),
+            "::",
+            stringify!(s)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).it) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_VALUE),
-        "::",
-        stringify!(it)
+            "Offset of field: ",
+            stringify!(YR_VALUE),
+            "::",
+            stringify!(it)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).ss) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_VALUE),
-        "::",
-        stringify!(ss)
+            "Offset of field: ",
+            stringify!(YR_VALUE),
+            "::",
+            stringify!(ss)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).re) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_VALUE),
-        "::",
-        stringify!(re)
+            "Offset of field: ",
+            stringify!(YR_VALUE),
+            "::",
+            stringify!(re)
         )
     );
 }
@@ -3886,60 +3922,60 @@ fn bindgen_test_layout_YR_OBJECT() {
         unsafe { ::std::ptr::addr_of!((*ptr).canary) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT),
-        "::",
-        stringify!(canary)
+            "Offset of field: ",
+            stringify!(YR_OBJECT),
+            "::",
+            stringify!(canary)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).type_) as usize - ptr as usize },
         4usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT),
-        "::",
-        stringify!(type_)
+            "Offset of field: ",
+            stringify!(YR_OBJECT),
+            "::",
+            stringify!(type_)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).identifier) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT),
-        "::",
-        stringify!(identifier)
+            "Offset of field: ",
+            stringify!(YR_OBJECT),
+            "::",
+            stringify!(identifier)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).parent) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT),
-        "::",
-        stringify!(parent)
+            "Offset of field: ",
+            stringify!(YR_OBJECT),
+            "::",
+            stringify!(parent)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
         24usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT),
-        "::",
-        stringify!(data)
+            "Offset of field: ",
+            stringify!(YR_OBJECT),
+            "::",
+            stringify!(data)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).value) as usize - ptr as usize },
         32usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT),
-        "::",
-        stringify!(value)
+            "Offset of field: ",
+            stringify!(YR_OBJECT),
+            "::",
+            stringify!(value)
         )
     );
 }
@@ -3971,60 +4007,60 @@ fn bindgen_test_layout_YR_OBJECT_STRUCTURE() {
         unsafe { ::std::ptr::addr_of!((*ptr).canary) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_STRUCTURE),
-        "::",
-        stringify!(canary)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_STRUCTURE),
+            "::",
+            stringify!(canary)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).type_) as usize - ptr as usize },
         4usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_STRUCTURE),
-        "::",
-        stringify!(type_)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_STRUCTURE),
+            "::",
+            stringify!(type_)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).identifier) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_STRUCTURE),
-        "::",
-        stringify!(identifier)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_STRUCTURE),
+            "::",
+            stringify!(identifier)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).parent) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_STRUCTURE),
-        "::",
-        stringify!(parent)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_STRUCTURE),
+            "::",
+            stringify!(parent)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
         24usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_STRUCTURE),
-        "::",
-        stringify!(data)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_STRUCTURE),
+            "::",
+            stringify!(data)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).members) as usize - ptr as usize },
         32usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_STRUCTURE),
-        "::",
-        stringify!(members)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_STRUCTURE),
+            "::",
+            stringify!(members)
         )
     );
 }
@@ -4057,70 +4093,70 @@ fn bindgen_test_layout_YR_OBJECT_ARRAY() {
         unsafe { ::std::ptr::addr_of!((*ptr).canary) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_ARRAY),
-        "::",
-        stringify!(canary)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_ARRAY),
+            "::",
+            stringify!(canary)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).type_) as usize - ptr as usize },
         4usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_ARRAY),
-        "::",
-        stringify!(type_)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_ARRAY),
+            "::",
+            stringify!(type_)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).identifier) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_ARRAY),
-        "::",
-        stringify!(identifier)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_ARRAY),
+            "::",
+            stringify!(identifier)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).parent) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_ARRAY),
-        "::",
-        stringify!(parent)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_ARRAY),
+            "::",
+            stringify!(parent)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
         24usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_ARRAY),
-        "::",
-        stringify!(data)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_ARRAY),
+            "::",
+            stringify!(data)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).prototype_item) as usize - ptr as usize },
         32usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_ARRAY),
-        "::",
-        stringify!(prototype_item)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_ARRAY),
+            "::",
+            stringify!(prototype_item)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).items) as usize - ptr as usize },
         40usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_ARRAY),
-        "::",
-        stringify!(items)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_ARRAY),
+            "::",
+            stringify!(items)
         )
     );
 }
@@ -4153,70 +4189,70 @@ fn bindgen_test_layout_YR_OBJECT_DICTIONARY() {
         unsafe { ::std::ptr::addr_of!((*ptr).canary) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_DICTIONARY),
-        "::",
-        stringify!(canary)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_DICTIONARY),
+            "::",
+            stringify!(canary)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).type_) as usize - ptr as usize },
         4usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_DICTIONARY),
-        "::",
-        stringify!(type_)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_DICTIONARY),
+            "::",
+            stringify!(type_)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).identifier) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_DICTIONARY),
-        "::",
-        stringify!(identifier)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_DICTIONARY),
+            "::",
+            stringify!(identifier)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).parent) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_DICTIONARY),
-        "::",
-        stringify!(parent)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_DICTIONARY),
+            "::",
+            stringify!(parent)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
         24usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_DICTIONARY),
-        "::",
-        stringify!(data)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_DICTIONARY),
+            "::",
+            stringify!(data)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).prototype_item) as usize - ptr as usize },
         32usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_DICTIONARY),
-        "::",
-        stringify!(prototype_item)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_DICTIONARY),
+            "::",
+            stringify!(prototype_item)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).items) as usize - ptr as usize },
         40usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_OBJECT_DICTIONARY),
-        "::",
-        stringify!(items)
+            "Offset of field: ",
+            stringify!(YR_OBJECT_DICTIONARY),
+            "::",
+            stringify!(items)
         )
     );
 }
@@ -4244,20 +4280,20 @@ fn bindgen_test_layout_YR_STRUCTURE_MEMBER() {
         unsafe { ::std::ptr::addr_of!((*ptr).object) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRUCTURE_MEMBER),
-        "::",
-        stringify!(object)
+            "Offset of field: ",
+            stringify!(YR_STRUCTURE_MEMBER),
+            "::",
+            stringify!(object)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).next) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRUCTURE_MEMBER),
-        "::",
-        stringify!(next)
+            "Offset of field: ",
+            stringify!(YR_STRUCTURE_MEMBER),
+            "::",
+            stringify!(next)
         )
     );
 }
@@ -4286,30 +4322,30 @@ fn bindgen_test_layout_YR_ARRAY_ITEMS() {
         unsafe { ::std::ptr::addr_of!((*ptr).capacity) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ARRAY_ITEMS),
-        "::",
-        stringify!(capacity)
+            "Offset of field: ",
+            stringify!(YR_ARRAY_ITEMS),
+            "::",
+            stringify!(capacity)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).length) as usize - ptr as usize },
         4usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ARRAY_ITEMS),
-        "::",
-        stringify!(length)
+            "Offset of field: ",
+            stringify!(YR_ARRAY_ITEMS),
+            "::",
+            stringify!(length)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).objects) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ARRAY_ITEMS),
-        "::",
-        stringify!(objects)
+            "Offset of field: ",
+            stringify!(YR_ARRAY_ITEMS),
+            "::",
+            stringify!(objects)
         )
     );
 }
@@ -4340,28 +4376,28 @@ fn bindgen_test_layout_YR_DICTIONARY_ITEMS__bindgen_ty_1() {
         ::std::mem::align_of::<YR_DICTIONARY_ITEMS__bindgen_ty_1>(),
         8usize,
         concat!(
-        "Alignment of ",
-        stringify!(YR_DICTIONARY_ITEMS__bindgen_ty_1)
+            "Alignment of ",
+            stringify!(YR_DICTIONARY_ITEMS__bindgen_ty_1)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_DICTIONARY_ITEMS__bindgen_ty_1),
-        "::",
-        stringify!(key)
+            "Offset of field: ",
+            stringify!(YR_DICTIONARY_ITEMS__bindgen_ty_1),
+            "::",
+            stringify!(key)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).obj) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_DICTIONARY_ITEMS__bindgen_ty_1),
-        "::",
-        stringify!(obj)
+            "Offset of field: ",
+            stringify!(YR_DICTIONARY_ITEMS__bindgen_ty_1),
+            "::",
+            stringify!(obj)
         )
     );
 }
@@ -4383,30 +4419,30 @@ fn bindgen_test_layout_YR_DICTIONARY_ITEMS() {
         unsafe { ::std::ptr::addr_of!((*ptr).used) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_DICTIONARY_ITEMS),
-        "::",
-        stringify!(used)
+            "Offset of field: ",
+            stringify!(YR_DICTIONARY_ITEMS),
+            "::",
+            stringify!(used)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).free) as usize - ptr as usize },
         4usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_DICTIONARY_ITEMS),
-        "::",
-        stringify!(free)
+            "Offset of field: ",
+            stringify!(YR_DICTIONARY_ITEMS),
+            "::",
+            stringify!(free)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).objects) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_DICTIONARY_ITEMS),
-        "::",
-        stringify!(objects)
+            "Offset of field: ",
+            stringify!(YR_DICTIONARY_ITEMS),
+            "::",
+            stringify!(objects)
         )
     );
 }
@@ -4434,20 +4470,20 @@ fn bindgen_test_layout_YR_ARRAY_ITERATOR() {
         unsafe { ::std::ptr::addr_of!((*ptr).array) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ARRAY_ITERATOR),
-        "::",
-        stringify!(array)
+            "Offset of field: ",
+            stringify!(YR_ARRAY_ITERATOR),
+            "::",
+            stringify!(array)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).index) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ARRAY_ITERATOR),
-        "::",
-        stringify!(index)
+            "Offset of field: ",
+            stringify!(YR_ARRAY_ITERATOR),
+            "::",
+            stringify!(index)
         )
     );
 }
@@ -4475,20 +4511,20 @@ fn bindgen_test_layout_YR_DICT_ITERATOR() {
         unsafe { ::std::ptr::addr_of!((*ptr).dict) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_DICT_ITERATOR),
-        "::",
-        stringify!(dict)
+            "Offset of field: ",
+            stringify!(YR_DICT_ITERATOR),
+            "::",
+            stringify!(dict)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).index) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_DICT_ITERATOR),
-        "::",
-        stringify!(index)
+            "Offset of field: ",
+            stringify!(YR_DICT_ITERATOR),
+            "::",
+            stringify!(index)
         )
     );
 }
@@ -4517,20 +4553,20 @@ fn bindgen_test_layout_YR_INT_RANGE_ITERATOR() {
         unsafe { ::std::ptr::addr_of!((*ptr).next) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_INT_RANGE_ITERATOR),
-        "::",
-        stringify!(next)
+            "Offset of field: ",
+            stringify!(YR_INT_RANGE_ITERATOR),
+            "::",
+            stringify!(next)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).last) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_INT_RANGE_ITERATOR),
-        "::",
-        stringify!(last)
+            "Offset of field: ",
+            stringify!(YR_INT_RANGE_ITERATOR),
+            "::",
+            stringify!(last)
         )
     );
 }
@@ -4559,30 +4595,30 @@ fn bindgen_test_layout_YR_INT_ENUM_ITERATOR() {
         unsafe { ::std::ptr::addr_of!((*ptr).next) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_INT_ENUM_ITERATOR),
-        "::",
-        stringify!(next)
+            "Offset of field: ",
+            stringify!(YR_INT_ENUM_ITERATOR),
+            "::",
+            stringify!(next)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_INT_ENUM_ITERATOR),
-        "::",
-        stringify!(count)
+            "Offset of field: ",
+            stringify!(YR_INT_ENUM_ITERATOR),
+            "::",
+            stringify!(count)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).items) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_INT_ENUM_ITERATOR),
-        "::",
-        stringify!(items)
+            "Offset of field: ",
+            stringify!(YR_INT_ENUM_ITERATOR),
+            "::",
+            stringify!(items)
         )
     );
 }
@@ -4612,30 +4648,30 @@ fn bindgen_test_layout_YR_STRING_SET_ITERATOR() {
         unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRING_SET_ITERATOR),
-        "::",
-        stringify!(count)
+            "Offset of field: ",
+            stringify!(YR_STRING_SET_ITERATOR),
+            "::",
+            stringify!(count)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).index) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRING_SET_ITERATOR),
-        "::",
-        stringify!(index)
+            "Offset of field: ",
+            stringify!(YR_STRING_SET_ITERATOR),
+            "::",
+            stringify!(index)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).strings) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_STRING_SET_ITERATOR),
-        "::",
-        stringify!(strings)
+            "Offset of field: ",
+            stringify!(YR_STRING_SET_ITERATOR),
+            "::",
+            stringify!(strings)
         )
     );
 }
@@ -4665,30 +4701,30 @@ fn bindgen_test_layout_YR_TEXT_STRING_SET_ITERATOR() {
         unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_TEXT_STRING_SET_ITERATOR),
-        "::",
-        stringify!(count)
+            "Offset of field: ",
+            stringify!(YR_TEXT_STRING_SET_ITERATOR),
+            "::",
+            stringify!(count)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).index) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_TEXT_STRING_SET_ITERATOR),
-        "::",
-        stringify!(index)
+            "Offset of field: ",
+            stringify!(YR_TEXT_STRING_SET_ITERATOR),
+            "::",
+            stringify!(index)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).strings) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_TEXT_STRING_SET_ITERATOR),
-        "::",
-        stringify!(strings)
+            "Offset of field: ",
+            stringify!(YR_TEXT_STRING_SET_ITERATOR),
+            "::",
+            stringify!(strings)
         )
     );
 }
@@ -4727,60 +4763,60 @@ fn bindgen_test_layout_YR_ITERATOR__bindgen_ty_1() {
         unsafe { ::std::ptr::addr_of!((*ptr).array_it) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ITERATOR__bindgen_ty_1),
-        "::",
-        stringify!(array_it)
+            "Offset of field: ",
+            stringify!(YR_ITERATOR__bindgen_ty_1),
+            "::",
+            stringify!(array_it)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).dict_it) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ITERATOR__bindgen_ty_1),
-        "::",
-        stringify!(dict_it)
+            "Offset of field: ",
+            stringify!(YR_ITERATOR__bindgen_ty_1),
+            "::",
+            stringify!(dict_it)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).int_range_it) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ITERATOR__bindgen_ty_1),
-        "::",
-        stringify!(int_range_it)
+            "Offset of field: ",
+            stringify!(YR_ITERATOR__bindgen_ty_1),
+            "::",
+            stringify!(int_range_it)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).int_enum_it) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ITERATOR__bindgen_ty_1),
-        "::",
-        stringify!(int_enum_it)
+            "Offset of field: ",
+            stringify!(YR_ITERATOR__bindgen_ty_1),
+            "::",
+            stringify!(int_enum_it)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).string_set_it) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ITERATOR__bindgen_ty_1),
-        "::",
-        stringify!(string_set_it)
+            "Offset of field: ",
+            stringify!(YR_ITERATOR__bindgen_ty_1),
+            "::",
+            stringify!(string_set_it)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).text_string_set_it) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ITERATOR__bindgen_ty_1),
-        "::",
-        stringify!(text_string_set_it)
+            "Offset of field: ",
+            stringify!(YR_ITERATOR__bindgen_ty_1),
+            "::",
+            stringify!(text_string_set_it)
         )
     );
 }
@@ -4802,10 +4838,10 @@ fn bindgen_test_layout_YR_ITERATOR() {
         unsafe { ::std::ptr::addr_of!((*ptr).next_func_idx) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(YR_ITERATOR),
-        "::",
-        stringify!(next_func_idx)
+            "Offset of field: ",
+            stringify!(YR_ITERATOR),
+            "::",
+            stringify!(next_func_idx)
         )
     );
 }
@@ -4861,7 +4897,7 @@ pub type YR_COMPILER_RE_AST_CALLBACK_FUNC = ::std::option::Option<
     ),
 >;
 pub type YR_FIXUP = [u64; 2usize];
-pub type YR_LOOP_CONTEXT = [u64; 11usize];
+pub type YR_LOOP_CONTEXT = [u64; 13usize];
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _YR_COMPILER {
@@ -4876,6 +4912,7 @@ pub struct _YR_COMPILER {
     pub current_line: ::std::os::raw::c_int,
     pub last_error: ::std::os::raw::c_int,
     pub last_error_line: ::std::os::raw::c_int,
+    pub strict_escape: bool,
     pub error_recovery: jmp_buf,
     pub automaton: *mut YR_AC_AUTOMATON,
     pub rules_table: *mut YR_HASH_TABLE,
@@ -4910,7 +4947,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<_YR_COMPILER>(),
-        10392usize,
+        10464usize,
         concat!("Size of: ", stringify!(_YR_COMPILER))
     );
     assert_eq!(
@@ -4922,380 +4959,390 @@ fn bindgen_test_layout__YR_COMPILER() {
         unsafe { ::std::ptr::addr_of!((*ptr).arena) as usize - ptr as usize },
         0usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(arena)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(arena)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).current_rule_idx) as usize - ptr as usize },
         8usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(current_rule_idx)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(current_rule_idx)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).next_rule_idx) as usize - ptr as usize },
         12usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(next_rule_idx)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(next_rule_idx)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).current_string_idx) as usize - ptr as usize },
         16usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(current_string_idx)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(current_string_idx)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).current_namespace_idx) as usize - ptr as usize },
         20usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(current_namespace_idx)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(current_namespace_idx)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).current_meta_idx) as usize - ptr as usize },
         24usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(current_meta_idx)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(current_meta_idx)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).rules) as usize - ptr as usize },
         32usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(rules)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(rules)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).errors) as usize - ptr as usize },
         40usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(errors)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(errors)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).current_line) as usize - ptr as usize },
         44usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(current_line)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(current_line)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).last_error) as usize - ptr as usize },
         48usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(last_error)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(last_error)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).last_error_line) as usize - ptr as usize },
         52usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(last_error_line)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(last_error_line)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).strict_escape) as usize - ptr as usize },
+        56usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(strict_escape)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).error_recovery) as usize - ptr as usize },
-        56usize,
+        64usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(error_recovery)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(error_recovery)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).automaton) as usize - ptr as usize },
-        256usize,
+        264usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(automaton)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(automaton)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).rules_table) as usize - ptr as usize },
-        264usize,
+        272usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(rules_table)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(rules_table)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).objects_table) as usize - ptr as usize },
-        272usize,
+        280usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(objects_table)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(objects_table)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).strings_table) as usize - ptr as usize },
-        280usize,
+        288usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(strings_table)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(strings_table)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).wildcard_identifiers_table) as usize - ptr as usize },
-        288usize,
+        296usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(wildcard_identifiers_table)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(wildcard_identifiers_table)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).sz_table) as usize - ptr as usize },
-        296usize,
+        304usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(sz_table)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(sz_table)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).fixup_stack_head) as usize - ptr as usize },
-        304usize,
+        312usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(fixup_stack_head)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(fixup_stack_head)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).num_namespaces) as usize - ptr as usize },
-        312usize,
+        320usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(num_namespaces)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(num_namespaces)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).loop_) as usize - ptr as usize },
-        320usize,
+        328usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(loop_)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(loop_)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).loop_index) as usize - ptr as usize },
-        672usize,
+        744usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(loop_index)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(loop_index)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).loop_for_of_var_index) as usize - ptr as usize },
-        676usize,
+        748usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(loop_for_of_var_index)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(loop_for_of_var_index)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).file_name_stack) as usize - ptr as usize },
-        680usize,
+        752usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(file_name_stack)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(file_name_stack)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).file_name_stack_ptr) as usize - ptr as usize },
-        808usize,
+        880usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(file_name_stack_ptr)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(file_name_stack_ptr)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).last_error_extra_info) as usize - ptr as usize },
-        812usize,
+        884usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(last_error_extra_info)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(last_error_extra_info)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).lex_buf) as usize - ptr as usize },
-        1068usize,
+        1140usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(lex_buf)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(lex_buf)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).lex_buf_ptr) as usize - ptr as usize },
-        9264usize,
+        9336usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(lex_buf_ptr)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(lex_buf_ptr)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).lex_buf_len) as usize - ptr as usize },
-        9272usize,
+        9344usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(lex_buf_len)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(lex_buf_len)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).include_base_dir) as usize - ptr as usize },
-        9274usize,
+        9346usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(include_base_dir)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(include_base_dir)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).user_data) as usize - ptr as usize },
-        10304usize,
+        10376usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(user_data)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(user_data)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).incl_clbk_user_data) as usize - ptr as usize },
-        10312usize,
+        10384usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(incl_clbk_user_data)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(incl_clbk_user_data)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).re_ast_clbk_user_data) as usize - ptr as usize },
-        10320usize,
+        10392usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(re_ast_clbk_user_data)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(re_ast_clbk_user_data)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).callback) as usize - ptr as usize },
-        10328usize,
+        10400usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(callback)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(callback)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).include_callback) as usize - ptr as usize },
-        10336usize,
+        10408usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(include_callback)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(include_callback)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).include_free) as usize - ptr as usize },
-        10344usize,
+        10416usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(include_free)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(include_free)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).re_ast_callback) as usize - ptr as usize },
-        10352usize,
+        10424usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(re_ast_callback)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(re_ast_callback)
         )
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).atoms_config) as usize - ptr as usize },
-        10360usize,
+        10432usize,
         concat!(
-        "Offset of field: ",
-        stringify!(_YR_COMPILER),
-        "::",
-        stringify!(atoms_config)
+            "Offset of field: ",
+            stringify!(_YR_COMPILER),
+            "::",
+            stringify!(atoms_config)
         )
     );
 }
@@ -5357,6 +5404,14 @@ extern "C" {
         rules_fd: ::std::os::raw::c_int,
         namespace_: *const ::std::os::raw::c_char,
         file_name: *const ::std::os::raw::c_char,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn yr_compiler_add_bytes(
+        compiler: *mut YR_COMPILER,
+        rules_data: *const ::std::os::raw::c_void,
+        rules_size: size_t,
+        namespace_: *const ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
