@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.26.0](https://github.com/Hugal31/yara-rust/compare/v0.25.0...v0.26.0) (2024-02-16)
+
+### Features
+
+* update yara dependency to v4.5.0
+  ([a28a6d8](https://github.com/Hugal31/yara-rust/commit/a28a6d88772b8d94296e42221c3cc591f2fc8447))
+
 ## [0.25.0](https://github.com/Hugal31/yara-rust/compare/v0.24.0...v0.25.0) (2024-02-06)
 
 ### Features

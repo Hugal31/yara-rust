@@ -39,7 +39,7 @@ fn main() {
 
 ## Features
 
-* Support from Yara v4.1.
+* Support from Yara v4.2.
 * Compile rules from strings or files.
 * Save and load compiled rules.
 * Scan byte arrays (`&[u8]`) or files.
@@ -55,7 +55,7 @@ and how to link to your Yara crate.
 - [ ] Accept `AsRef<Path>` instead of `&str` on multiple functions.
 - [x] Implement the scanner API.
 - [x] Add process scanning.
-- [ ] Report the warnings to the user.
+- [x] Report the warnings to the user.
 
 ## License
 
