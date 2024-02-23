@@ -1,5 +1,5 @@
 use std::convert::TryInto;
-use std::ffi::{CStr, CString};
+use std::ffi::{c_char, CStr, CString};
 use std::os::raw::c_void;
 #[cfg(unix)]
 use std::os::unix::io::AsRawFd;
@@ -52,7 +52,7 @@ impl<'r> CallbackMsg<'r> {
             }
             yara_sys::CALLBACK_MSG_SCAN_FINISHED => ScanFinished,
             yara_sys::CALLBACK_MSG_CONSOLE_LOG => {
-                let msg = unsafe { CStr::from_ptr(message_data as *const i8) };
+                let msg = unsafe { CStr::from_ptr(message_data as *const c_char) };
                 ConsoleLog(msg)
             }
             _ => UnknownMsg,
