@@ -5527,3 +5527,55 @@ extern "C" {
         rules: *mut *mut YR_RULES,
     ) -> ::std::os::raw::c_int;
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct YR_MODULE_IMPORT {
+    pub module_name: *const ::std::os::raw::c_char,
+    pub module_data: *mut ::std::os::raw::c_void,
+    pub module_data_size: size_t,
+}
+#[test]
+fn bindgen_test_layout_YR_MODULE_IMPORT() {
+    const UNINIT: ::std::mem::MaybeUninit<YR_MODULE_IMPORT> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<YR_MODULE_IMPORT>(),
+        24usize,
+        concat!("Size of: ", stringify!(YR_MODULE_IMPORT))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<YR_MODULE_IMPORT>(),
+        8usize,
+        concat!("Alignment of ", stringify!(YR_MODULE_IMPORT))
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).module_name) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_MODULE_IMPORT),
+            "::",
+            stringify!(module_name)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).module_data) as usize - ptr as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_MODULE_IMPORT),
+            "::",
+            stringify!(module_data)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).module_data_size) as usize - ptr as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_MODULE_IMPORT),
+            "::",
+            stringify!(module_data_size)
+        )
+    );
+}

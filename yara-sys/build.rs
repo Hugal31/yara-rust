@@ -431,6 +431,7 @@ mod bindings {
             .allowlist_type("YR_AC_AUTOMATON")
             .allowlist_type("YR_AC_MATCH")
             .allowlist_type("YR_ATOMS_CONFIG")
+            .allowlist_type("YR_MODULE_IMPORT")
             .opaque_type("YR_AC_.*")
             .opaque_type("YR_ATOMS_CONFIG")
             .opaque_type("YR_FIXUP")
