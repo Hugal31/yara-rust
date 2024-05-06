@@ -13,7 +13,7 @@ use crate::{Rule, YrString};
 pub enum CallbackMsg<'r> {
     RuleMatching(Rule<'r>),
     RuleNotMatching(Rule<'r>),
-    ImportModule,
+    ImportModule(YrModuleImport<'r>),
     ModuleImported(YrObject<'r>),
     TooManyMatches(YrString<'r>),
     ScanFinished,
@@ -40,7 +40,10 @@ impl<'r> CallbackMsg<'r> {
                 let context = unsafe { &*context };
                 RuleNotMatching(Rule::from((context, rule)))
             }
-            yara_sys::CALLBACK_MSG_IMPORT_MODULE => ImportModule,
+            yara_sys::CALLBACK_MSG_IMPORT_MODULE => {
+                let object = unsafe { &mut *(message_data as *mut yara_sys::YR_MODULE_IMPORT) };
+                ImportModule(YrModuleImport::from(object))
+            }
             yara_sys::CALLBACK_MSG_MODULE_IMPORTED => {
                 let object = unsafe { &*(message_data as *mut yara_sys::YR_OBJECT) };
                 ModuleImported(YrObject::from(object))
