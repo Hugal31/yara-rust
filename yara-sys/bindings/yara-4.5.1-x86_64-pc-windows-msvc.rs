@@ -4052,6 +4052,7 @@ pub struct YR_RULE {
     pub flags: i32,
     pub num_atoms: i32,
     pub required_strings: u32,
+    pub unused: u32,
     pub __bindgen_anon_1: YR_RULE__bindgen_ty_1,
     pub __bindgen_anon_2: YR_RULE__bindgen_ty_2,
     pub __bindgen_anon_3: YR_RULE__bindgen_ty_3,
@@ -4310,6 +4311,16 @@ fn bindgen_test_layout_YR_RULE() {
             stringify!(YR_RULE),
             "::",
             stringify!(required_strings)
+        )
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).unused) as usize - ptr as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(YR_RULE),
+            "::",
+            stringify!(unused)
         )
     );
 }
