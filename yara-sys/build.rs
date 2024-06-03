@@ -355,14 +355,14 @@ mod build {
     }
 }
 
-#[cfg(feature = "bundled-4_5_0")]
+#[cfg(feature = "bundled-4_5_1")]
 mod bindings {
     use std::env;
     use std::fs;
     use std::path::PathBuf;
 
     pub fn add_bindings() {
-        let binding_file = format!("yara-4.5.0-{}.rs", env::var("TARGET").unwrap());
+        let binding_file = format!("yara-4.5.1-{}.rs", env::var("TARGET").unwrap());
         let binding_path = PathBuf::from("bindings").join(binding_file);
         let out_dir = env::var("OUT_DIR").expect("$OUT_DIR should be defined");
         let out_path = PathBuf::from(out_dir).join("bindings.rs");
@@ -378,7 +378,7 @@ mod bindings {
     }
 }
 
-#[cfg(not(feature = "bundled-4_5_0"))]
+#[cfg(not(feature = "bundled-4_5_1"))]
 mod bindings {
     use std::env;
     use std::path::PathBuf;
