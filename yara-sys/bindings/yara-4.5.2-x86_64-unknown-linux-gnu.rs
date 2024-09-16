@@ -4942,7 +4942,7 @@ pub struct _YR_COMPILER {
     pub lex_buf: [::std::os::raw::c_char; 8192usize],
     pub lex_buf_ptr: *mut ::std::os::raw::c_char,
     pub lex_buf_len: ::std::os::raw::c_ushort,
-    pub include_base_dir: [::std::os::raw::c_char; 1024usize],
+    pub include_base_dir: [::std::os::raw::c_char; 4096usize],
     pub user_data: *mut ::std::os::raw::c_void,
     pub incl_clbk_user_data: *mut ::std::os::raw::c_void,
     pub re_ast_clbk_user_data: *mut ::std::os::raw::c_void,
@@ -4958,7 +4958,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<_YR_COMPILER>(),
-        10464usize,
+        13536usize,
         concat!("Size of: ", stringify!(_YR_COMPILER))
     );
     assert_eq!(
@@ -5278,7 +5278,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).user_data) as usize - ptr as usize },
-        10376usize,
+        13448usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -5288,7 +5288,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).incl_clbk_user_data) as usize - ptr as usize },
-        10384usize,
+        13456usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -5298,7 +5298,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).re_ast_clbk_user_data) as usize - ptr as usize },
-        10392usize,
+        13464usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -5308,7 +5308,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).callback) as usize - ptr as usize },
-        10400usize,
+        13472usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -5318,7 +5318,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).include_callback) as usize - ptr as usize },
-        10408usize,
+        13480usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -5328,7 +5328,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).include_free) as usize - ptr as usize },
-        10416usize,
+        13488usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -5338,7 +5338,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).re_ast_callback) as usize - ptr as usize },
-        10424usize,
+        13496usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),
@@ -5348,7 +5348,7 @@ fn bindgen_test_layout__YR_COMPILER() {
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).atoms_config) as usize - ptr as usize },
-        10432usize,
+        13504usize,
         concat!(
             "Offset of field: ",
             stringify!(_YR_COMPILER),

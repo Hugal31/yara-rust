@@ -13,7 +13,7 @@ edition = "2018"
 
 [features]
 default = ["bindgen", 'module-dotnet', 'module-dex', 'module-macho', 'module-hash', 'ndebug']
-bundled-4_5_1 = []
+bundled-4_5_2 = []
 vendored = ["cc", "glob", "fs_extra"]
 module-cuckoo = []
 module-magic = []
@@ -35,4 +35,4 @@ fs_extra = { version = "1.2", optional = true }
 
 [package.metadata.docs.rs]
 no-default-features = true
-features = ["bundled-4_5_1"]
+features = ["bundled-4_5_2"]
