@@ -17,7 +17,7 @@ rust-version = "1.63"
 [features]
 default = ["bindgen", 'module-dotnet', 'module-dex', 'module-macho', 'module-hash', 'ndebug']
 bindgen = ["yara-sys/bindgen"]
-bundled-4_5_1 = ["yara-sys/bundled-4_5_1"]
+bundled-4_5_2 = ["yara-sys/bundled-4_5_2"]
 vendored = ["yara-sys/vendored"]
 module-cuckoo = ["yara-sys/module-cuckoo"]
 module-magic = ["yara-sys/module-magic"]
