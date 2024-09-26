@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.29.0](https://github.com/Hugal31/yara-rust/compare/v0.28.0...v0.29.0) (2024-09-26)
+
+### Features
+
+* Change vendored and bundled Yara version to 4.5.2.
+
+### ⚠ BREAKING CHANGES
+
+* The `bunlded-4_5_1` feature as removed in favor of `bunlded-4_5_2`.
+
 ## [0.28.0](https://github.com/Hugal31/yara-rust/compare/v0.27.0...v0.28.0) (2024-06-03)
 
 ### Features
