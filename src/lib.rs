@@ -53,7 +53,7 @@ pub use crate::errors::*;
 pub use crate::flags::ScanFlags;
 use crate::initialize::InitializationToken;
 pub use crate::matches::Match;
-pub use crate::rules::{Metadata, MetadataValue, Rule, Rules};
+pub use crate::rules::{Metadata, MetadataValue, Rule, Rules, RulesetRule};
 pub use crate::scanner::Scanner;
 pub use crate::string::YrString;
 pub use internals::{
