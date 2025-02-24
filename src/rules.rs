@@ -58,8 +58,9 @@ impl Rules {
     /// # Safety
     ///
     /// The provided pointer must be valid, and be acquired from the Yara
-    /// library, either through [`yr_compiler_get_rules`], [`yr_rules_load`] or
-    /// [`yr_rules_load_stream`].
+    /// library, either through [`yr_compiler_get_rules`](yara_sys::yr_compiler_get_rules),
+    /// [`yr_rules_load`](yara_sys::yr_rules_load) or
+    /// [`yr_rules_load_stream`](yara_sys::yr_rules_load_stream).
     pub unsafe fn unsafe_try_from(rules: *mut yara_sys::YR_RULES) -> Result<Self, YaraError> {
         let token = InitializationToken::new()?;
 
@@ -322,7 +323,10 @@ impl Drop for Rules {
 
 /// A rule contained in a ruleset.
 
+#[derive(Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize))]
 pub struct RulesetRule<'r> {
+    #[cfg_attr(feature = "serde", serde(skip))]
     pub(crate) inner: *mut yara_sys::YR_RULE,
     /// Name of the rule.
     pub identifier: &'r str,
