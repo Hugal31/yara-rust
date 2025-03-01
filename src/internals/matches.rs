@@ -51,6 +51,7 @@ impl<'a> From<&'a yara_sys::YR_MATCH> for Match {
             } else {
                 Vec::from(unsafe { slice::from_raw_parts(m.data, m.data_length as usize) })
             },
+            xor_key: m.xor_key,
         }
     }
 }

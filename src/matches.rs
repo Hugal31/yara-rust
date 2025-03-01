@@ -13,4 +13,6 @@ pub struct Match {
     pub length: usize,
     /// Matched data.
     pub data: Vec<u8>,
+    /// Xor key used for the match, if the string is using a xor modifier.
+    pub xor_key: u8,
 }
