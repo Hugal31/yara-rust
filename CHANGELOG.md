@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.30.0](https://github.com/Hugal31/yara-rust/compare/v0.30.0...v0.29.0) (2025-03-02)
+
+### Features
+
+* Fix intra-doc links to yara_sys, make RulesetRule public
+* Expose xor_key value in string instance matches
+
 ## [0.29.0](https://github.com/Hugal31/yara-rust/compare/v0.28.0...v0.29.0) (2024-09-26)
 
 ### Features
