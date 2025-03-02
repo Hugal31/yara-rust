@@ -188,7 +188,7 @@ fn test_scan_mem_blocks() {
         data: &'a [&'a [u8]],
     }
 
-    impl<'a> MemoryBlockIterator for TestIter<'a> {
+    impl MemoryBlockIterator for TestIter<'_> {
         fn first(&mut self) -> Option<MemoryBlock> {
             self.next()
         }
@@ -224,7 +224,7 @@ fn test_scan_mem_blocks_sized() {
         data: &'a [&'a [u8]],
     }
 
-    impl<'a> MemoryBlockIterator for TestIter<'a> {
+    impl MemoryBlockIterator for TestIter<'_> {
         fn first(&mut self) -> Option<MemoryBlock> {
             self.next()
         }
@@ -241,7 +241,7 @@ fn test_scan_mem_blocks_sized() {
         }
     }
 
-    impl<'a> MemoryBlockIteratorSized for TestIter<'a> {
+    impl MemoryBlockIteratorSized for TestIter<'_> {
         fn file_size(&mut self) -> u64 {
             self.data.iter().map(|&d| d.len()).sum::<usize>() as u64
         }

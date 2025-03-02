@@ -338,7 +338,7 @@ pub struct RulesetRule<'r> {
     pub tags: Vec<&'r str>,
 }
 
-impl<'r> RulesetRule<'r> {
+impl RulesetRule<'_> {
     pub fn enable(&mut self) {
         unsafe {
             (*self.inner).enable();
