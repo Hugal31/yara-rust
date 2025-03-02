@@ -21,7 +21,7 @@ pub enum CallbackMsg<'r> {
     UnknownMsg,
 }
 
-impl<'r> CallbackMsg<'r> {
+impl CallbackMsg<'_> {
     fn from_yara(
         context: *mut yara_sys::YR_SCAN_CONTEXT,
         message: i32,

@@ -134,7 +134,7 @@ struct SafeYrMemoryBlockIterator<'a> {
     _marker: PhantomData<&'a ()>,
 }
 
-impl<'a> SafeYrMemoryBlockIterator<'a> {
+impl SafeYrMemoryBlockIterator<'_> {
     pub fn new(iterator: YR_MEMORY_BLOCK_ITERATOR) -> Self {
         Self {
             iterator,
@@ -143,7 +143,7 @@ impl<'a> SafeYrMemoryBlockIterator<'a> {
     }
 }
 
-impl<'a> Deref for SafeYrMemoryBlockIterator<'a> {
+impl Deref for SafeYrMemoryBlockIterator<'_> {
     type Target = YR_MEMORY_BLOCK_ITERATOR;
 
     fn deref(&self) -> &Self::Target {
@@ -151,7 +151,7 @@ impl<'a> Deref for SafeYrMemoryBlockIterator<'a> {
     }
 }
 
-impl<'a> DerefMut for SafeYrMemoryBlockIterator<'a> {
+impl DerefMut for SafeYrMemoryBlockIterator<'_> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.iterator
     }

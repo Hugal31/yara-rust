@@ -86,8 +86,8 @@ pub struct Scanner<'rules> {
 //
 /// This is safe because Yara TLS have are short-lived and we control the callback,
 /// ensuring we cannot change thread while they are defined.
-unsafe impl<'a> std::marker::Send for Scanner<'a> {}
-unsafe impl<'a> std::marker::Sync for Scanner<'a> {}
+unsafe impl std::marker::Send for Scanner<'_> {}
+unsafe impl std::marker::Sync for Scanner<'_> {}
 
 impl<'a> Scanner<'a> {
     /// Creates a scanner bound to the lifetime of the Rules.
@@ -102,7 +102,7 @@ impl<'a> Scanner<'a> {
     }
 }
 
-impl<'a> Drop for Scanner<'a> {
+impl Drop for Scanner<'_> {
     fn drop(&mut self) {
         internals::scanner_destroy(self.inner);
     }

@@ -38,7 +38,7 @@ impl<'a> Iterator for MatchIterator<'a> {
     }
 }
 
-impl<'a> From<&'a yara_sys::YR_MATCH> for Match {
+impl From<&yara_sys::YR_MATCH> for Match {
     fn from(m: &yara_sys::YR_MATCH) -> Self {
         Match {
             base: m.base as usize,
@@ -51,6 +51,7 @@ impl<'a> From<&'a yara_sys::YR_MATCH> for Match {
             } else {
                 Vec::from(unsafe { slice::from_raw_parts(m.data, m.data_length as usize) })
             },
+            xor_key: m.xor_key,
         }
     }
 }
