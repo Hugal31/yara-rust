@@ -295,6 +295,10 @@ mod build {
             }
         }
 
+        if let Some(max_string_matches) = get_target_env_var("YARA_MAX_STRING_MATCHES") {
+            cc.define("YR_MAX_STRING_MATCHES", max_string_matches.as_str());
+        }
+
         // Unfortunately, YARA compilation produces lots of warnings
         // Ignore some of them.
         cc.flag_if_supported("-Wno-deprecated-declarations")
