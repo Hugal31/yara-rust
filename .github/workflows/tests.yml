@@ -3,19 +3,19 @@ name: tests
 on:
   push:
     paths-ignore:
-      - 'LICENSE-*'
-      - '**.md'
+      - "LICENSE-*"
+      - "**.md"
   pull_request:
     paths-ignore:
-      - 'LICENSE-*'
-      - '**.md'
+      - "LICENSE-*"
+      - "**.md"
 
 jobs:
   linters:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           submodules: true
       - name: Install rust toolchain
@@ -31,14 +31,14 @@ jobs:
   test-posix:
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ubuntu-latest]
         target: ["x86_64-unknown-linux-musl", "x86_64-unknown-linux-gnu"]
-        features: [ "vendored,bindgen", "vendored,bundled-4_5_2" ]
-        rust: [ stable, nightly ]
+        features: ["vendored,bindgen", "vendored,bundled-4_5_2"]
+        rust: [stable, nightly]
 
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           submodules: true
       - name: Install rust toolchain
@@ -53,42 +53,17 @@ jobs:
   test-windows:
     strategy:
       matrix:
-        os: [ windows-2019 ]
-        features: [ "vendored,bundled-4_5_2" ]
-        rust: [ stable ]
-        cryptolib: [ "WinCrypt", "disabled" ]
+        os: [windows-2019]
+        features: ["vendored,bundled-4_5_2"]
+        rust: [stable]
+        cryptolib: ["WinCrypt", "disabled"]
 
     runs-on: ${{ matrix.os }}
     steps:
-        - name: Install OpenSSL
-          if: ${{ matrix.cryptolib == 'OpenSSL' }}
-          run: choco install openssl
-        - uses: actions/checkout@v3
-          with:
-            submodules: true
-        - name: Install rust toolchain
-          uses: dtolnay/rust-toolchain@stable
-          with:
-            toolchain: ${{ matrix.rust }}
-        - name: Test
-          env:
-            YARA_CRYPTO_LIB: ${{ matrix.cryptolib }}
-          # Skip tests containing "proc", they seem to fail randomly on the pipeline.
-          run: cargo test --verbose --no-default-features --features ${{ matrix.features }},module-hash,module-dotnet,module-dex,module-macho,ndebug -- --skip proc
-
-
-  build-macos:
-    strategy:
-      matrix:
-        os: [ macos-13 ]
-        features: [ "vendored,bindgen", "vendored,bundled-4_5_2" ]
-        rust: [ stable, nightly ]
-        cryptolib: [ "OpenSSL", "CommonCrypto", "disabled" ]
-        openssl_dir: [ "/usr/local/opt/openssl@1.1" ]
-
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v3
+      - name: Install OpenSSL
+        if: ${{ matrix.cryptolib == 'OpenSSL' }}
+        run: choco install openssl
+      - uses: actions/checkout@v5
         with:
           submodules: true
       - name: Install rust toolchain
@@ -97,7 +72,31 @@ jobs:
           toolchain: ${{ matrix.rust }}
       - name: Test
         env:
-          YARA_CRYPTO_LIB: '${{ matrix.cryptolib }}'
-          CFLAGS: '-I ${{ matrix.openssl_dir }}/include'
-          OPENSSL_LIB_DIR: '${{ matrix.openssl_dir }}/lib'
+          YARA_CRYPTO_LIB: ${{ matrix.cryptolib }}
+        # Skip tests containing "proc", they seem to fail randomly on the pipeline.
+        run: cargo test --verbose --no-default-features --features ${{ matrix.features }},module-hash,module-dotnet,module-dex,module-macho,ndebug -- --skip proc
+
+  build-macos:
+    strategy:
+      matrix:
+        os: [macos-13]
+        features: ["vendored,bindgen", "vendored,bundled-4_5_2"]
+        rust: [stable, nightly]
+        cryptolib: ["OpenSSL", "CommonCrypto", "disabled"]
+        openssl_dir: ["/usr/local/opt/openssl@1.1"]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: true
+      - name: Install rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ matrix.rust }}
+      - name: Test
+        env:
+          YARA_CRYPTO_LIB: "${{ matrix.cryptolib }}"
+          CFLAGS: "-I ${{ matrix.openssl_dir }}/include"
+          OPENSSL_LIB_DIR: "${{ matrix.openssl_dir }}/lib"
         run: cargo build --verbose --no-default-features --features ${{ matrix.features }},module-hash,module-dotnet,module-dex,module-macho,ndebug
