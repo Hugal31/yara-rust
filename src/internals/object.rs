@@ -37,7 +37,7 @@ impl YrObject<'_> {
     }
 
     /// Get the value of the object.
-    pub fn value(&self) -> YrObjectValue {
+    pub fn value(&self) -> YrObjectValue<'_> {
         unsafe {
             match self.0.type_ as u32 {
                 yara_sys::OBJECT_TYPE_INTEGER => {

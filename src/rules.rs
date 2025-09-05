@@ -73,7 +73,7 @@ impl Rules {
 }
 
 impl Rules {
-    pub fn get_rules(&self) -> Vec<RulesetRule> {
+    pub fn get_rules(&self) -> Vec<RulesetRule<'_>> {
         internals::get_rules(self.inner)
     }
 
@@ -81,7 +81,7 @@ impl Rules {
     ///
     /// You can create as many scanners as you want, and they each can have
     /// their own scan flag, timeout, and external variables defined.
-    pub fn scanner(&self) -> Result<crate::scanner::Scanner, YaraError> {
+    pub fn scanner(&self) -> Result<crate::scanner::Scanner<'_>, YaraError> {
         crate::scanner::Scanner::new(self)
     }
 
@@ -201,7 +201,7 @@ impl Rules {
     /// # Permissions
     ///
     /// You need to be able to attach to process `pid`.
-    pub fn scan_process(&self, pid: u32, timeout: i32) -> Result<Vec<Rule>, YaraError> {
+    pub fn scan_process(&self, pid: u32, timeout: i32) -> Result<Vec<Rule<'_>>, YaraError> {
         let mut results: Vec<Rule> = Vec::new();
         let callback = |message| {
             if let internals::CallbackMsg::RuleMatching(rule) = message {
