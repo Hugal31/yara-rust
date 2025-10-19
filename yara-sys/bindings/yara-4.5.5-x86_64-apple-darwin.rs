@@ -199,7 +199,7 @@ pub struct __sFILE {
         unsafe extern "C" fn(
             arg1: *mut ::std::os::raw::c_void,
             arg2: *mut ::std::os::raw::c_char,
-            arg3: ::std::os::raw::c_int,
+            __n: ::std::os::raw::c_int,
         ) -> ::std::os::raw::c_int,
     >,
     pub _seek: ::std::option::Option<
@@ -213,7 +213,7 @@ pub struct __sFILE {
         unsafe extern "C" fn(
             arg1: *mut ::std::os::raw::c_void,
             arg2: *const ::std::os::raw::c_char,
-            arg3: ::std::os::raw::c_int,
+            __n: ::std::os::raw::c_int,
         ) -> ::std::os::raw::c_int,
     >,
     pub _ub: __sbuf,
