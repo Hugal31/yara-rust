@@ -61,6 +61,7 @@ jobs:
           cp "$(find . -name 'bindings.rs')" "./out/yara-${{ matrix.target }}.rs"
           ls out
       - name: Archive production artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
+          name: bindings-${{ matrix.target }}
           path: ./out/yara-${{ matrix.target }}.rs
