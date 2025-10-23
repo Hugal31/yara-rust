@@ -96,7 +96,12 @@ mod build {
             .as_str()
             == "windows"
         {
+            // See OpenSSL documentation on which windows DLL are required to be linked against:
+            // <https://github.com/openssl/openssl/blob/master/NOTES-WINDOWS.md>
+            println!("cargo:rustc-link-lib=dylib=User32");
             println!("cargo:rustc-link-lib=dylib=Crypt32");
+            println!("cargo:rustc-link-lib=dylib=AdvApi32");
+            println!("cargo:rustc-link-lib=dylib=Gdi32");
             println!("cargo:rustc-link-lib=dylib=Ws2_32");
             if cfg!(feature = "openssl-static") {
                 // since both static and dynamic linking force the linker to use "libssl.lib" and "libcrypto.lib"
