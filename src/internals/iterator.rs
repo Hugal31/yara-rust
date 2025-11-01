@@ -31,19 +31,19 @@ impl<'a> MemoryBlock<'a> {
 }
 
 pub trait MemoryBlockIterator {
-    fn first(&mut self) -> Option<MemoryBlock>;
-    fn next(&mut self) -> Option<MemoryBlock>;
+    fn first(&mut self) -> Option<MemoryBlock<'_>>;
+    fn next(&mut self) -> Option<MemoryBlock<'_>>;
 }
 
 impl<T> MemoryBlockIterator for Box<T>
 where
     T: MemoryBlockIterator,
 {
-    fn first(&mut self) -> Option<MemoryBlock> {
+    fn first(&mut self) -> Option<MemoryBlock<'_>> {
         (**self).first()
     }
 
-    fn next(&mut self) -> Option<MemoryBlock> {
+    fn next(&mut self) -> Option<MemoryBlock<'_>> {
         (**self).next()
     }
 }
@@ -52,11 +52,11 @@ impl<T> MemoryBlockIterator for &mut T
 where
     T: MemoryBlockIterator,
 {
-    fn first(&mut self) -> Option<MemoryBlock> {
+    fn first(&mut self) -> Option<MemoryBlock<'_>> {
         (**self).first()
     }
 
-    fn next(&mut self) -> Option<MemoryBlock> {
+    fn next(&mut self) -> Option<MemoryBlock<'_>> {
         (**self).next()
     }
 }
