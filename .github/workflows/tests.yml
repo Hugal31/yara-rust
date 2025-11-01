@@ -53,7 +53,7 @@ jobs:
   test-windows:
     strategy:
       matrix:
-        os: [ windows-2019 ]
+        os: [ windows-2025 ]
         features: [ "vendored,bundled-4_5_2" ]
         rust: [ stable ]
         cryptolib: [ "WinCrypt", "disabled" ]
