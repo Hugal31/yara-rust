@@ -26,14 +26,14 @@ jobs:
       - name: Cargo fmt
         run: cargo fmt --all -- --check
       - name: Cargo clippy
-        run: cargo clippy --features bindgen,bundled-4_5_2,vendored -- -D warnings
+        run: cargo clippy --features bindgen,bundled-4_5_5,vendored -- -D warnings
 
   test-posix:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
         target: ["x86_64-unknown-linux-musl", "x86_64-unknown-linux-gnu"]
-        features: [ "vendored,bindgen", "vendored,bundled-4_5_2" ]
+        features: [ "vendored,bindgen", "vendored,bundled-4_5_5" ]
         rust: [ stable, nightly ]
 
     runs-on: ${{ matrix.os }}
@@ -53,8 +53,8 @@ jobs:
   test-windows:
     strategy:
       matrix:
-        os: [ windows-2019 ]
-        features: [ "vendored,bundled-4_5_2" ]
+        os: [ windows-2025 ]
+        features: [ "vendored,bundled-4_5_5" ]
         rust: [ stable ]
         cryptolib: [ "WinCrypt", "disabled" ]
 
@@ -81,7 +81,7 @@ jobs:
     strategy:
       matrix:
         os: [ macos-13 ]
-        features: [ "vendored,bindgen", "vendored,bundled-4_5_2" ]
+        features: [ "vendored,bindgen", "vendored,bundled-4_5_5" ]
         rust: [ stable, nightly ]
         cryptolib: [ "OpenSSL", "CommonCrypto", "disabled" ]
         openssl_dir: [ "/usr/local/opt/openssl@1.1" ]

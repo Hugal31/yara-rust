@@ -1,6 +1,6 @@
 use std::convert::TryInto;
-use std::ffi::{c_char, CStr, CString};
-use std::os::raw::c_void;
+use std::ffi::{CStr, CString};
+use std::os::raw::{c_char, c_void};
 #[cfg(unix)]
 use std::os::unix::io::AsRawFd;
 #[cfg(windows)]

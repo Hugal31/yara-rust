@@ -162,9 +162,11 @@ mod build {
 
         // Use correct proc functions
         match std::env::var("CARGO_CFG_TARGET_OS").ok().unwrap().as_str() {
-            "windows" => cc
-                .file(basedir.join("proc").join("windows.c"))
-                .define("USE_WINDOWS_PROC", ""),
+            "windows" => {
+                println!("cargo:rustc-link-lib=dylib=Advapi32");
+                cc.file(basedir.join("proc").join("windows.c"))
+                    .define("USE_WINDOWS_PROC", "")
+            }
             "linux" => cc
                 .file(basedir.join("proc").join("linux.c"))
                 .define("USE_LINUX_PROC", ""),
@@ -355,14 +357,14 @@ mod build {
     }
 }
 
-#[cfg(feature = "bundled-4_5_2")]
+#[cfg(feature = "bundled-4_5_5")]
 mod bindings {
     use std::env;
     use std::fs;
     use std::path::PathBuf;
 
     pub fn add_bindings() {
-        let binding_file = format!("yara-4.5.2-{}.rs", env::var("TARGET").unwrap());
+        let binding_file = format!("yara-4.5.5-{}.rs", env::var("TARGET").unwrap());
         let binding_path = PathBuf::from("bindings").join(binding_file);
         let out_dir = env::var("OUT_DIR").expect("$OUT_DIR should be defined");
         let out_path = PathBuf::from(out_dir).join("bindings.rs");
@@ -370,7 +372,7 @@ mod bindings {
             fs::copy(binding_path, out_path).expect("Could not copy bindings to output directory");
         } else {
             println!(
-                "cargo:warning=Bindigs for target=\"{}\" does not exists",
+                "cargo:warning=Bindings for target=\"{}\" does not exists",
                 env::var("TARGET").unwrap()
             );
             std::process::exit(1);
@@ -378,7 +380,7 @@ mod bindings {
     }
 }
 
-#[cfg(not(feature = "bundled-4_5_2"))]
+#[cfg(not(feature = "bundled-4_5_5"))]
 mod bindings {
     use std::env;
     use std::path::PathBuf;
