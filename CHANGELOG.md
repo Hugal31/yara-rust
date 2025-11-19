@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.31.0](https://github.com/Hugal31/yara-rust/compare/v0.30.0...v0.31.0) (2025-11-19)
+
+### Features
+
+* update yara to 4.5.5
+  ([5757d86](https://github.com/Hugal31/yara-rust/commit/5757d8621123ace70049daba9710749b779a789a))
+
+### Bug Fixes
+
+* add missing link libraries on Windows
+  ([025788d](https://github.com/Hugal31/yara-rust/commit/025788d52b5647097a14fbd18c77633794c259a9))
+* fix build script on Windows
+  ([54f93c2](https://github.com/Hugal31/yara-rust/commit/54f93c25ff522a8df6296fa608821963c9e9f834))
+
 ## [0.30.0](https://github.com/Hugal31/yara-rust/compare/v0.30.0...v0.29.0) (2025-03-02)
 
 ### Features
