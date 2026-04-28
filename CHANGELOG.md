@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.32.0](https://github.com/Hugal31/yara-rust/compare/v0.31.0...v0.32.0) (2026-04-28)
+
+* Bump bindgen to 0.72.0.
+
 ## [0.31.0](https://github.com/Hugal31/yara-rust/compare/v0.30.0...v0.31.0) (2025-11-19)
 
 ### Features
