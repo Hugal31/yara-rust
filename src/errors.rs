@@ -51,6 +51,8 @@ pub enum IoErrorKind {
     ReadingRules,
     #[error("Error while writing rules stream")]
     WritingRules,
+    #[error("Error while defining variable")]
+    DefiningVariable,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, ThisError)]
