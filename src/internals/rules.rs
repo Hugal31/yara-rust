@@ -46,10 +46,11 @@ pub fn get_rules<'a>(ruleset: *mut yara_sys::YR_RULES) -> Vec<RulesetRule<'a>> {
 }
 
 // TODO Check if non mut
-pub fn rules_save(rules: *mut yara_sys::YR_RULES, filename: &str) -> Result<(), YaraError> {
-    let filename = CString::new(filename).unwrap();
+pub fn rules_save(rules: *mut yara_sys::YR_RULES, filename: &str) -> Result<(), Error> {
+    let filename =
+        CString::new(filename).map_err(|e| IoError::new(e.into(), IoErrorKind::WritingRules))?;
     let result = unsafe { yara_sys::yr_rules_save(rules, filename.as_ptr()) };
-    yara_sys::Error::from_code(result).map_err(|e| e.into())
+    yara_sys::Error::from_code(result).map_err(|e| Error::Yara(e.into()))
 }
 
 pub fn rules_save_stream<W>(rules: *mut yara_sys::YR_RULES, mut writer: W) -> Result<(), Error>
