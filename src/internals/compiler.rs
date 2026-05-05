@@ -31,8 +31,11 @@ pub fn compiler_add_string(
     string: &str,
     namespace: Option<&str>,
 ) -> Result<(), Error> {
-    let string = CString::new(string).unwrap();
-    let namespace = namespace.map(|n| CString::new(n).unwrap());
+    let string =
+        CString::new(string).map_err(|e| IoError::new(e.into(), IoErrorKind::OpenRulesFile))?;
+    let namespace = namespace
+        .map(|n| CString::new(n).map_err(|e| IoError::new(e.into(), IoErrorKind::OpenRulesFile)))
+        .transpose()?;
     let mut errors = Vec::<CompileError>::new();
     unsafe {
         yara_sys::yr_compiler_set_callback(
@@ -67,8 +70,11 @@ pub fn compiler_add_file<P: AsRef<Path>, F: AsRawFd>(
     path: P,
     namespace: Option<&str>,
 ) -> Result<(), Error> {
-    let path = CString::new(path.as_ref().as_os_str().to_str().unwrap()).unwrap();
-    let namespace = namespace.map(|n| CString::new(n).unwrap());
+    let path = CString::new(path.as_ref().as_os_str().to_str().unwrap())
+        .map_err(|e| IoError::new(e.into(), IoErrorKind::OpenRulesFile))?;
+    let namespace = namespace
+        .map(|n| CString::new(n).map_err(|e| IoError::new(e.into(), IoErrorKind::OpenRulesFile)))
+        .transpose()?;
     let mut errors = Vec::<CompileError>::new();
     unsafe {
         yara_sys::yr_compiler_set_callback(
@@ -97,8 +103,11 @@ pub fn compiler_add_file<P: AsRef<Path>, F: AsRawHandle>(
     path: P,
     namespace: Option<&str>,
 ) -> Result<(), Error> {
-    let path = CString::new(path.as_ref().as_os_str().to_str().unwrap()).unwrap();
-    let namespace = namespace.map(|n| CString::new(n).unwrap());
+    let path = CString::new(path.as_ref().as_os_str().to_str().unwrap())
+        .map_err(|e| IoError::new(e.into(), IoErrorKind::OpenRulesFile))?;
+    let namespace = namespace
+        .map(|n| CString::new(n).map_err(|e| IoError::new(e.into(), IoErrorKind::OpenRulesFile)))
+        .transpose()?;
     let mut errors = Vec::<CompileError>::new();
     unsafe {
         yara_sys::yr_compiler_set_callback(
