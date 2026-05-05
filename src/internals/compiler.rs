@@ -156,62 +156,68 @@ pub fn compiler_define_integer_variable(
     compiler: *mut YR_COMPILER,
     identifier: &str,
     value: i64,
-) -> Result<(), YaraError> {
-    let identifier = CString::new(identifier).unwrap();
+) -> Result<(), Error> {
+    let identifier = CString::new(identifier)
+        .map_err(|e| IoError::new(e.into(), IoErrorKind::DefiningVariable))?;
     let result = unsafe {
         yara_sys::yr_compiler_define_integer_variable(compiler, identifier.as_ptr(), value)
     };
-    yara_sys::Error::from_code(result).map_err(Into::into)
+    yara_sys::Error::from_code(result).map_err(|e| Error::Yara(e.into()))
 }
 
 pub fn compiler_define_float_variable(
     compiler: *mut YR_COMPILER,
     identifier: &str,
     value: f64,
-) -> Result<(), YaraError> {
-    let identifier = CString::new(identifier).unwrap();
+) -> Result<(), Error> {
+    let identifier = CString::new(identifier)
+        .map_err(|e| IoError::new(e.into(), IoErrorKind::DefiningVariable))?;
     let result = unsafe {
         yara_sys::yr_compiler_define_float_variable(compiler, identifier.as_ptr(), value)
     };
-    yara_sys::Error::from_code(result).map_err(Into::into)
+    yara_sys::Error::from_code(result).map_err(|e| Error::Yara(e.into()))
 }
 
 pub fn compiler_define_boolean_variable(
     compiler: *mut YR_COMPILER,
     identifier: &str,
     value: bool,
-) -> Result<(), YaraError> {
-    let identifier = CString::new(identifier).unwrap();
+) -> Result<(), Error> {
+    let identifier = CString::new(identifier)
+        .map_err(|e| IoError::new(e.into(), IoErrorKind::DefiningVariable))?;
     let value = i32::from(value);
     let result = unsafe {
         yara_sys::yr_compiler_define_boolean_variable(compiler, identifier.as_ptr(), value)
     };
-    yara_sys::Error::from_code(result).map_err(Into::into)
+    yara_sys::Error::from_code(result).map_err(|e| Error::Yara(e.into()))
 }
 
 pub fn compiler_define_str_variable(
     compiler: *mut YR_COMPILER,
     identifier: &str,
     value: &str,
-) -> Result<(), YaraError> {
-    let identifier = CString::new(identifier).unwrap();
-    let value = CString::new(value).unwrap();
+) -> Result<(), Error> {
+    let identifier = CString::new(identifier)
+        .map_err(|e| IoError::new(e.into(), IoErrorKind::DefiningVariable))?;
+    let value =
+        CString::new(value).map_err(|e| IoError::new(e.into(), IoErrorKind::DefiningVariable))?;
     let result = unsafe {
         yara_sys::yr_compiler_define_string_variable(compiler, identifier.as_ptr(), value.as_ptr())
     };
-    yara_sys::Error::from_code(result).map_err(Into::into)
+    yara_sys::Error::from_code(result).map_err(|e| Error::Yara(e.into()))
 }
 
 pub fn compiler_define_cstr_variable(
     compiler: *mut YR_COMPILER,
     identifier: &str,
     value: &CStr,
-) -> Result<(), YaraError> {
-    let identifier = CString::new(identifier).unwrap();
+) -> Result<(), Error> {
+    let identifier = CString::new(identifier)
+        .map_err(|e| IoError::new(e.into(), IoErrorKind::DefiningVariable))?;
     let result = unsafe {
         yara_sys::yr_compiler_define_string_variable(compiler, identifier.as_ptr(), value.as_ptr())
     };
-    yara_sys::Error::from_code(result).map_err(Into::into)
+    yara_sys::Error::from_code(result).map_err(|e| Error::Yara(e.into()))
 }
 
 pub fn compiler_get_rules(compiler: *mut YR_COMPILER) -> Result<*mut YR_RULES, YaraError> {

@@ -118,7 +118,7 @@ impl<'rules> Scanner<'rules> {
         &mut self,
         identifier: &str,
         value: V,
-    ) -> Result<(), YaraError> {
+    ) -> Result<(), Error> {
         value.assign_in_scanner(self.inner, identifier)
     }
 

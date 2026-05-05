@@ -188,7 +188,7 @@ impl Compiler {
         &mut self,
         identifier: &str,
         value: V,
-    ) -> Result<(), YaraError> {
+    ) -> Result<(), Error> {
         value.add_to_compiler(self.inner, identifier)
     }
 
@@ -320,13 +320,13 @@ pub trait CompilerVariableValue {
         &self,
         compiler: *mut yara_sys::YR_COMPILER,
         identifier: &str,
-    ) -> Result<(), YaraError>;
+    ) -> Result<(), Error>;
 
     fn assign_in_scanner(
         &self,
         scanner: *mut yara_sys::YR_SCANNER,
         identifier: &str,
-    ) -> Result<(), YaraError>;
+    ) -> Result<(), Error>;
 }
 
 impl CompilerVariableValue for bool {
@@ -334,7 +334,7 @@ impl CompilerVariableValue for bool {
         &self,
         compiler: *mut yara_sys::YR_COMPILER,
         identifier: &str,
-    ) -> Result<(), YaraError> {
+    ) -> Result<(), Error> {
         internals::compiler_define_boolean_variable(compiler, identifier, *self)
     }
 
@@ -342,7 +342,7 @@ impl CompilerVariableValue for bool {
         &self,
         scanner: *mut yara_sys::YR_SCANNER,
         identifier: &str,
-    ) -> Result<(), YaraError> {
+    ) -> Result<(), Error> {
         internals::scanner_define_boolean_variable(scanner, identifier, *self)
     }
 }
@@ -352,7 +352,7 @@ impl CompilerVariableValue for f64 {
         &self,
         compiler: *mut yara_sys::YR_COMPILER,
         identifier: &str,
-    ) -> Result<(), YaraError> {
+    ) -> Result<(), Error> {
         internals::compiler_define_float_variable(compiler, identifier, *self)
     }
 
@@ -360,7 +360,7 @@ impl CompilerVariableValue for f64 {
         &self,
         scanner: *mut yara_sys::YR_SCANNER,
         identifier: &str,
-    ) -> Result<(), YaraError> {
+    ) -> Result<(), Error> {
         internals::scanner_define_float_variable(scanner, identifier, *self)
     }
 }
@@ -370,7 +370,7 @@ impl CompilerVariableValue for i64 {
         &self,
         compiler: *mut yara_sys::YR_COMPILER,
         identifier: &str,
-    ) -> Result<(), YaraError> {
+    ) -> Result<(), Error> {
         internals::compiler_define_integer_variable(compiler, identifier, *self)
     }
 
@@ -378,7 +378,7 @@ impl CompilerVariableValue for i64 {
         &self,
         scanner: *mut yara_sys::YR_SCANNER,
         identifier: &str,
-    ) -> Result<(), YaraError> {
+    ) -> Result<(), Error> {
         internals::scanner_define_integer_variable(scanner, identifier, *self)
     }
 }
@@ -388,7 +388,7 @@ impl CompilerVariableValue for &str {
         &self,
         compiler: *mut yara_sys::YR_COMPILER,
         identifier: &str,
-    ) -> Result<(), YaraError> {
+    ) -> Result<(), Error> {
         internals::compiler_define_str_variable(compiler, identifier, self)
     }
 
@@ -396,7 +396,7 @@ impl CompilerVariableValue for &str {
         &self,
         scanner: *mut yara_sys::YR_SCANNER,
         identifier: &str,
-    ) -> Result<(), YaraError> {
+    ) -> Result<(), Error> {
         internals::scanner_define_str_variable(scanner, identifier, self)
     }
 }
@@ -406,7 +406,7 @@ impl CompilerVariableValue for &CStr {
         &self,
         compiler: *mut yara_sys::YR_COMPILER,
         identifier: &str,
-    ) -> Result<(), YaraError> {
+    ) -> Result<(), Error> {
         internals::compiler_define_cstr_variable(compiler, identifier, self)
     }
 
@@ -414,7 +414,7 @@ impl CompilerVariableValue for &CStr {
         &self,
         scanner: *mut yara_sys::YR_SCANNER,
         identifier: &str,
-    ) -> Result<(), YaraError> {
+    ) -> Result<(), Error> {
         internals::scanner_define_cstr_variable(scanner, identifier, self)
     }
 }
