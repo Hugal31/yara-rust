@@ -30,7 +30,7 @@ jobs:
           - os: "windows-latest"
             target: "x86_64-pc-windows-gnu"
           # macos-latest-large is the x86 one. macos-latest is arm.
-          - os: "macos-latest-large"
+          - os: "macos-15-intel"
             target: "x86_64-apple-darwin"
 
     runs-on: ${{ matrix.os }}
