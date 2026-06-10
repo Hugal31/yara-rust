@@ -139,7 +139,7 @@ pub const OBJECT_TYPE_ARRAY: u32 = 4;
 pub const OBJECT_TYPE_FUNCTION: u32 = 5;
 pub const OBJECT_TYPE_DICTIONARY: u32 = 6;
 pub const OBJECT_TYPE_FLOAT: u32 = 7;
-pub type jmp_buf = [::std::os::raw::c_int; 48usize];
+pub type jmp_buf = [::std::os::raw::c_int; 37usize];
 pub type __int64_t = ::std::os::raw::c_longlong;
 pub type __darwin_size_t = ::std::os::raw::c_ulong;
 pub type __darwin_off_t = __int64_t;
@@ -1790,7 +1790,7 @@ pub struct _YR_COMPILER {
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of _YR_COMPILER"][::std::mem::size_of::<_YR_COMPILER>() - 13528usize];
+    ["Size of _YR_COMPILER"][::std::mem::size_of::<_YR_COMPILER>() - 13480usize];
     ["Alignment of _YR_COMPILER"][::std::mem::align_of::<_YR_COMPILER>() - 8usize];
     ["Offset of field: _YR_COMPILER::arena"][::std::mem::offset_of!(_YR_COMPILER, arena) - 0usize];
     ["Offset of field: _YR_COMPILER::current_rule_idx"]
@@ -1817,57 +1817,57 @@ const _: () = {
     ["Offset of field: _YR_COMPILER::error_recovery"]
         [::std::mem::offset_of!(_YR_COMPILER, error_recovery) - 60usize];
     ["Offset of field: _YR_COMPILER::automaton"]
-        [::std::mem::offset_of!(_YR_COMPILER, automaton) - 256usize];
+        [::std::mem::offset_of!(_YR_COMPILER, automaton) - 208usize];
     ["Offset of field: _YR_COMPILER::rules_table"]
-        [::std::mem::offset_of!(_YR_COMPILER, rules_table) - 264usize];
+        [::std::mem::offset_of!(_YR_COMPILER, rules_table) - 216usize];
     ["Offset of field: _YR_COMPILER::objects_table"]
-        [::std::mem::offset_of!(_YR_COMPILER, objects_table) - 272usize];
+        [::std::mem::offset_of!(_YR_COMPILER, objects_table) - 224usize];
     ["Offset of field: _YR_COMPILER::strings_table"]
-        [::std::mem::offset_of!(_YR_COMPILER, strings_table) - 280usize];
+        [::std::mem::offset_of!(_YR_COMPILER, strings_table) - 232usize];
     ["Offset of field: _YR_COMPILER::wildcard_identifiers_table"]
-        [::std::mem::offset_of!(_YR_COMPILER, wildcard_identifiers_table) - 288usize];
+        [::std::mem::offset_of!(_YR_COMPILER, wildcard_identifiers_table) - 240usize];
     ["Offset of field: _YR_COMPILER::sz_table"]
-        [::std::mem::offset_of!(_YR_COMPILER, sz_table) - 296usize];
+        [::std::mem::offset_of!(_YR_COMPILER, sz_table) - 248usize];
     ["Offset of field: _YR_COMPILER::fixup_stack_head"]
-        [::std::mem::offset_of!(_YR_COMPILER, fixup_stack_head) - 304usize];
+        [::std::mem::offset_of!(_YR_COMPILER, fixup_stack_head) - 256usize];
     ["Offset of field: _YR_COMPILER::num_namespaces"]
-        [::std::mem::offset_of!(_YR_COMPILER, num_namespaces) - 312usize];
+        [::std::mem::offset_of!(_YR_COMPILER, num_namespaces) - 264usize];
     ["Offset of field: _YR_COMPILER::loop_"]
-        [::std::mem::offset_of!(_YR_COMPILER, loop_) - 320usize];
+        [::std::mem::offset_of!(_YR_COMPILER, loop_) - 272usize];
     ["Offset of field: _YR_COMPILER::loop_index"]
-        [::std::mem::offset_of!(_YR_COMPILER, loop_index) - 736usize];
+        [::std::mem::offset_of!(_YR_COMPILER, loop_index) - 688usize];
     ["Offset of field: _YR_COMPILER::loop_for_of_var_index"]
-        [::std::mem::offset_of!(_YR_COMPILER, loop_for_of_var_index) - 740usize];
+        [::std::mem::offset_of!(_YR_COMPILER, loop_for_of_var_index) - 692usize];
     ["Offset of field: _YR_COMPILER::file_name_stack"]
-        [::std::mem::offset_of!(_YR_COMPILER, file_name_stack) - 744usize];
+        [::std::mem::offset_of!(_YR_COMPILER, file_name_stack) - 696usize];
     ["Offset of field: _YR_COMPILER::file_name_stack_ptr"]
-        [::std::mem::offset_of!(_YR_COMPILER, file_name_stack_ptr) - 872usize];
+        [::std::mem::offset_of!(_YR_COMPILER, file_name_stack_ptr) - 824usize];
     ["Offset of field: _YR_COMPILER::last_error_extra_info"]
-        [::std::mem::offset_of!(_YR_COMPILER, last_error_extra_info) - 876usize];
+        [::std::mem::offset_of!(_YR_COMPILER, last_error_extra_info) - 828usize];
     ["Offset of field: _YR_COMPILER::lex_buf"]
-        [::std::mem::offset_of!(_YR_COMPILER, lex_buf) - 1132usize];
+        [::std::mem::offset_of!(_YR_COMPILER, lex_buf) - 1084usize];
     ["Offset of field: _YR_COMPILER::lex_buf_ptr"]
-        [::std::mem::offset_of!(_YR_COMPILER, lex_buf_ptr) - 9328usize];
+        [::std::mem::offset_of!(_YR_COMPILER, lex_buf_ptr) - 9280usize];
     ["Offset of field: _YR_COMPILER::lex_buf_len"]
-        [::std::mem::offset_of!(_YR_COMPILER, lex_buf_len) - 9336usize];
+        [::std::mem::offset_of!(_YR_COMPILER, lex_buf_len) - 9288usize];
     ["Offset of field: _YR_COMPILER::include_base_dir"]
-        [::std::mem::offset_of!(_YR_COMPILER, include_base_dir) - 9338usize];
+        [::std::mem::offset_of!(_YR_COMPILER, include_base_dir) - 9290usize];
     ["Offset of field: _YR_COMPILER::user_data"]
-        [::std::mem::offset_of!(_YR_COMPILER, user_data) - 13440usize];
+        [::std::mem::offset_of!(_YR_COMPILER, user_data) - 13392usize];
     ["Offset of field: _YR_COMPILER::incl_clbk_user_data"]
-        [::std::mem::offset_of!(_YR_COMPILER, incl_clbk_user_data) - 13448usize];
+        [::std::mem::offset_of!(_YR_COMPILER, incl_clbk_user_data) - 13400usize];
     ["Offset of field: _YR_COMPILER::re_ast_clbk_user_data"]
-        [::std::mem::offset_of!(_YR_COMPILER, re_ast_clbk_user_data) - 13456usize];
+        [::std::mem::offset_of!(_YR_COMPILER, re_ast_clbk_user_data) - 13408usize];
     ["Offset of field: _YR_COMPILER::callback"]
-        [::std::mem::offset_of!(_YR_COMPILER, callback) - 13464usize];
+        [::std::mem::offset_of!(_YR_COMPILER, callback) - 13416usize];
     ["Offset of field: _YR_COMPILER::include_callback"]
-        [::std::mem::offset_of!(_YR_COMPILER, include_callback) - 13472usize];
+        [::std::mem::offset_of!(_YR_COMPILER, include_callback) - 13424usize];
     ["Offset of field: _YR_COMPILER::include_free"]
-        [::std::mem::offset_of!(_YR_COMPILER, include_free) - 13480usize];
+        [::std::mem::offset_of!(_YR_COMPILER, include_free) - 13432usize];
     ["Offset of field: _YR_COMPILER::re_ast_callback"]
-        [::std::mem::offset_of!(_YR_COMPILER, re_ast_callback) - 13488usize];
+        [::std::mem::offset_of!(_YR_COMPILER, re_ast_callback) - 13440usize];
     ["Offset of field: _YR_COMPILER::atoms_config"]
-        [::std::mem::offset_of!(_YR_COMPILER, atoms_config) - 13496usize];
+        [::std::mem::offset_of!(_YR_COMPILER, atoms_config) - 13448usize];
 };
 pub type YR_COMPILER = _YR_COMPILER;
 unsafe extern "C" {
